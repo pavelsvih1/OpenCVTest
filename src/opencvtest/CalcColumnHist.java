@@ -30,7 +30,7 @@ class CalcCHist {
 
     Mat horizontal = new Mat(src.rows()+1, src.cols(), CvType.CV_8UC1);//horizontal histogram
 	horizontal.setTo(Scalar.all(0));
-    Mat vertical = new Mat(1, src.rows(),CvType.CV_8UC1);//horizontal histogram
+    Mat vertical = new Mat(1, src.rows()+1,CvType.CV_8UC1);//horizontal histogram
 	vertical.setTo(Scalar.all(0));
     Mat converted = new Mat(src.width(), src.height(), CvType.CV_8UC1);
      Imgproc.cvtColor(src, converted, Imgproc.COLOR_RGB2GRAY);
