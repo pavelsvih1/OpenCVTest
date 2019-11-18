@@ -30,8 +30,12 @@ class CalcCHist {
     System.out.println("Typ "+src.type()+" : "+src.toString());
     int sum;
     Imgproc.threshold(converted, converted, 120, 255, Imgproc.THRESH_BINARY);
+//    Imgproc.threshold(converted, converted, 120, 255, Imgproc.THRESH_BINARY|Imgproc.THRESH_OTSU);
 //    Imgproc.threshold(converted, converted, 120, 255, Imgproc.THRESH_TOZERO);
-	for(int i=0;i<(converted.cols());i++)
+//    Imgproc.threshold(converted, converted, 120, 255, Imgproc.THRESH_BINARY);
+//    Imgproc.adaptiveThreshold(converted, converted, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 255, 0);
+
+    for(int i=0;i<(converted.cols());i++)
 	{
         sum = Core.countNonZero(converted.submat(new Rect(i, 0, 1, converted.rows())));
         
@@ -56,6 +60,10 @@ class CalcCHist {
         HighGui.imshow( "konvertovnany obrázek", converted );
         HighGui.imshow( "Horizontalni histogram", horizontal);
         HighGui.imshow( "Vertikalni histogram", vertical );
+        HighGui.moveWindow("Vertikalni histogram", src.cols(), 0);
+        HighGui.moveWindow("Originál obrázku", 0, src.rows()*2+30);
+        HighGui.moveWindow("Horizontalni histogram", 0, src.rows()+30);
+        HighGui.moveWindow("konvertovnany obrázek", 0, 1);
         HighGui.waitKey(0);
         //! [Display]
 
