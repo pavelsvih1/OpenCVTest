@@ -10,8 +10,9 @@ import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-class CalcCHist {
-    public void run(String[] args) {
+public class ThresholdingAndProjectHist {
+
+    public ThresholdingAndProjectHist(String[] args) {
 
         String filename = args.length > 0 ? args[0] : ("disp3.jpg");
         Mat src = Imgcodecs.imread(filename);
@@ -69,13 +70,12 @@ class CalcCHist {
 
         System.exit(0);
     }
-}
 
-public class CalcColumnHist {
+
     public static void main(String[] args) {
         // Load the native OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        new CalcCHist().run(args);
+        new ThresholdingAndProjectHist(args);
     }
 }
