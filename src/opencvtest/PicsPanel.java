@@ -195,6 +195,7 @@ public class PicsPanel extends JPanel implements Runnable
 
 
 
+  @Override
   public void paintComponent(Graphics g)
   /* Draw the snap and add the average ms snap time at the 
      bottom of the panel. */
