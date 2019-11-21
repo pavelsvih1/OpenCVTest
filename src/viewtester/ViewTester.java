@@ -17,6 +17,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 /**
  *
@@ -29,6 +31,9 @@ public class ViewTester extends javax.swing.JFrame {
     BufferedImage outputImage;
     Mat inputMat;
     Mat outputMat;
+    private final int CAMERAWIDTH = 640;
+    private final int CAMERAHEIGHT = 480;
+    VideoCapture grabber;
     
     /**
      * Creates new form ViewTester
@@ -39,12 +44,17 @@ public class ViewTester extends javax.swing.JFrame {
         readInputFromFile("disp3.jpg");
         inputImage = MatToBufferedImage(inputMat);
         outputImage = MatToBufferedImage(outputMat);
-        
 
         initComponents();
+
+        // inicializace kamery
+        grabber = initGrabber(0);
+        if (grabber == null) {
+            this.jButton_toolBar_vyfotit.setEnabled(false);
+        }
+
         pack();
     }
-
 
     public BufferedImage MatToBufferedImage(Mat frame) {
         int type = 0;
@@ -64,8 +74,9 @@ public class ViewTester extends javax.swing.JFrame {
 
     /**
      * nahraje obrazek jako Mat ze souboru
+     *
      * @param fileName
-     * @return 
+     * @return
      */
     boolean readInputFromFile(String fileName) {
         inputMat = Imgcodecs.imread(fileName);
@@ -77,7 +88,7 @@ public class ViewTester extends javax.swing.JFrame {
         outToGrayScale();
         return true;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,10 +118,16 @@ public class ViewTester extends javax.swing.JFrame {
         jTextField_toolBar_prahovani_offset = new javax.swing.JTextField();
         jRadioButton_toolBar_prahovani_band = new javax.swing.JRadioButton();
         jSlider_toolBar_prahovani_bandPrah2 = new javax.swing.JSlider();
+        jButton_toolBar_toGrayScalled = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tester funkci OpenCV knihovny");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jToolBar.setRollover(true);
 
@@ -120,6 +137,11 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_toolBar_vyfotit.setFocusable(false);
         jButton_toolBar_vyfotit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton_toolBar_vyfotit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_toolBar_vyfotit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolBar_vyfotitActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -289,9 +311,22 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.gridheight = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weighty = 0.5;
         jPanelToolBarBasic.add(jPanel_toolBar_prahovani, gridBagConstraints);
+
+        jButton_toolBar_toGrayScalled.setText("--> ÈB");
+        jButton_toolBar_toGrayScalled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolBar_toGrayScalledActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
 
@@ -309,29 +344,29 @@ public class ViewTester extends javax.swing.JFrame {
         fc.addChoosableFileFilter(filter);
         fc.setFileFilter(filter);
         fc.setDialogTitle("Vyberte soubor s obrazkem");
-        if(currentDir!=null) {
+        if (currentDir != null) {
             fc.setCurrentDirectory(currentDir);
         }
         int returnVal = fc.showOpenDialog(this);
- 
+
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             currentDir = file.getParentFile();
             readInputFromFile(file.getPath());
             inputImage = MatToBufferedImage(inputMat);
             outputImage = MatToBufferedImage(outputMat);
-            ((JPanel_DoubleImage)jPanelObrazky).setImageLeft(inputImage);
-            ((JPanel_DoubleImage)jPanelObrazky).setImageRight(outputImage);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
             pack();
-        } 
+        }
     }//GEN-LAST:event_jButton_toolBar_zeSouboruActionPerformed
 
     private void jButton_toolBar_outputAsInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_outputAsInputActionPerformed
         inputImage = outputImage;
         inputMat = outputMat.clone();
-        ((JPanel_DoubleImage)jPanelObrazky).setImageLeft(inputImage);
-        ((JPanel_DoubleImage)jPanelObrazky).setImageRight(outputImage);
+        ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
+        ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
         repaint();
         pack();
     }//GEN-LAST:event_jButton_toolBar_outputAsInputActionPerformed
@@ -384,28 +419,72 @@ public class ViewTester extends javax.swing.JFrame {
         prahujAction();
     }//GEN-LAST:event_jRadioButton_toolBar_prahovani_bandActionPerformed
 
-    private void prahujAction() throws NumberFormatException {
-        System.out.println("Slider = "+jSlider_toolBar_prahovani_mez.getValue()+ " Prahovani = "+Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()));
-        if(jRadioButton_toolBar_prahovani_binary.isSelected()) {
-            Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
-        } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
-            Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
-        } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
-            Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
-        } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
-            Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
-        } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
-            Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
-        } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
-            Mat preObraz = outputMat.clone();
-            Mat preObraz2 = outputMat.clone();
-            Imgproc.threshold(inputMat, preObraz2, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
-            Imgproc.threshold(inputMat, preObraz, jSlider_toolBar_prahovani_bandPrah2.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
-            Core.bitwise_and(preObraz, preObraz2, outputMat);
+    private void jButton_toolBar_vyfotitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_vyfotitActionPerformed
+        Mat readMat = new Mat();
+        if(grabber.read(readMat)) {
+            inputMat = readMat;
+            inputImage = MatToBufferedImage(inputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
+            repaint();
+            pack();
         }
+    }//GEN-LAST:event_jButton_toolBar_vyfotitActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if(grabber != null) {
+            grabber.release();  // uvolnime kameru
+        }
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jButton_toolBar_toGrayScalledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_toGrayScalledActionPerformed
+        outputMat = inputMat.clone();
+        outToGrayScale();
         outputImage = MatToBufferedImage(outputMat);
-        ((JPanel_DoubleImage)jPanelObrazky).setImageRight(outputImage);
+        ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
         repaint();
+        pack();
+    }//GEN-LAST:event_jButton_toolBar_toGrayScalledActionPerformed
+
+    private VideoCapture initGrabber(int ID) {
+        VideoCapture grabber = new VideoCapture(ID);
+        if ((grabber == null) || (!grabber.isOpened())) {
+            System.out.println("Chyba pripojeni k webcam: " + ID);
+            grabber = null;
+        } else {
+            System.out.println("Pripojen k webcam: " + ID);
+            grabber.set(Videoio.CAP_PROP_FRAME_WIDTH, CAMERAWIDTH);
+            grabber.set(Videoio.CAP_PROP_FRAME_HEIGHT, CAMERAHEIGHT);
+        }
+
+        return grabber;
+    }  // end of initGrabber()
+
+    private void prahujAction() throws NumberFormatException {
+//        System.out.println("Slider = "+jSlider_toolBar_prahovani_mez.getValue()+ " Prahovani = "+Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()));
+        try {
+            if (jRadioButton_toolBar_prahovani_binary.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+            } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
+            } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
+            } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
+                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+            } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
+                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+            } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
+                Mat preObraz = outputMat.clone();
+                Mat preObraz2 = outputMat.clone();
+                Imgproc.threshold(inputMat, preObraz2, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+                Imgproc.threshold(inputMat, preObraz, jSlider_toolBar_prahovani_bandPrah2.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
+                Core.bitwise_and(preObraz, preObraz2, outputMat);
+            }
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+        }
     }
 
     private void outToGrayScale() {
@@ -413,12 +492,13 @@ public class ViewTester extends javax.swing.JFrame {
         Imgproc.cvtColor(outputMat, newOutputMat, Imgproc.COLOR_RGB2GRAY);
         outputMat = newOutputMat;
     }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -454,6 +534,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup_prahovani;
     private javax.swing.JButton jButton_toolBar_outputAsInput;
     private javax.swing.JButton jButton_toolBar_prahovani_prahovat;
+    private javax.swing.JButton jButton_toolBar_toGrayScalled;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JPanel jPanelObrazky;
