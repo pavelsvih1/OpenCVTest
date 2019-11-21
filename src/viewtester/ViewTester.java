@@ -73,7 +73,7 @@ public class ViewTester extends javax.swing.JFrame {
             System.err.println("Nelze nacist obrazek: " + fileName);
             return false;
         }
-        outputMat = inputMat;
+        outputMat = inputMat.clone();
         outToGrayScale();
         return true;
     }
@@ -86,10 +86,27 @@ public class ViewTester extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        buttonGroup_prahovani = new javax.swing.ButtonGroup();
         jToolBar = new javax.swing.JToolBar();
+        jPanelToolBarBasic = new javax.swing.JPanel();
         jButton_toolBar_vyfotit = new javax.swing.JButton();
         jButton_toolBar_zeSouboru = new javax.swing.JButton();
+        jButton_toolBar_outputAsInput = new javax.swing.JButton();
+        jPanel_toolBar_prahovani = new javax.swing.JPanel();
+        jSlider_toolBar_prahovani_mez = new javax.swing.JSlider();
+        jTextField_toolBar_prahovani_maxVal = new javax.swing.JTextField();
+        jRadioButton_toolBar_prahovani_binary = new javax.swing.JRadioButton();
+        jRadioButton_toolBar_prahovani_tozero = new javax.swing.JRadioButton();
+        jRadioButton_toolBar_prahovani_otsu = new javax.swing.JRadioButton();
+        jRadioButton_toolBar_prahovani_adaptiveMeanC = new javax.swing.JRadioButton();
+        jRadioButton_toolBar_prahovani_adaptivniGaussianC = new javax.swing.JRadioButton();
+        jButton_toolBar_prahovani_prahovat = new javax.swing.JButton();
+        jSlider_toolBar_prahovani_blockSize = new javax.swing.JSlider();
+        jTextField_toolBar_prahovani_offset = new javax.swing.JTextField();
+        jRadioButton_toolBar_prahovani_band = new javax.swing.JRadioButton();
+        jSlider_toolBar_prahovani_bandPrah2 = new javax.swing.JSlider();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -97,11 +114,17 @@ public class ViewTester extends javax.swing.JFrame {
 
         jToolBar.setRollover(true);
 
+        jPanelToolBarBasic.setLayout(new java.awt.GridBagLayout());
+
         jButton_toolBar_vyfotit.setText("Vyfotit");
         jButton_toolBar_vyfotit.setFocusable(false);
         jButton_toolBar_vyfotit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton_toolBar_vyfotit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar.add(jButton_toolBar_vyfotit);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanelToolBarBasic.add(jButton_toolBar_vyfotit, gridBagConstraints);
 
         jButton_toolBar_zeSouboru.setText("Ze souboru");
         jButton_toolBar_zeSouboru.setFocusable(false);
@@ -112,7 +135,165 @@ public class ViewTester extends javax.swing.JFrame {
                 jButton_toolBar_zeSouboruActionPerformed(evt);
             }
         });
-        jToolBar.add(jButton_toolBar_zeSouboru);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanelToolBarBasic.add(jButton_toolBar_zeSouboru, gridBagConstraints);
+
+        jButton_toolBar_outputAsInput.setText("Výstup jako vstup");
+        jButton_toolBar_outputAsInput.setFocusable(false);
+        jButton_toolBar_outputAsInput.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton_toolBar_outputAsInput.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton_toolBar_outputAsInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolBar_outputAsInputActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanelToolBarBasic.add(jButton_toolBar_outputAsInput, gridBagConstraints);
+
+        jPanel_toolBar_prahovani.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Prahování", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
+        jPanel_toolBar_prahovani.setMaximumSize(new java.awt.Dimension(800, 150));
+
+        jSlider_toolBar_prahovani_mez.setMajorTickSpacing(32);
+        jSlider_toolBar_prahovani_mez.setMaximum(255);
+        jSlider_toolBar_prahovani_mez.setMinorTickSpacing(8);
+        jSlider_toolBar_prahovani_mez.setPaintLabels(true);
+        jSlider_toolBar_prahovani_mez.setPaintTicks(true);
+        jSlider_toolBar_prahovani_mez.setToolTipText("Prahová hodnota");
+        jSlider_toolBar_prahovani_mez.setValue(120);
+        jSlider_toolBar_prahovani_mez.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_toolBar_prahovani_mezStateChanged(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jSlider_toolBar_prahovani_mez);
+
+        jTextField_toolBar_prahovani_maxVal.setColumns(4);
+        jTextField_toolBar_prahovani_maxVal.setText("255");
+        jTextField_toolBar_prahovani_maxVal.setToolTipText("Maximální hodnota");
+        jTextField_toolBar_prahovani_maxVal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_toolBar_prahovani_maxValActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jTextField_toolBar_prahovani_maxVal);
+
+        buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_binary);
+        jRadioButton_toolBar_prahovani_binary.setSelected(true);
+        jRadioButton_toolBar_prahovani_binary.setText("BINARY");
+        jRadioButton_toolBar_prahovani_binary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolBar_prahovani_binaryActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_binary);
+
+        buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_tozero);
+        jRadioButton_toolBar_prahovani_tozero.setText("TOZERO");
+        jRadioButton_toolBar_prahovani_tozero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolBar_prahovani_tozeroActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_tozero);
+
+        buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_otsu);
+        jRadioButton_toolBar_prahovani_otsu.setText("OTSU");
+        jRadioButton_toolBar_prahovani_otsu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolBar_prahovani_otsuActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_otsu);
+
+        buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_adaptiveMeanC);
+        jRadioButton_toolBar_prahovani_adaptiveMeanC.setText("Adaptivní MeanC");
+        jRadioButton_toolBar_prahovani_adaptiveMeanC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolBar_prahovani_adaptiveMeanCActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_adaptiveMeanC);
+
+        buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_adaptivniGaussianC);
+        jRadioButton_toolBar_prahovani_adaptivniGaussianC.setText("Adaptivní GaussianC");
+        jRadioButton_toolBar_prahovani_adaptivniGaussianC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolBar_prahovani_adaptivniGaussianCActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_adaptivniGaussianC);
+
+        jButton_toolBar_prahovani_prahovat.setText("Prahovat");
+        jButton_toolBar_prahovani_prahovat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolBar_prahovani_prahovatActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jButton_toolBar_prahovani_prahovat);
+
+        jSlider_toolBar_prahovani_blockSize.setMajorTickSpacing(32);
+        jSlider_toolBar_prahovani_blockSize.setMaximum(255);
+        jSlider_toolBar_prahovani_blockSize.setMinimum(1);
+        jSlider_toolBar_prahovani_blockSize.setMinorTickSpacing(2);
+        jSlider_toolBar_prahovani_blockSize.setPaintLabels(true);
+        jSlider_toolBar_prahovani_blockSize.setPaintTicks(true);
+        jSlider_toolBar_prahovani_blockSize.setSnapToTicks(true);
+        jSlider_toolBar_prahovani_blockSize.setToolTipText("Velikost bloku");
+        jSlider_toolBar_prahovani_blockSize.setValue(51);
+        jSlider_toolBar_prahovani_blockSize.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_toolBar_prahovani_blockSizeStateChanged(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jSlider_toolBar_prahovani_blockSize);
+
+        jTextField_toolBar_prahovani_offset.setColumns(4);
+        jTextField_toolBar_prahovani_offset.setText("0");
+        jTextField_toolBar_prahovani_offset.setToolTipText("Offset");
+        jTextField_toolBar_prahovani_offset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_toolBar_prahovani_offsetActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jTextField_toolBar_prahovani_offset);
+
+        buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_band);
+        jRadioButton_toolBar_prahovani_band.setText("Band");
+        jRadioButton_toolBar_prahovani_band.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolBar_prahovani_bandActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_band);
+
+        jSlider_toolBar_prahovani_bandPrah2.setMajorTickSpacing(32);
+        jSlider_toolBar_prahovani_bandPrah2.setMaximum(255);
+        jSlider_toolBar_prahovani_bandPrah2.setMinorTickSpacing(8);
+        jSlider_toolBar_prahovani_bandPrah2.setPaintLabels(true);
+        jSlider_toolBar_prahovani_bandPrah2.setPaintTicks(true);
+        jSlider_toolBar_prahovani_bandPrah2.setToolTipText("High threshold pro Band");
+        jSlider_toolBar_prahovani_bandPrah2.setValue(170);
+        jSlider_toolBar_prahovani_bandPrah2.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_toolBar_prahovani_bandPrah2StateChanged(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jSlider_toolBar_prahovani_bandPrah2);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        jPanelToolBarBasic.add(jPanel_toolBar_prahovani, gridBagConstraints);
+
+        jToolBar.add(jPanelToolBarBasic);
 
         getContentPane().add(jToolBar, java.awt.BorderLayout.PAGE_START);
 
@@ -145,6 +326,87 @@ public class ViewTester extends javax.swing.JFrame {
             pack();
         } 
     }//GEN-LAST:event_jButton_toolBar_zeSouboruActionPerformed
+
+    private void jButton_toolBar_outputAsInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_outputAsInputActionPerformed
+        inputImage = outputImage;
+        inputMat = outputMat.clone();
+        ((JPanel_DoubleImage)jPanelObrazky).setImageLeft(inputImage);
+        ((JPanel_DoubleImage)jPanelObrazky).setImageRight(outputImage);
+        repaint();
+        pack();
+    }//GEN-LAST:event_jButton_toolBar_outputAsInputActionPerformed
+
+    private void jRadioButton_toolBar_prahovani_otsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolBar_prahovani_otsuActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolBar_prahovani_otsuActionPerformed
+
+    private void jButton_toolBar_prahovani_prahovatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_prahovani_prahovatActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jButton_toolBar_prahovani_prahovatActionPerformed
+
+    private void jRadioButton_toolBar_prahovani_binaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolBar_prahovani_binaryActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolBar_prahovani_binaryActionPerformed
+
+    private void jRadioButton_toolBar_prahovani_tozeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolBar_prahovani_tozeroActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolBar_prahovani_tozeroActionPerformed
+
+    private void jRadioButton_toolBar_prahovani_adaptiveMeanCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolBar_prahovani_adaptiveMeanCActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolBar_prahovani_adaptiveMeanCActionPerformed
+
+    private void jRadioButton_toolBar_prahovani_adaptivniGaussianCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolBar_prahovani_adaptivniGaussianCActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolBar_prahovani_adaptivniGaussianCActionPerformed
+
+    private void jSlider_toolBar_prahovani_mezStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_toolBar_prahovani_mezStateChanged
+        prahujAction();
+    }//GEN-LAST:event_jSlider_toolBar_prahovani_mezStateChanged
+
+    private void jTextField_toolBar_prahovani_maxValActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_toolBar_prahovani_maxValActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jTextField_toolBar_prahovani_maxValActionPerformed
+
+    private void jTextField_toolBar_prahovani_offsetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_toolBar_prahovani_offsetActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jTextField_toolBar_prahovani_offsetActionPerformed
+
+    private void jSlider_toolBar_prahovani_blockSizeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_toolBar_prahovani_blockSizeStateChanged
+        prahujAction();
+    }//GEN-LAST:event_jSlider_toolBar_prahovani_blockSizeStateChanged
+
+    private void jSlider_toolBar_prahovani_bandPrah2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_toolBar_prahovani_bandPrah2StateChanged
+        prahujAction();
+    }//GEN-LAST:event_jSlider_toolBar_prahovani_bandPrah2StateChanged
+
+    private void jRadioButton_toolBar_prahovani_bandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolBar_prahovani_bandActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolBar_prahovani_bandActionPerformed
+
+    private void prahujAction() throws NumberFormatException {
+        System.out.println("Slider = "+jSlider_toolBar_prahovani_mez.getValue()+ " Prahovani = "+Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()));
+        if(jRadioButton_toolBar_prahovani_binary.isSelected()) {
+            Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+        } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
+            Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
+        } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
+            Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
+        } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
+            Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+        } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
+            Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+        } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
+            Mat preObraz = outputMat.clone();
+            Mat preObraz2 = outputMat.clone();
+            Imgproc.threshold(inputMat, preObraz2, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+            Imgproc.threshold(inputMat, preObraz, jSlider_toolBar_prahovani_bandPrah2.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
+            Core.bitwise_and(preObraz, preObraz2, outputMat);
+        }
+        outputImage = MatToBufferedImage(outputMat);
+        ((JPanel_DoubleImage)jPanelObrazky).setImageRight(outputImage);
+        repaint();
+    }
 
     private void outToGrayScale() {
         Mat newOutputMat = new Mat(outputMat.width(), outputMat.height(), CvType.CV_8UC1);
@@ -189,9 +451,25 @@ public class ViewTester extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_toolBar_outputAsInput;
+    private javax.swing.JButton jButton_toolBar_prahovani_prahovat;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JPanel jPanelObrazky;
+    private javax.swing.JPanel jPanelToolBarBasic;
+    private javax.swing.JPanel jPanel_toolBar_prahovani;
+    private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptiveMeanC;
+    private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptivniGaussianC;
+    private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_band;
+    private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_binary;
+    private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_otsu;
+    private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_tozero;
+    private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
+    private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
+    private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
+    private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
+    private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
 }
