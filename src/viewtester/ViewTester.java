@@ -52,7 +52,7 @@ public class ViewTester extends javax.swing.JFrame {
         if (grabber == null) {
             this.jButton_toolBar_vyfotit.setEnabled(false);
         }
-
+        
         pack();
     }
 
@@ -261,7 +261,7 @@ public class ViewTester extends javax.swing.JFrame {
 
         jSlider_toolBar_prahovani_blockSize.setMajorTickSpacing(32);
         jSlider_toolBar_prahovani_blockSize.setMaximum(255);
-        jSlider_toolBar_prahovani_blockSize.setMinimum(1);
+        jSlider_toolBar_prahovani_blockSize.setMinimum(3);
         jSlider_toolBar_prahovani_blockSize.setMinorTickSpacing(2);
         jSlider_toolBar_prahovani_blockSize.setPaintLabels(true);
         jSlider_toolBar_prahovani_blockSize.setPaintTicks(true);
@@ -469,9 +469,9 @@ public class ViewTester extends javax.swing.JFrame {
             } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
                 Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
             } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
-                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue()/2*2+1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
             } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
-                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue()/2*2+1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
             } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
                 Mat preObraz = outputMat.clone();
                 Mat preObraz2 = outputMat.clone();
