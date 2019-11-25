@@ -100,6 +100,7 @@ public class ViewTester extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup_prahovani = new javax.swing.ButtonGroup();
+        jLabel_info = new javax.swing.JLabel();
         jToolBar = new javax.swing.JToolBar();
         jPanelToolBarBasic = new javax.swing.JPanel();
         jButton_toolBar_vyfotit = new javax.swing.JButton();
@@ -128,6 +129,9 @@ public class ViewTester extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+
+        jLabel_info.setText(">");
+        getContentPane().add(jLabel_info, java.awt.BorderLayout.PAGE_END);
 
         jToolBar.setRollover(true);
 
@@ -358,6 +362,7 @@ public class ViewTester extends javax.swing.JFrame {
             ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
+            jLabel_info.setText(">");
             pack();
         }
     }//GEN-LAST:event_jButton_toolBar_zeSouboruActionPerformed
@@ -368,6 +373,7 @@ public class ViewTester extends javax.swing.JFrame {
         ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
         ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
         repaint();
+        jLabel_info.setText(">");
         pack();
     }//GEN-LAST:event_jButton_toolBar_outputAsInputActionPerformed
 
@@ -426,6 +432,7 @@ public class ViewTester extends javax.swing.JFrame {
             inputImage = MatToBufferedImage(inputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
             repaint();
+            jLabel_info.setText(">");
             pack();
         }
     }//GEN-LAST:event_jButton_toolBar_vyfotitActionPerformed
@@ -442,6 +449,7 @@ public class ViewTester extends javax.swing.JFrame {
         outputImage = MatToBufferedImage(outputMat);
         ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
         repaint();
+        jLabel_info.setText(">");
         pack();
     }//GEN-LAST:event_jButton_toolBar_toGrayScalledActionPerformed
 
@@ -482,8 +490,10 @@ public class ViewTester extends javax.swing.JFrame {
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
+            jLabel_info.setText(">");
         } catch (Exception exception) {
             System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> "+exception.getLocalizedMessage());
         }
     }
 
@@ -537,6 +547,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_toolBar_toGrayScalled;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
+    private javax.swing.JLabel jLabel_info;
     private javax.swing.JPanel jPanelObrazky;
     private javax.swing.JPanel jPanelToolBarBasic;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
