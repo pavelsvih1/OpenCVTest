@@ -29,11 +29,11 @@ public class OpenCVTest1 {
                 Mat mat = Mat.eye(3, 3, CvType.CV_8UC1);
                 System.out.println("mat = " + mat.dump());
 
-                Mat mt = new Mat(5, 5, CvType.CV_8U, new Scalar(1));
+                Mat mt = new Mat(3, 1, CvType.CV_8U, new Scalar(1));
                 Mat mt2 = new Mat(6, 6, CvType.CV_8U, new Scalar(1));
                 
                 System.out.println("mt = " + mt.dump());
-                mt2.put(1, 2, 0);
+                mt2.put(3, 3, 0);
                 Imgproc.erode(mt2, mt2, mt);
                 System.out.println("mt2 = " + mt2.dump());
     }
