@@ -106,6 +106,8 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_toolBar_vyfotit = new javax.swing.JButton();
         jButton_toolBar_zeSouboru = new javax.swing.JButton();
         jButton_toolBar_outputAsInput = new javax.swing.JButton();
+        jButton_toolBar_toGrayScalled = new javax.swing.JButton();
+        jTabbedPane_nastroje = new javax.swing.JTabbedPane();
         jPanel_toolBar_prahovani = new javax.swing.JPanel();
         jSlider_toolBar_prahovani_mez = new javax.swing.JSlider();
         jTextField_toolBar_prahovani_maxVal = new javax.swing.JTextField();
@@ -119,7 +121,13 @@ public class ViewTester extends javax.swing.JFrame {
         jTextField_toolBar_prahovani_offset = new javax.swing.JTextField();
         jRadioButton_toolBar_prahovani_band = new javax.swing.JRadioButton();
         jSlider_toolBar_prahovani_bandPrah2 = new javax.swing.JSlider();
-        jButton_toolBar_toGrayScalled = new javax.swing.JButton();
+        jPanel_Morfologie = new javax.swing.JPanel();
+        jButton_morfologie_rozsireni = new javax.swing.JButton();
+        jButton_morfologie_zuzeni = new javax.swing.JButton();
+        jPanel_morfologie_element = new javax.swing.JPanel();
+        jSpinner_morfologie_elementX = new javax.swing.JSpinner();
+        jLabel_morfologie_element_krat = new javax.swing.JLabel();
+        jSpinner_morfologie_elementY = new javax.swing.JSpinner();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -129,6 +137,7 @@ public class ViewTester extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jLabel_info.setText(">");
         getContentPane().add(jLabel_info, java.awt.BorderLayout.PAGE_END);
@@ -182,7 +191,18 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanelToolBarBasic.add(jButton_toolBar_outputAsInput, gridBagConstraints);
 
-        jPanel_toolBar_prahovani.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Prahování", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
+        jButton_toolBar_toGrayScalled.setText("--> ÈB");
+        jButton_toolBar_toGrayScalled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolBar_toGrayScalledActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
+
         jPanel_toolBar_prahovani.setMaximumSize(new java.awt.Dimension(800, 150));
 
         jSlider_toolBar_prahovani_mez.setMajorTickSpacing(32);
@@ -312,25 +332,34 @@ public class ViewTester extends javax.swing.JFrame {
         });
         jPanel_toolBar_prahovani.add(jSlider_toolBar_prahovani_bandPrah2);
 
+        jTabbedPane_nastroje.addTab("Prahování", jPanel_toolBar_prahovani);
+
+        jButton_morfologie_rozsireni.setText("Rozšíøení");
+        jPanel_Morfologie.add(jButton_morfologie_rozsireni);
+
+        jButton_morfologie_zuzeni.setText("Zúžení");
+        jPanel_Morfologie.add(jButton_morfologie_zuzeni);
+
+        jPanel_morfologie_element.setBorder(javax.swing.BorderFactory.createTitledBorder("Element"));
+
+        jSpinner_morfologie_elementX.setModel(new javax.swing.SpinnerNumberModel(3, 1, null, 1));
+        jPanel_morfologie_element.add(jSpinner_morfologie_elementX);
+
+        jLabel_morfologie_element_krat.setText("x");
+        jPanel_morfologie_element.add(jLabel_morfologie_element_krat);
+
+        jSpinner_morfologie_elementY.setModel(new javax.swing.SpinnerNumberModel(3, 1, null, 1));
+        jPanel_morfologie_element.add(jSpinner_morfologie_elementY);
+
+        jPanel_Morfologie.add(jPanel_morfologie_element);
+
+        jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.weighty = 0.5;
-        jPanelToolBarBasic.add(jPanel_toolBar_prahovani, gridBagConstraints);
-
-        jButton_toolBar_toGrayScalled.setText("--> ÈB");
-        jButton_toolBar_toGrayScalled.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_toolBar_toGrayScalledActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
+        jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
 
@@ -542,14 +571,19 @@ public class ViewTester extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_morfologie_rozsireni;
+    private javax.swing.JButton jButton_morfologie_zuzeni;
     private javax.swing.JButton jButton_toolBar_outputAsInput;
     private javax.swing.JButton jButton_toolBar_prahovani_prahovat;
     private javax.swing.JButton jButton_toolBar_toGrayScalled;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JLabel jLabel_info;
+    private javax.swing.JLabel jLabel_morfologie_element_krat;
     private javax.swing.JPanel jPanelObrazky;
     private javax.swing.JPanel jPanelToolBarBasic;
+    private javax.swing.JPanel jPanel_Morfologie;
+    private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptiveMeanC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptivniGaussianC;
@@ -560,6 +594,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
     private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
+    private javax.swing.JSpinner jSpinner_morfologie_elementX;
+    private javax.swing.JSpinner jSpinner_morfologie_elementY;
+    private javax.swing.JTabbedPane jTabbedPane_nastroje;
     private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
     private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
     private javax.swing.JToolBar jToolBar;
