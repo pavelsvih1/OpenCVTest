@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
@@ -128,6 +129,9 @@ public class ViewTester extends javax.swing.JFrame {
         jSpinner_morfologie_elementX = new javax.swing.JSpinner();
         jLabel_morfologie_element_krat = new javax.swing.JLabel();
         jSpinner_morfologie_elementY = new javax.swing.JSpinner();
+        jButton_morfologie_otevreni = new javax.swing.JButton();
+        jButton_morfologie_zavreni = new javax.swing.JButton();
+        jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -137,7 +141,6 @@ public class ViewTester extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jLabel_info.setText(">");
         getContentPane().add(jLabel_info, java.awt.BorderLayout.PAGE_END);
@@ -199,7 +202,7 @@ public class ViewTester extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
 
@@ -335,9 +338,19 @@ public class ViewTester extends javax.swing.JFrame {
         jTabbedPane_nastroje.addTab("Prahování", jPanel_toolBar_prahovani);
 
         jButton_morfologie_rozsireni.setText("Rozšíøení");
+        jButton_morfologie_rozsireni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_rozsireniActionPerformed(evt);
+            }
+        });
         jPanel_Morfologie.add(jButton_morfologie_rozsireni);
 
         jButton_morfologie_zuzeni.setText("Zúžení");
+        jButton_morfologie_zuzeni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_zuzeniActionPerformed(evt);
+            }
+        });
         jPanel_Morfologie.add(jButton_morfologie_zuzeni);
 
         jPanel_morfologie_element.setBorder(javax.swing.BorderFactory.createTitledBorder("Element"));
@@ -353,13 +366,41 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_Morfologie.add(jPanel_morfologie_element);
 
+        jButton_morfologie_otevreni.setText("Otevøení");
+        jButton_morfologie_otevreni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_otevreniActionPerformed(evt);
+            }
+        });
+        jPanel_Morfologie.add(jButton_morfologie_otevreni);
+
+        jButton_morfologie_zavreni.setText("Zavøení");
+        jButton_morfologie_zavreni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_zavreniActionPerformed(evt);
+            }
+        });
+        jPanel_Morfologie.add(jButton_morfologie_zavreni);
+
         jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.gridheight = 5;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
+
+        jButton_toolbar_invertColors.setText("Invertuj barvy");
+        jButton_toolbar_invertColors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolbar_invertColorsActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanelToolBarBasic.add(jButton_toolbar_invertColors, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
 
@@ -482,6 +523,70 @@ public class ViewTester extends javax.swing.JFrame {
         pack();
     }//GEN-LAST:event_jButton_toolBar_toGrayScalledActionPerformed
 
+    private void jButton_morfologie_rozsireniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_rozsireniActionPerformed
+        try {
+            Mat matElement = new Mat((int) jSpinner_morfologie_elementX.getValue(), (int) jSpinner_morfologie_elementY.getValue(), CvType.CV_8U, Scalar.all(1));
+            Imgproc.dilate(inputMat, outputMat, matElement);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> "+e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_morfologie_rozsireniActionPerformed
+
+    private void jButton_morfologie_zuzeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_zuzeniActionPerformed
+        try {
+            Mat matElement = new Mat((int) jSpinner_morfologie_elementX.getValue(), (int) jSpinner_morfologie_elementY.getValue(), CvType.CV_8U, Scalar.all(1));
+            Imgproc.erode(inputMat, outputMat, matElement);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> "+e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_morfologie_zuzeniActionPerformed
+
+    private void jButton_morfologie_otevreniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_otevreniActionPerformed
+        try {
+            Mat matElement = new Mat((int) jSpinner_morfologie_elementX.getValue(), (int) jSpinner_morfologie_elementY.getValue(), CvType.CV_8U, Scalar.all(1));
+            Imgproc.morphologyEx(inputMat, outputMat, Imgproc.MORPH_OPEN, matElement);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> "+e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_morfologie_otevreniActionPerformed
+
+    private void jButton_morfologie_zavreniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_zavreniActionPerformed
+        try {
+            Mat matElement = new Mat((int) jSpinner_morfologie_elementX.getValue(), (int) jSpinner_morfologie_elementY.getValue(), CvType.CV_8U, Scalar.all(1));
+            Imgproc.morphologyEx(inputMat, outputMat, Imgproc.MORPH_CLOSE, matElement);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> "+e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_morfologie_zavreniActionPerformed
+
+    private void jButton_toolbar_invertColorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_invertColorsActionPerformed
+        try {
+            Core.bitwise_not(inputMat, outputMat);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> "+e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_toolbar_invertColorsActionPerformed
+
     private VideoCapture initGrabber(int ID) {
         VideoCapture grabber = new VideoCapture(ID);
         if ((grabber == null) || (!grabber.isOpened())) {
@@ -571,13 +676,16 @@ public class ViewTester extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
+    private javax.swing.JButton jButton_morfologie_zavreni;
     private javax.swing.JButton jButton_morfologie_zuzeni;
     private javax.swing.JButton jButton_toolBar_outputAsInput;
     private javax.swing.JButton jButton_toolBar_prahovani_prahovat;
     private javax.swing.JButton jButton_toolBar_toGrayScalled;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
+    private javax.swing.JButton jButton_toolbar_invertColors;
     private javax.swing.JLabel jLabel_info;
     private javax.swing.JLabel jLabel_morfologie_element_krat;
     private javax.swing.JPanel jPanelObrazky;
