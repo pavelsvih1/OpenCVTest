@@ -359,6 +359,27 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_morfologie_zavreniActionPerformed"/>
                       </Events>
                     </Component>
+                    <Component class="javax.swing.JButton" name="jButton_morfologie_findContours">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Hledej objekty"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_morfologie_findContoursActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JSlider" name="jSlider_morfologie_findThreshold">
+                      <Properties>
+                        <Property name="majorTickSpacing" type="int" value="32"/>
+                        <Property name="maximum" type="int" value="255"/>
+                        <Property name="minorTickSpacing" type="int" value="8"/>
+                        <Property name="paintLabels" type="boolean" value="true"/>
+                        <Property name="paintTicks" type="boolean" value="true"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Prah pro vyhledani objektu"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSlider_morfologie_findThresholdStateChanged"/>
+                      </Events>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>

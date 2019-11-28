@@ -9,12 +9,17 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -131,6 +136,8 @@ public class ViewTester extends javax.swing.JFrame {
         jSpinner_morfologie_elementY = new javax.swing.JSpinner();
         jButton_morfologie_otevreni = new javax.swing.JButton();
         jButton_morfologie_zavreni = new javax.swing.JButton();
+        jButton_morfologie_findContours = new javax.swing.JButton();
+        jSlider_morfologie_findThreshold = new javax.swing.JSlider();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
@@ -382,6 +389,27 @@ public class ViewTester extends javax.swing.JFrame {
         });
         jPanel_Morfologie.add(jButton_morfologie_zavreni);
 
+        jButton_morfologie_findContours.setText("Hledej objekty");
+        jButton_morfologie_findContours.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_findContoursActionPerformed(evt);
+            }
+        });
+        jPanel_Morfologie.add(jButton_morfologie_findContours);
+
+        jSlider_morfologie_findThreshold.setMajorTickSpacing(32);
+        jSlider_morfologie_findThreshold.setMaximum(255);
+        jSlider_morfologie_findThreshold.setMinorTickSpacing(8);
+        jSlider_morfologie_findThreshold.setPaintLabels(true);
+        jSlider_morfologie_findThreshold.setPaintTicks(true);
+        jSlider_morfologie_findThreshold.setToolTipText("Prah pro vyhledani objektu");
+        jSlider_morfologie_findThreshold.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_morfologie_findThresholdStateChanged(evt);
+            }
+        });
+        jPanel_Morfologie.add(jSlider_morfologie_findThreshold);
+
         jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -414,7 +442,7 @@ public class ViewTester extends javax.swing.JFrame {
 
     private void jButton_toolBar_zeSouboruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_zeSouboruActionPerformed
         JFileChooser fc = new JFileChooser();
-        FileFilter filter = new FileNameExtensionFilter("jpg", "bmp", "jpeg", "gif", "tif", "tiff", "png");
+        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "gif", "tif", "tiff", "png");
         fc.addChoosableFileFilter(filter);
         fc.setFileFilter(filter);
         fc.setDialogTitle("Vyberte soubor s obrazkem");
@@ -587,6 +615,38 @@ public class ViewTester extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_toolbar_invertColorsActionPerformed
 
+    private void jButton_morfologie_findContoursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_findContoursActionPerformed
+        hledejObjektyAction();
+    }//GEN-LAST:event_jButton_morfologie_findContoursActionPerformed
+
+    private void jSlider_morfologie_findThresholdStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_morfologie_findThresholdStateChanged
+        hledejObjektyAction();
+    }//GEN-LAST:event_jSlider_morfologie_findThresholdStateChanged
+
+    private void hledejObjektyAction() {
+        try {
+            Random rng = new Random();
+            Mat cannyMat = new Mat();
+            Mat hierarchy = new Mat();
+            
+            Imgproc.Canny(inputMat, cannyMat, jSlider_morfologie_findThreshold.getValue(), jSlider_morfologie_findThreshold.getValue() * 2);
+            List<MatOfPoint> contours = new ArrayList<>();
+            Imgproc.findContours(cannyMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            outputMat = Mat.zeros(cannyMat.size(), CvType.CV_8UC3);
+            for (int i = 0; i < contours.size(); i++) {
+                Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+                Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
+            }
+            
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> "+e.getLocalizedMessage());
+        }
+    }
+
     private VideoCapture initGrabber(int ID) {
         VideoCapture grabber = new VideoCapture(ID);
         if ((grabber == null) || (!grabber.isOpened())) {
@@ -676,6 +736,7 @@ public class ViewTester extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
     private javax.swing.JButton jButton_morfologie_zavreni;
@@ -699,6 +760,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_binary;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_otsu;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_tozero;
+    private javax.swing.JSlider jSlider_morfologie_findThreshold;
     private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
     private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
