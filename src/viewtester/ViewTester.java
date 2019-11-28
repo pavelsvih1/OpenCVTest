@@ -20,6 +20,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
+import org.opencv.core.Range;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -138,6 +140,7 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_morfologie_zavreni = new javax.swing.JButton();
         jButton_morfologie_findContours = new javax.swing.JButton();
         jSlider_morfologie_findThreshold = new javax.swing.JSlider();
+        jToggleButton_morfologie_objektPodMysi = new javax.swing.JToggleButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
@@ -410,6 +413,9 @@ public class ViewTester extends javax.swing.JFrame {
         });
         jPanel_Morfologie.add(jSlider_morfologie_findThreshold);
 
+        jToggleButton_morfologie_objektPodMysi.setText("Objekt pod mysi");
+        jPanel_Morfologie.add(jToggleButton_morfologie_objektPodMysi);
+
         jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -434,6 +440,11 @@ public class ViewTester extends javax.swing.JFrame {
 
         getContentPane().add(jToolBar, java.awt.BorderLayout.PAGE_START);
 
+        jPanelObrazky.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanelObrazkyMouseClicked(evt);
+            }
+        });
         jPanelObrazky.setLayout(new javax.swing.BoxLayout(jPanelObrazky, javax.swing.BoxLayout.X_AXIS));
         getContentPane().add(jPanelObrazky, java.awt.BorderLayout.CENTER);
 
@@ -623,6 +634,83 @@ public class ViewTester extends javax.swing.JFrame {
         hledejObjektyAction();
     }//GEN-LAST:event_jSlider_morfologie_findThresholdStateChanged
 
+    private void jPanelObrazkyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelObrazkyMouseClicked
+        if(jToggleButton_morfologie_objektPodMysi.isSelected()) {
+            Random rng = new Random();
+            java.awt.Point p = evt.getPoint();
+            int x = p.x;
+            int y = p.y;
+            // kontrola souradnic obrazku - prevedeme na vstupni obr. nebo konec
+            if(x >= inputMat.width()) {
+                x -= inputMat.width();
+                if(x >= inputMat.width()) {
+                    return;
+                }
+            }
+            if(y >= inputMat.height()) {
+                y -= inputMat.height();
+                if(y >= inputMat.height()) {
+                    return;
+                }
+            }
+            Point poi = new Point(x, y);
+            MatOfPoint mop = new MatOfPoint(poi);
+            Mat hierarchy = new Mat();
+            System.out.println("kliknuto na: "+ p);
+
+            List<MatOfPoint> contours = new ArrayList<>();
+//            contours.add(mop);
+            Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+            outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+            Scalar color = new Scalar(0, 0, 256);
+//            Imgproc.drawContours(outputMat, contours, 0, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
+            for (int i = 0; i < contours.size(); i++) {
+                System.out.println("matice "+i+" "+contours.get(i).dump());
+                if(isPointInside(contours.get(i), poi, 3)) {
+                    Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_4, hierarchy, 0, new Point());
+                }
+            }
+            
+            
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText("> Pocet objektu: "+contours.size());
+        }
+        
+    }//GEN-LAST:event_jPanelObrazkyMouseClicked
+
+    /**
+     * Zjisti, zda dany bod s toleranci obsahuje vstupni matice
+     * @param mat
+     * @param point
+     * @param tolerance
+     * @return 
+     */
+    private boolean isPointInside(Mat mat, Point point, int tolerance) {
+        double sx = (point.x-tolerance)<0?0:(point.x-tolerance);
+        double sy = (point.y-tolerance)<0?0:(point.y-tolerance);
+        // plusove hodnoty neresim - mohou byt vetsi
+        System.out.println("MatXXX "+mat.width()+" x "+mat.height());
+        for(int i = 0; i < mat.height(); i++) {
+            double p[] = mat.get(i, 0);
+            // overeni, zda obsahuje bod spolecne s toleranci
+            for(double x=sx; x<=(point.x+tolerance); x++) {
+                for(double y=sy; y<=(point.y+tolerance); y++) {
+                    if((x==p[0]) && (y==p[1])) {
+                        return(true);   // nalezli jsme shodu
+                    }
+                }
+            }
+//            System.out.println("X = "+p[0]+" Y = "+p[1]);
+            
+        }
+//        Mat child = mat.submat(0, 3, 0, 1);
+//        System.out.println("MatCHILD "+child.dump());
+        
+        return(false);
+    }
+    
     private void hledejObjektyAction() {
         try {
             Random rng = new Random();
@@ -631,7 +719,7 @@ public class ViewTester extends javax.swing.JFrame {
             
             Imgproc.Canny(inputMat, cannyMat, jSlider_morfologie_findThreshold.getValue(), jSlider_morfologie_findThreshold.getValue() * 2);
             List<MatOfPoint> contours = new ArrayList<>();
-            Imgproc.findContours(cannyMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            Imgproc.findContours(cannyMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
             outputMat = Mat.zeros(cannyMat.size(), CvType.CV_8UC3);
             for (int i = 0; i < contours.size(); i++) {
                 Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
@@ -641,7 +729,7 @@ public class ViewTester extends javax.swing.JFrame {
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
-            jLabel_info.setText(">");
+            jLabel_info.setText("> Pocet objektu: "+contours.size());
         } catch (Exception e) {
             jLabel_info.setText("> "+e.getLocalizedMessage());
         }
@@ -769,6 +857,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane_nastroje;
     private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
     private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
+    private javax.swing.JToggleButton jToggleButton_morfologie_objektPodMysi;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
 }

@@ -380,6 +380,11 @@
                         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSlider_morfologie_findThresholdStateChanged"/>
                       </Events>
                     </Component>
+                    <Component class="javax.swing.JToggleButton" name="jToggleButton_morfologie_objektPodMysi">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Objekt pod mysi"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -402,6 +407,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanelObrazky">
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jPanelObrazkyMouseClicked"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JPanel_DoubleImage(inputImage, outputImage)"/>
       </AuxValues>
