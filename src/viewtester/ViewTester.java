@@ -656,7 +656,7 @@ public class ViewTester extends javax.swing.JFrame {
             Point poi = new Point(x, y);
             MatOfPoint mop = new MatOfPoint(poi);
             Mat hierarchy = new Mat();
-            System.out.println("kliknuto na: "+ p);
+//            System.out.println("kliknuto na: "+ p);
 
             List<MatOfPoint> contours = new ArrayList<>();
 //            contours.add(mop);
@@ -665,7 +665,7 @@ public class ViewTester extends javax.swing.JFrame {
             Scalar color = new Scalar(0, 0, 256);
 //            Imgproc.drawContours(outputMat, contours, 0, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
             for (int i = 0; i < contours.size(); i++) {
-                System.out.println("matice "+i+" "+contours.get(i).dump());
+//                System.out.println("matice "+i+" "+contours.get(i).dump());
                 if(isPointInside(contours.get(i), poi, 3)) {
                     Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_4, hierarchy, 0, new Point());
                 }
@@ -691,7 +691,7 @@ public class ViewTester extends javax.swing.JFrame {
         double sx = (point.x-tolerance)<0?0:(point.x-tolerance);
         double sy = (point.y-tolerance)<0?0:(point.y-tolerance);
         // plusove hodnoty neresim - mohou byt vetsi
-        System.out.println("MatXXX "+mat.width()+" x "+mat.height());
+//        System.out.println("MatXXX "+mat.width()+" x "+mat.height());
         for(int i = 0; i < mat.height(); i++) {
             double p[] = mat.get(i, 0);
             // overeni, zda obsahuje bod spolecne s toleranci
