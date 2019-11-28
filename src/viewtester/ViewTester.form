@@ -385,6 +385,14 @@
                         <Property name="text" type="java.lang.String" value="Objekt pod mysi"/>
                       </Properties>
                     </Component>
+                    <Component class="javax.swing.JButton" name="jButton_morfologie_vsechny">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Vsechny"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_morfologie_vsechnyActionPerformed"/>
+                      </Events>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>

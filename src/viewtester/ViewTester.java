@@ -5,6 +5,7 @@
  */
 package viewtester;
 
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
@@ -42,7 +43,7 @@ public class ViewTester extends javax.swing.JFrame {
     private final int CAMERAWIDTH = 640;
     private final int CAMERAHEIGHT = 480;
     VideoCapture grabber;
-    
+
     /**
      * Creates new form ViewTester
      */
@@ -60,7 +61,7 @@ public class ViewTester extends javax.swing.JFrame {
         if (grabber == null) {
             this.jButton_toolBar_vyfotit.setEnabled(false);
         }
-        
+
         pack();
     }
 
@@ -141,6 +142,7 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_morfologie_findContours = new javax.swing.JButton();
         jSlider_morfologie_findThreshold = new javax.swing.JSlider();
         jToggleButton_morfologie_objektPodMysi = new javax.swing.JToggleButton();
+        jButton_morfologie_vsechny = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
@@ -416,6 +418,14 @@ public class ViewTester extends javax.swing.JFrame {
         jToggleButton_morfologie_objektPodMysi.setText("Objekt pod mysi");
         jPanel_Morfologie.add(jToggleButton_morfologie_objektPodMysi);
 
+        jButton_morfologie_vsechny.setText("Vsechny");
+        jButton_morfologie_vsechny.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_vsechnyActionPerformed(evt);
+            }
+        });
+        jPanel_Morfologie.add(jButton_morfologie_vsechny);
+
         jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -536,7 +546,7 @@ public class ViewTester extends javax.swing.JFrame {
 
     private void jButton_toolBar_vyfotitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_vyfotitActionPerformed
         Mat readMat = new Mat();
-        if(grabber.read(readMat)) {
+        if (grabber.read(readMat)) {
             inputMat = readMat;
             inputImage = MatToBufferedImage(inputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
@@ -547,7 +557,7 @@ public class ViewTester extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_toolBar_vyfotitActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if(grabber != null) {
+        if (grabber != null) {
             grabber.release();  // uvolnime kameru
         }
     }//GEN-LAST:event_formWindowClosing
@@ -571,7 +581,7 @@ public class ViewTester extends javax.swing.JFrame {
             repaint();
             jLabel_info.setText(">");
         } catch (Exception e) {
-            jLabel_info.setText("> "+e.getLocalizedMessage());
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_morfologie_rozsireniActionPerformed
 
@@ -584,7 +594,7 @@ public class ViewTester extends javax.swing.JFrame {
             repaint();
             jLabel_info.setText(">");
         } catch (Exception e) {
-            jLabel_info.setText("> "+e.getLocalizedMessage());
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_morfologie_zuzeniActionPerformed
 
@@ -597,7 +607,7 @@ public class ViewTester extends javax.swing.JFrame {
             repaint();
             jLabel_info.setText(">");
         } catch (Exception e) {
-            jLabel_info.setText("> "+e.getLocalizedMessage());
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_morfologie_otevreniActionPerformed
 
@@ -610,7 +620,7 @@ public class ViewTester extends javax.swing.JFrame {
             repaint();
             jLabel_info.setText(">");
         } catch (Exception e) {
-            jLabel_info.setText("> "+e.getLocalizedMessage());
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_morfologie_zavreniActionPerformed
 
@@ -622,7 +632,7 @@ public class ViewTester extends javax.swing.JFrame {
             repaint();
             jLabel_info.setText(">");
         } catch (Exception e) {
-            jLabel_info.setText("> "+e.getLocalizedMessage());
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_toolbar_invertColorsActionPerformed
 
@@ -635,88 +645,106 @@ public class ViewTester extends javax.swing.JFrame {
     }//GEN-LAST:event_jSlider_morfologie_findThresholdStateChanged
 
     private void jPanelObrazkyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelObrazkyMouseClicked
-        if(jToggleButton_morfologie_objektPodMysi.isSelected()) {
-            Random rng = new Random();
-            java.awt.Point p = evt.getPoint();
-            int x = p.x;
-            int y = p.y;
-            // kontrola souradnic obrazku - prevedeme na vstupni obr. nebo konec
-            if(x >= inputMat.width()) {
-                x -= inputMat.width();
-                if(x >= inputMat.width()) {
-                    return;
+        if (jToggleButton_morfologie_objektPodMysi.isSelected()) {
+            viewObjects(evt);
+        }
+
+    }//GEN-LAST:event_jPanelObrazkyMouseClicked
+
+    /**
+     * zobrazeni objektu na souradnici mysi nebo vsech
+     * @param evt pokud je null, tak vsechny
+     */
+    private void viewObjects(MouseEvent evt) {
+        int x = 0;
+        int y = 0;
+        boolean vsechno = false;
+        try {
+            if (evt != null) {
+                java.awt.Point p = evt.getPoint();
+                x = p.x;
+                y = p.y;
+                // kontrola souradnic obrazku - prevedeme na vstupni obr. nebo konec
+                if (x >= inputMat.width()) {
+                    x -= inputMat.width();
+                    if (x >= inputMat.width()) {
+                        return;
+                    }
                 }
-            }
-            if(y >= inputMat.height()) {
-                y -= inputMat.height();
-                if(y >= inputMat.height()) {
-                    return;
+                if (y >= inputMat.height()) {
+                    y -= inputMat.height();
+                    if (y >= inputMat.height()) {
+                        return;
+                    }
                 }
+            } else {
+                vsechno = true;
             }
             Point poi = new Point(x, y);
             MatOfPoint mop = new MatOfPoint(poi);
             Mat hierarchy = new Mat();
-//            System.out.println("kliknuto na: "+ p);
-
+            
             List<MatOfPoint> contours = new ArrayList<>();
-//            contours.add(mop);
             Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
             outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
             Scalar color = new Scalar(0, 0, 256);
-//            Imgproc.drawContours(outputMat, contours, 0, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
             for (int i = 0; i < contours.size(); i++) {
-//                System.out.println("matice "+i+" "+contours.get(i).dump());
-                if(isPointInside(contours.get(i), poi, 3)) {
+                if (vsechno || isPointInside(contours.get(i), poi, 3)) {
                     Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_4, hierarchy, 0, new Point());
                 }
             }
             
-            
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
-            jLabel_info.setText("> Pocet objektu: "+contours.size());
+            jLabel_info.setText("> Pocet objektu: " + contours.size());
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
-        
-    }//GEN-LAST:event_jPanelObrazkyMouseClicked
+    }
+
+    private void jButton_morfologie_vsechnyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_vsechnyActionPerformed
+        viewObjects(null);
+    }//GEN-LAST:event_jButton_morfologie_vsechnyActionPerformed
 
     /**
      * Zjisti, zda dany bod s toleranci obsahuje vstupni matice
+     *
      * @param mat
      * @param point
      * @param tolerance
-     * @return 
+     * @return
      */
     private boolean isPointInside(Mat mat, Point point, int tolerance) {
-        double sx = (point.x-tolerance)<0?0:(point.x-tolerance);
-        double sy = (point.y-tolerance)<0?0:(point.y-tolerance);
+        double sx = (point.x - tolerance) < 0 ? 0 : (point.x - tolerance);
+        double sy = (point.y - tolerance) < 0 ? 0 : (point.y - tolerance);
         // plusove hodnoty neresim - mohou byt vetsi
 //        System.out.println("MatXXX "+mat.width()+" x "+mat.height());
-        for(int i = 0; i < mat.height(); i++) {
+        for (int i = 0; i < mat.height(); i++) {
             double p[] = mat.get(i, 0);
             // overeni, zda obsahuje bod spolecne s toleranci
-            for(double x=sx; x<=(point.x+tolerance); x++) {
-                for(double y=sy; y<=(point.y+tolerance); y++) {
-                    if((x==p[0]) && (y==p[1])) {
-                        return(true);   // nalezli jsme shodu
+            for (double x = sx; x <= (point.x + tolerance); x++) {
+                for (double y = sy; y <= (point.y + tolerance); y++) {
+                    if ((x == p[0]) && (y == p[1])) {
+                        return (true);   // nalezli jsme shodu
                     }
                 }
             }
 //            System.out.println("X = "+p[0]+" Y = "+p[1]);
-            
+
         }
 //        Mat child = mat.submat(0, 3, 0, 1);
 //        System.out.println("MatCHILD "+child.dump());
-        
-        return(false);
+
+        return (false);
     }
-    
+
     private void hledejObjektyAction() {
         try {
             Random rng = new Random();
             Mat cannyMat = new Mat();
             Mat hierarchy = new Mat();
-            
+
             Imgproc.Canny(inputMat, cannyMat, jSlider_morfologie_findThreshold.getValue(), jSlider_morfologie_findThreshold.getValue() * 2);
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(cannyMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
@@ -725,13 +753,13 @@ public class ViewTester extends javax.swing.JFrame {
                 Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
                 Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
             }
-            
+
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
-            jLabel_info.setText("> Pocet objektu: "+contours.size());
+            jLabel_info.setText("> Pocet objektu: " + contours.size());
         } catch (Exception e) {
-            jLabel_info.setText("> "+e.getLocalizedMessage());
+            jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }
 
@@ -759,9 +787,9 @@ public class ViewTester extends javax.swing.JFrame {
             } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
                 Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
             } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
-                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue()/2*2+1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue() / 2 * 2 + 1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
             } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
-                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue()/2*2+1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue() / 2 * 2 + 1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
             } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
                 Mat preObraz = outputMat.clone();
                 Mat preObraz2 = outputMat.clone();
@@ -775,7 +803,7 @@ public class ViewTester extends javax.swing.JFrame {
             jLabel_info.setText(">");
         } catch (Exception exception) {
             System.err.println("CHYBA: " + exception.getMessage());
-            jLabel_info.setText("> "+exception.getLocalizedMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
         }
     }
 
@@ -827,6 +855,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
+    private javax.swing.JButton jButton_morfologie_vsechny;
     private javax.swing.JButton jButton_morfologie_zavreni;
     private javax.swing.JButton jButton_morfologie_zuzeni;
     private javax.swing.JButton jButton_toolBar_outputAsInput;
