@@ -156,6 +156,12 @@ public class ViewTester extends javax.swing.JFrame {
         jSpinner_transformace_meritkoX = new javax.swing.JSpinner();
         jLabel_meritkoY = new javax.swing.JLabel();
         jSpinner_transformace_meritkoY = new javax.swing.JSpinner();
+        jPanel_transformace_otoceni = new javax.swing.JPanel();
+        jButton_transformace_otoceni = new javax.swing.JButton();
+        jSlider_transformace_otoceni = new javax.swing.JSlider();
+        jPanel_transformace_zkosit = new javax.swing.JPanel();
+        jButton_transformace_zkosit = new javax.swing.JButton();
+        jSlider_transformace_zkosit = new javax.swing.JSlider();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
@@ -187,6 +193,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_vyfotit, gridBagConstraints);
 
         jButton_toolBar_zeSouboru.setText("Ze souboru");
@@ -202,6 +209,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_zeSouboru, gridBagConstraints);
 
         jButton_toolBar_outputAsInput.setText("Výstup jako vstup");
@@ -217,6 +225,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_outputAsInput, gridBagConstraints);
 
         jButton_toolBar_toGrayScalled.setText("--> ÈB");
@@ -229,6 +238,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
 
         jPanel_toolBar_prahovani.setMaximumSize(new java.awt.Dimension(800, 150));
@@ -554,12 +564,74 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_transformace.add(jPanel_transformace_meritko);
 
+        jPanel_transformace_otoceni.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_transformace_otoceni.setLayout(new java.awt.GridBagLayout());
+
+        jButton_transformace_otoceni.setText("Otoèit");
+        jButton_transformace_otoceni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_transformace_otoceniActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_transformace_otoceni.add(jButton_transformace_otoceni, gridBagConstraints);
+
+        jSlider_transformace_otoceni.setMajorTickSpacing(45);
+        jSlider_transformace_otoceni.setMaximum(360);
+        jSlider_transformace_otoceni.setMinorTickSpacing(15);
+        jSlider_transformace_otoceni.setPaintLabels(true);
+        jSlider_transformace_otoceni.setPaintTicks(true);
+        jSlider_transformace_otoceni.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_transformace_otoceniStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_transformace_otoceni.add(jSlider_transformace_otoceni, gridBagConstraints);
+
+        jPanel_transformace.add(jPanel_transformace_otoceni);
+
+        jPanel_transformace_zkosit.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_transformace_zkosit.setLayout(new java.awt.GridBagLayout());
+
+        jButton_transformace_zkosit.setText("Zkosit");
+        jButton_transformace_zkosit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_transformace_zkositActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_transformace_zkosit.add(jButton_transformace_zkosit, gridBagConstraints);
+
+        jSlider_transformace_zkosit.setMajorTickSpacing(45);
+        jSlider_transformace_zkosit.setMaximum(180);
+        jSlider_transformace_zkosit.setMinorTickSpacing(5);
+        jSlider_transformace_zkosit.setPaintLabels(true);
+        jSlider_transformace_zkosit.setPaintTicks(true);
+        jSlider_transformace_zkosit.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_transformace_zkositStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_transformace_zkosit.add(jSlider_transformace_zkosit, gridBagConstraints);
+
+        jPanel_transformace.add(jPanel_transformace_zkosit);
+
         jTabbedPane_nastroje.addTab("Transformace", jPanel_transformace);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weighty = 0.1;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
 
         jButton_toolbar_invertColors.setText("Invertuj barvy");
@@ -572,6 +644,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_invertColors, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
@@ -868,6 +941,36 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_transformace_translaceActionPerformed(null);
     }//GEN-LAST:event_jSpinner_transformace_translateYStateChanged
 
+    private void jButton_transformace_otoceniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_otoceniActionPerformed
+        Mat transformation = new Mat(2, 3, CvType.CV_32FC1, new Scalar(0));
+        Double fi = Math.PI / 180 * ((double) jSlider_transformace_otoceni.getValue());
+        Double cosFi = Math.cos(fi);
+        Double sinFi = Math.sin(fi);
+        transformation.put(0, 0, cosFi);
+        transformation.put(1, 1, cosFi);
+        transformation.put(0, 1, sinFi);
+        transformation.put(1, 0, (-1) * sinFi);
+        transformuj(transformation);
+    }//GEN-LAST:event_jButton_transformace_otoceniActionPerformed
+
+    private void jSlider_transformace_otoceniStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_transformace_otoceniStateChanged
+        jButton_transformace_otoceniActionPerformed(null);
+    }//GEN-LAST:event_jSlider_transformace_otoceniStateChanged
+
+    private void jButton_transformace_zkositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_zkositActionPerformed
+        Mat transformation = new Mat(2, 3, CvType.CV_32FC1, new Scalar(0));
+        Double fi = Math.PI / 180 * ((double) jSlider_transformace_zkosit.getValue());
+        Double tanFi = Math.tan(fi);
+        transformation.put(0, 0, 1);
+        transformation.put(1, 1, 1);
+        transformation.put(0, 1, tanFi);
+        transformuj(transformation);
+    }//GEN-LAST:event_jButton_transformace_zkositActionPerformed
+
+    private void jSlider_transformace_zkositStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_transformace_zkositStateChanged
+        jButton_transformace_zkositActionPerformed(null);
+    }//GEN-LAST:event_jSlider_transformace_zkositStateChanged
+
     private void transformuj(Mat transformation) {
         try {
 //            System.out.println("Matice transformace>\n" + transformation.dump());
@@ -1040,7 +1143,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JButton jButton_toolbar_invertColors;
     private javax.swing.JButton jButton_transformace_meritko;
+    private javax.swing.JButton jButton_transformace_otoceni;
     private javax.swing.JButton jButton_transformace_translace;
+    private javax.swing.JButton jButton_transformace_zkosit;
     private javax.swing.JLabel jLabel_info;
     private javax.swing.JLabel jLabel_meritkoX;
     private javax.swing.JLabel jLabel_meritkoY;
@@ -1054,7 +1159,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_toolBar_prahovani;
     private javax.swing.JPanel jPanel_transformace;
     private javax.swing.JPanel jPanel_transformace_meritko;
+    private javax.swing.JPanel jPanel_transformace_otoceni;
     private javax.swing.JPanel jPanel_transformace_translace;
+    private javax.swing.JPanel jPanel_transformace_zkosit;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptiveMeanC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptivniGaussianC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_band;
@@ -1065,6 +1172,8 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
     private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
+    private javax.swing.JSlider jSlider_transformace_otoceni;
+    private javax.swing.JSlider jSlider_transformace_zkosit;
     private javax.swing.JSpinner jSpinner_morfologie_elementX;
     private javax.swing.JSpinner jSpinner_morfologie_elementY;
     private javax.swing.JSpinner jSpinner_transformace_meritkoX;
