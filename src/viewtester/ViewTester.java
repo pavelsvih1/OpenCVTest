@@ -143,6 +143,19 @@ public class ViewTester extends javax.swing.JFrame {
         jSlider_morfologie_findThreshold = new javax.swing.JSlider();
         jToggleButton_morfologie_objektPodMysi = new javax.swing.JToggleButton();
         jButton_morfologie_vsechny = new javax.swing.JButton();
+        jPanel_transformace = new javax.swing.JPanel();
+        jPanel_transformace_translace = new javax.swing.JPanel();
+        jButton_transformace_translace = new javax.swing.JButton();
+        jLabel_translaceX = new javax.swing.JLabel();
+        jSpinner_transformace_translateX = new javax.swing.JSpinner();
+        jLabel_translaceY = new javax.swing.JLabel();
+        jSpinner_transformace_translateY = new javax.swing.JSpinner();
+        jPanel_transformace_meritko = new javax.swing.JPanel();
+        jButton_transformace_meritko = new javax.swing.JButton();
+        jLabel_meritkoX = new javax.swing.JLabel();
+        jSpinner_transformace_meritkoX = new javax.swing.JSpinner();
+        jLabel_meritkoY = new javax.swing.JLabel();
+        jSpinner_transformace_meritkoY = new javax.swing.JSpinner();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
@@ -428,6 +441,121 @@ public class ViewTester extends javax.swing.JFrame {
 
         jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
 
+        jPanel_transformace_translace.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_transformace_translace.setLayout(new java.awt.GridBagLayout());
+
+        jButton_transformace_translace.setText("Posunutí");
+        jButton_transformace_translace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_transformace_translaceActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_transformace_translace.add(jButton_transformace_translace, gridBagConstraints);
+
+        jLabel_translaceX.setText("X +");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_transformace_translace.add(jLabel_translaceX, gridBagConstraints);
+
+        jSpinner_transformace_translateX.setModel(new javax.swing.SpinnerNumberModel());
+        jSpinner_transformace_translateX.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSpinner_transformace_translateX.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner_transformace_translateX, ""));
+        jSpinner_transformace_translateX.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_transformace_translateXStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 10;
+        jPanel_transformace_translace.add(jSpinner_transformace_translateX, gridBagConstraints);
+
+        jLabel_translaceY.setText("Y +");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        jPanel_transformace_translace.add(jLabel_translaceY, gridBagConstraints);
+
+        jSpinner_transformace_translateY.setModel(new javax.swing.SpinnerNumberModel());
+        jSpinner_transformace_translateY.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner_transformace_translateY, ""));
+        jSpinner_transformace_translateY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_transformace_translateYStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 10;
+        jPanel_transformace_translace.add(jSpinner_transformace_translateY, gridBagConstraints);
+
+        jPanel_transformace.add(jPanel_transformace_translace);
+
+        jPanel_transformace_meritko.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_transformace_meritko.setLayout(new java.awt.GridBagLayout());
+
+        jButton_transformace_meritko.setText("Zmìna mìøítka");
+        jButton_transformace_meritko.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_transformace_meritkoActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_transformace_meritko.add(jButton_transformace_meritko, gridBagConstraints);
+
+        jLabel_meritkoX.setText("X x");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_transformace_meritko.add(jLabel_meritkoX, gridBagConstraints);
+
+        jSpinner_transformace_meritkoX.setModel(new javax.swing.SpinnerNumberModel(1.0d, null, null, 0.1d));
+        jSpinner_transformace_meritkoX.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner_transformace_meritkoX, ""));
+        jSpinner_transformace_meritkoX.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_transformace_meritkoXStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 10;
+        jPanel_transformace_meritko.add(jSpinner_transformace_meritkoX, gridBagConstraints);
+
+        jLabel_meritkoY.setText("Y x");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        jPanel_transformace_meritko.add(jLabel_meritkoY, gridBagConstraints);
+
+        jSpinner_transformace_meritkoY.setModel(new javax.swing.SpinnerNumberModel(1.0d, null, null, 0.1d));
+        jSpinner_transformace_meritkoY.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner_transformace_meritkoY, ""));
+        jSpinner_transformace_meritkoY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_transformace_meritkoYStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 10;
+        jPanel_transformace_meritko.add(jSpinner_transformace_meritkoY, gridBagConstraints);
+
+        jPanel_transformace.add(jPanel_transformace_meritko);
+
+        jTabbedPane_nastroje.addTab("Transformace", jPanel_transformace);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -653,6 +781,7 @@ public class ViewTester extends javax.swing.JFrame {
 
     /**
      * zobrazeni objektu na souradnici mysi nebo vsech
+     *
      * @param evt pokud je null, tak vsechny
      */
     private void viewObjects(MouseEvent evt) {
@@ -683,7 +812,7 @@ public class ViewTester extends javax.swing.JFrame {
             Point poi = new Point(x, y);
             MatOfPoint mop = new MatOfPoint(poi);
             Mat hierarchy = new Mat();
-            
+
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
             outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
@@ -693,7 +822,7 @@ public class ViewTester extends javax.swing.JFrame {
                     Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_4, hierarchy, 0, new Point());
                 }
             }
-            
+
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
@@ -706,6 +835,52 @@ public class ViewTester extends javax.swing.JFrame {
     private void jButton_morfologie_vsechnyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_vsechnyActionPerformed
         viewObjects(null);
     }//GEN-LAST:event_jButton_morfologie_vsechnyActionPerformed
+
+    private void jButton_transformace_translaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_translaceActionPerformed
+        Mat transformation = new Mat(2, 3, CvType.CV_32FC1, new Scalar(0));
+        transformation.put(0, 0, 1);
+        transformation.put(1, 1, 1);
+        transformation.put(0, 2, (int) jSpinner_transformace_translateX.getValue());
+        transformation.put(1, 2, (int) jSpinner_transformace_translateY.getValue());
+        transformuj(transformation);
+    }//GEN-LAST:event_jButton_transformace_translaceActionPerformed
+
+    private void jButton_transformace_meritkoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_meritkoActionPerformed
+        Mat transformation = new Mat(2, 3, CvType.CV_32FC1, new Scalar(0));
+        transformation.put(0, 0, (double) jSpinner_transformace_meritkoX.getValue());
+        transformation.put(1, 1, (double) jSpinner_transformace_meritkoY.getValue());
+        transformuj(transformation);
+    }//GEN-LAST:event_jButton_transformace_meritkoActionPerformed
+
+    private void jSpinner_transformace_meritkoXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_transformace_meritkoXStateChanged
+        jButton_transformace_meritkoActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_transformace_meritkoXStateChanged
+
+    private void jSpinner_transformace_meritkoYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_transformace_meritkoYStateChanged
+        jButton_transformace_meritkoActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_transformace_meritkoYStateChanged
+
+    private void jSpinner_transformace_translateXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_transformace_translateXStateChanged
+        jButton_transformace_translaceActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_transformace_translateXStateChanged
+
+    private void jSpinner_transformace_translateYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_transformace_translateYStateChanged
+        jButton_transformace_translaceActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_transformace_translateYStateChanged
+
+    private void transformuj(Mat transformation) {
+        try {
+//            System.out.println("Matice transformace>\n" + transformation.dump());
+            Imgproc.warpAffine(inputMat, outputMat, transformation, inputMat.size());
+
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }
 
     /**
      * Zjisti, zda dany bod s toleranci obsahuje vstupni matice
@@ -864,13 +1039,22 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JButton jButton_toolbar_invertColors;
+    private javax.swing.JButton jButton_transformace_meritko;
+    private javax.swing.JButton jButton_transformace_translace;
     private javax.swing.JLabel jLabel_info;
+    private javax.swing.JLabel jLabel_meritkoX;
+    private javax.swing.JLabel jLabel_meritkoY;
     private javax.swing.JLabel jLabel_morfologie_element_krat;
+    private javax.swing.JLabel jLabel_translaceX;
+    private javax.swing.JLabel jLabel_translaceY;
     private javax.swing.JPanel jPanelObrazky;
     private javax.swing.JPanel jPanelToolBarBasic;
     private javax.swing.JPanel jPanel_Morfologie;
     private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
+    private javax.swing.JPanel jPanel_transformace;
+    private javax.swing.JPanel jPanel_transformace_meritko;
+    private javax.swing.JPanel jPanel_transformace_translace;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptiveMeanC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptivniGaussianC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_band;
@@ -883,6 +1067,10 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
     private javax.swing.JSpinner jSpinner_morfologie_elementX;
     private javax.swing.JSpinner jSpinner_morfologie_elementY;
+    private javax.swing.JSpinner jSpinner_transformace_meritkoX;
+    private javax.swing.JSpinner jSpinner_transformace_meritkoY;
+    private javax.swing.JSpinner jSpinner_transformace_translateX;
+    private javax.swing.JSpinner jSpinner_transformace_translateY;
     private javax.swing.JTabbedPane jTabbedPane_nastroje;
     private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
     private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
