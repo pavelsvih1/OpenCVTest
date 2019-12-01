@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -242,6 +243,7 @@ public class ViewTester extends javax.swing.JFrame {
         jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
 
         jPanel_toolBar_prahovani.setMaximumSize(new java.awt.Dimension(800, 150));
+        jPanel_toolBar_prahovani.setPreferredSize(new java.awt.Dimension(800, 150));
 
         jSlider_toolBar_prahovani_mez.setMajorTickSpacing(32);
         jSlider_toolBar_prahovani_mez.setMaximum(255);
@@ -664,12 +666,17 @@ public class ViewTester extends javax.swing.JFrame {
 
     private void jButton_toolBar_zeSouboruActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_zeSouboruActionPerformed
         JFileChooser fc = new JFileChooser();
-        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "gif", "tif", "tiff", "png");
+        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "tif", "tiff", "png");
         fc.addChoosableFileFilter(filter);
         fc.setFileFilter(filter);
         fc.setDialogTitle("Vyberte soubor s obrazkem");
-        if (currentDir != null) {
+        try {
+            if (currentDir == null) {
+                currentDir = new File((new File(".").getCanonicalPath()));
+                System.out.println("Adresar "+currentDir.getAbsolutePath());
+            }
             fc.setCurrentDirectory(currentDir);
+        } catch (IOException iOException) {
         }
         int returnVal = fc.showOpenDialog(this);
 
