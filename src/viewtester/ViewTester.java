@@ -21,6 +21,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
@@ -163,6 +164,9 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_transformace_zkosit = new javax.swing.JPanel();
         jButton_transformace_zkosit = new javax.swing.JButton();
         jSlider_transformace_zkosit = new javax.swing.JSlider();
+        jPanel_transformace_preddef = new javax.swing.JPanel();
+        jButton_transformace_vyrovnej = new javax.swing.JButton();
+        jButton_transformace_orizni = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
@@ -626,6 +630,24 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_transformace.add(jPanel_transformace_zkosit);
 
+        jButton_transformace_vyrovnej.setText("Vyrovnej");
+        jButton_transformace_vyrovnej.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_transformace_vyrovnejActionPerformed(evt);
+            }
+        });
+        jPanel_transformace_preddef.add(jButton_transformace_vyrovnej);
+
+        jButton_transformace_orizni.setText("Oøízni");
+        jButton_transformace_orizni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_transformace_orizniActionPerformed(evt);
+            }
+        });
+        jPanel_transformace_preddef.add(jButton_transformace_orizni);
+
+        jPanel_transformace.add(jPanel_transformace_preddef);
+
         jTabbedPane_nastroje.addTab("Transformace", jPanel_transformace);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -673,7 +695,7 @@ public class ViewTester extends javax.swing.JFrame {
         try {
             if (currentDir == null) {
                 currentDir = new File((new File(".").getCanonicalPath()));
-                System.out.println("Adresar "+currentDir.getAbsolutePath());
+                System.out.println("Adresar " + currentDir.getAbsolutePath());
             }
             fc.setCurrentDirectory(currentDir);
         } catch (IOException iOException) {
@@ -922,14 +944,14 @@ public class ViewTester extends javax.swing.JFrame {
         transformation.put(1, 1, 1);
         transformation.put(0, 2, (int) jSpinner_transformace_translateX.getValue());
         transformation.put(1, 2, (int) jSpinner_transformace_translateY.getValue());
-        transformuj(transformation);
+        transformuj(transformation, true);
     }//GEN-LAST:event_jButton_transformace_translaceActionPerformed
 
     private void jButton_transformace_meritkoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_meritkoActionPerformed
         Mat transformation = new Mat(2, 3, CvType.CV_32FC1, new Scalar(0));
         transformation.put(0, 0, (double) jSpinner_transformace_meritkoX.getValue());
         transformation.put(1, 1, (double) jSpinner_transformace_meritkoY.getValue());
-        transformuj(transformation);
+        transformuj(transformation, true);
     }//GEN-LAST:event_jButton_transformace_meritkoActionPerformed
 
     private void jSpinner_transformace_meritkoXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_transformace_meritkoXStateChanged
@@ -957,7 +979,7 @@ public class ViewTester extends javax.swing.JFrame {
         transformation.put(1, 1, cosFi);
         transformation.put(0, 1, sinFi);
         transformation.put(1, 0, (-1) * sinFi);
-        transformuj(transformation);
+        transformuj(transformation, true);
     }//GEN-LAST:event_jButton_transformace_otoceniActionPerformed
 
     private void jSlider_transformace_otoceniStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_transformace_otoceniStateChanged
@@ -971,17 +993,55 @@ public class ViewTester extends javax.swing.JFrame {
         transformation.put(0, 0, 1);
         transformation.put(1, 1, 1);
         transformation.put(0, 1, tanFi);
-        transformuj(transformation);
+        transformuj(transformation, true);
     }//GEN-LAST:event_jButton_transformace_zkositActionPerformed
 
     private void jSlider_transformace_zkositStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_transformace_zkositStateChanged
         jButton_transformace_zkositActionPerformed(null);
     }//GEN-LAST:event_jSlider_transformace_zkositStateChanged
 
-    private void transformuj(Mat transformation) {
+    private void jButton_transformace_vyrovnejActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_vyrovnejActionPerformed
+        // nejprve si spocitame transformacni matici z vypozorovanych hodnot
+        Point[] skutecna = new Point[4];
+        Point[] cilova = new Point[4];
+        Mat transformace = new Mat();
+        skutecna[0] = new Point(4, 0);
+        skutecna[1] = new Point(290, 5);
+        skutecna[2] = new Point(289, 98);
+        skutecna[3] = new Point(0, 92);
+        cilova[0] = new Point(0, 0);
+        cilova[1] = new Point(289, 0);
+        cilova[2] = new Point(289, 94);
+        cilova[3] = new Point(0, 94);
+        MatOfPoint2f orig = new MatOfPoint2f(skutecna);
+        // vypocitame matici transformace
+        transformace = Imgproc.getPerspectiveTransform(orig, new MatOfPoint2f(cilova));
+        System.out.println("Transformace>\n" + transformace.dump());
+        transformuj(transformace, false); // a provedeme
+    }//GEN-LAST:event_jButton_transformace_vyrovnejActionPerformed
+
+    private void jButton_transformace_orizniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_orizniActionPerformed
+        try {
+            
+            outputMat = new Mat(inputMat, new Rect(130, 295, 290, 100));
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_transformace_orizniActionPerformed
+
+    private void transformuj(Mat transformation, boolean isAffine) {
         try {
 //            System.out.println("Matice transformace>\n" + transformation.dump());
-            Imgproc.warpAffine(inputMat, outputMat, transformation, inputMat.size());
+            if (isAffine) {
+                Imgproc.warpAffine(inputMat, outputMat, transformation, inputMat.size());
+            } else {
+                Imgproc.warpPerspective(inputMat, outputMat, transformation, inputMat.size());
+
+            }
 
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
@@ -1150,8 +1210,10 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JButton jButton_toolbar_invertColors;
     private javax.swing.JButton jButton_transformace_meritko;
+    private javax.swing.JButton jButton_transformace_orizni;
     private javax.swing.JButton jButton_transformace_otoceni;
     private javax.swing.JButton jButton_transformace_translace;
+    private javax.swing.JButton jButton_transformace_vyrovnej;
     private javax.swing.JButton jButton_transformace_zkosit;
     private javax.swing.JLabel jLabel_info;
     private javax.swing.JLabel jLabel_meritkoX;
@@ -1167,6 +1229,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_transformace;
     private javax.swing.JPanel jPanel_transformace_meritko;
     private javax.swing.JPanel jPanel_transformace_otoceni;
+    private javax.swing.JPanel jPanel_transformace_preddef;
     private javax.swing.JPanel jPanel_transformace_translace;
     private javax.swing.JPanel jPanel_transformace_zkosit;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptiveMeanC;

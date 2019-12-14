@@ -56,7 +56,7 @@ public class SnapPics extends JFrame
       }
     });
 
-    setResizable(false);
+//    setResizable(false);
     pack();  
     setLocationRelativeTo(null);
     setVisible(true);

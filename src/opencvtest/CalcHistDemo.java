@@ -19,7 +19,7 @@ class CalcHist {
         int sirka = 240;
         int vyska = 320;
         //! [Load image]
-        String filename = args.length > 0 ? args[0] : ("disp4.jpg");
+        String filename = args.length > 0 ? args[0] : ("lena.png");
         Mat src = Imgcodecs.imread(filename);
         if (src.empty()) {
             System.err.println("Cannot read image: " + filename);

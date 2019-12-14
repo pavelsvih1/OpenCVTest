@@ -36,10 +36,10 @@ import org.opencv.videoio.Videoio;
 public class PicsPanel extends JPanel implements Runnable
 {
   // dimensions of each image, and of the panel
-  private static final int WIDTH = 320;//640;  
-  private static final int HEIGHT = 240;//480;
+  private static final int WIDTH = 640;  
+  private static final int HEIGHT = 480;
 
-  private static final int DELAY = 1000;  // ms 
+  private static final int DELAY = 200;  // ms 
 
   private static final int CAMERA_ID = 0;
 
@@ -122,10 +122,15 @@ public class PicsPanel extends JPanel implements Runnable
     int snapCount = 0;
     isRunning = true;
     isFinished = false;
-
+    double light = 0.0;
     while (isRunning) {
       long startTime = System.currentTimeMillis();
-
+//      if(light<1)
+//              light+=0.01;
+//      else
+//          light = 0;
+//      grabber.set(Videoio.CAP_PROP_BACKLIGHT, light);
+//      System.out.println("svetlo = "+grabber.get(Videoio.CAP_PROP_BACKLIGHT)+" light= "+light);
       snapIm = new Mat();        
       grabber.read(snapIm);
 
