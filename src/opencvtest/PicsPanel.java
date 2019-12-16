@@ -41,7 +41,7 @@ public class PicsPanel extends JPanel implements Runnable
 
   private static final int DELAY = 200;  // ms 
 
-  private static final int CAMERA_ID = 0;
+  private static final int CAMERA_ID = 0+Videoio.CAP_DSHOW;
 
   // directory and filenames used to save images
   private static final String SAVE_DIR = "pics/"; 
