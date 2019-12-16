@@ -20,12 +20,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfFloat;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
@@ -42,6 +45,9 @@ public class ViewTester extends javax.swing.JFrame {
     BufferedImage outputImage;
     Mat inputMat;
     Mat outputMat;
+    Mat templateMat;
+    private static final String TEMPLATE_WIN_NAME = new String("Vzor k porovnani");
+    private static final String TEMPLATE_VYSTUP = new String("Vysledek");
     private final int CAMERAWIDTH = 640;
     private final int CAMERAHEIGHT = 480;
     VideoCapture grabber;
@@ -111,6 +117,7 @@ public class ViewTester extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup_prahovani = new javax.swing.ButtonGroup();
+        buttonGroup_porovnani = new javax.swing.ButtonGroup();
         jLabel_info = new javax.swing.JLabel();
         jToolBar = new javax.swing.JToolBar();
         jPanelToolBarBasic = new javax.swing.JPanel();
@@ -167,7 +174,19 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_transformace_preddef = new javax.swing.JPanel();
         jButton_transformace_vyrovnej = new javax.swing.JButton();
         jButton_transformace_orizni = new javax.swing.JButton();
+        jPanel_porovnani = new javax.swing.JPanel();
+        jButton_porovnani_vyberVzor = new javax.swing.JButton();
+        jButton_porovnani_porovnej = new javax.swing.JButton();
+        jRadioButton_porovnani_SQDIFF = new javax.swing.JRadioButton();
+        jRadioButton_porovnani_SQDIFFNorm = new javax.swing.JRadioButton();
+        jRadioButton_porovnani_CCOR = new javax.swing.JRadioButton();
+        jRadioButton_porovnani_CCORNorm = new javax.swing.JRadioButton();
+        jRadioButton_porovnani_CCOEFF = new javax.swing.JRadioButton();
+        jRadioButton_porovnani_CCOEFFNorm = new javax.swing.JRadioButton();
+        jButton_porovnani_porovnejHistogram = new javax.swing.JButton();
+        jButton_porovnani_ukazRozdily = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
+        jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -630,6 +649,8 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_transformace.add(jPanel_transformace_zkosit);
 
+        jPanel_transformace_preddef.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
         jButton_transformace_vyrovnej.setText("Vyrovnej");
         jButton_transformace_vyrovnej.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -650,10 +671,69 @@ public class ViewTester extends javax.swing.JFrame {
 
         jTabbedPane_nastroje.addTab("Transformace", jPanel_transformace);
 
+        jButton_porovnani_vyberVzor.setText("Vyber vzor");
+        jButton_porovnani_vyberVzor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_porovnani_vyberVzorActionPerformed(evt);
+            }
+        });
+        jPanel_porovnani.add(jButton_porovnani_vyberVzor);
+
+        jButton_porovnani_porovnej.setText("Porovnej");
+        jButton_porovnani_porovnej.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_porovnani_porovnejActionPerformed(evt);
+            }
+        });
+        jPanel_porovnani.add(jButton_porovnani_porovnej);
+
+        buttonGroup_porovnani.add(jRadioButton_porovnani_SQDIFF);
+        jRadioButton_porovnani_SQDIFF.setSelected(true);
+        jRadioButton_porovnani_SQDIFF.setText("SQDIFF");
+        jPanel_porovnani.add(jRadioButton_porovnani_SQDIFF);
+
+        buttonGroup_porovnani.add(jRadioButton_porovnani_SQDIFFNorm);
+        jRadioButton_porovnani_SQDIFFNorm.setText("SQDIFF Norm.");
+        jPanel_porovnani.add(jRadioButton_porovnani_SQDIFFNorm);
+
+        buttonGroup_porovnani.add(jRadioButton_porovnani_CCOR);
+        jRadioButton_porovnani_CCOR.setText("CCOR");
+        jPanel_porovnani.add(jRadioButton_porovnani_CCOR);
+
+        buttonGroup_porovnani.add(jRadioButton_porovnani_CCORNorm);
+        jRadioButton_porovnani_CCORNorm.setText("CCOR Norm.");
+        jPanel_porovnani.add(jRadioButton_porovnani_CCORNorm);
+
+        buttonGroup_porovnani.add(jRadioButton_porovnani_CCOEFF);
+        jRadioButton_porovnani_CCOEFF.setText("CCOEFF");
+        jPanel_porovnani.add(jRadioButton_porovnani_CCOEFF);
+
+        buttonGroup_porovnani.add(jRadioButton_porovnani_CCOEFFNorm);
+        jRadioButton_porovnani_CCOEFFNorm.setText("CCOEFF Norm.");
+        jPanel_porovnani.add(jRadioButton_porovnani_CCOEFFNorm);
+
+        jButton_porovnani_porovnejHistogram.setText("Porovnej Histogram");
+        jButton_porovnani_porovnejHistogram.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_porovnani_porovnejHistogramActionPerformed(evt);
+            }
+        });
+        jPanel_porovnani.add(jButton_porovnani_porovnejHistogram);
+
+        jButton_porovnani_ukazRozdily.setText("Ukaž rozdíly");
+        jButton_porovnani_ukazRozdily.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_porovnani_ukazRozdilyActionPerformed(evt);
+            }
+        });
+        jPanel_porovnani.add(jButton_porovnani_ukazRozdily);
+
+        jTabbedPane_nastroje.addTab("Porovnání", jPanel_porovnani);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 5;
+        gridBagConstraints.gridheight = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.weighty = 0.1;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
@@ -670,6 +750,19 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_invertColors, gridBagConstraints);
+
+        jButton_toolbar_toColourScheme.setText("--> Barevnì");
+        jButton_toolbar_toColourScheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolbar_toColourSchemeActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        jPanelToolBarBasic.add(jButton_toolbar_toColourScheme, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
 
@@ -1018,12 +1111,20 @@ public class ViewTester extends javax.swing.JFrame {
         transformace = Imgproc.getPerspectiveTransform(orig, new MatOfPoint2f(cilova));
         System.out.println("Transformace>\n" + transformace.dump());
         transformuj(transformace, false); // a provedeme
+        // jeste zvetseni:
+        Mat transformation = new Mat(2, 3, CvType.CV_32FC1, new Scalar(0));
+        transformation.put(0, 0, 1.062);
+        transformation.put(1, 1, 1.1);
+//        transformation.put(2, 2, 1);
+        jButton_toolBar_outputAsInputActionPerformed(null);
+        transformuj(transformation, true); // a provedeme
+
     }//GEN-LAST:event_jButton_transformace_vyrovnejActionPerformed
 
     private void jButton_transformace_orizniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_transformace_orizniActionPerformed
         try {
-            
-            outputMat = new Mat(inputMat, new Rect(130, 295, 290, 100));
+
+            outputMat = new Mat(inputMat, new Rect(130, 285, 340, 140));
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
@@ -1032,6 +1133,145 @@ public class ViewTester extends javax.swing.JFrame {
             jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_transformace_orizniActionPerformed
+
+    private void jButton_porovnani_vyberVzorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_porovnani_vyberVzorActionPerformed
+        JFileChooser fc = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "tif", "tiff", "png");
+        fc.addChoosableFileFilter(filter);
+        fc.setFileFilter(filter);
+        fc.setDialogTitle("Vyberte soubor s obrazkem vzoru");
+        try {
+            if (currentDir == null) {
+                currentDir = new File((new File(".").getCanonicalPath()));
+                System.out.println("Adresar " + currentDir.getAbsolutePath());
+            }
+            fc.setCurrentDirectory(currentDir);
+        } catch (IOException iOException) {
+        }
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = fc.getSelectedFile();
+                currentDir = file.getParentFile();
+                templateMat = Imgcodecs.imread(file.getAbsolutePath());
+//                HighGui.destroyWindow(TEMPLATE_WIN_NAME);
+                HighGui.imshow(TEMPLATE_WIN_NAME, templateMat);
+                HighGui.waitKey(1);
+                jLabel_info.setText(">Zvolen soubor šablony " + file.getAbsolutePath());
+            } catch (Exception e) {
+                jLabel_info.setText(">Chyba pøi volbì šablony: " + e.getLocalizedMessage());
+            }
+        }
+    }//GEN-LAST:event_jButton_porovnani_vyberVzorActionPerformed
+
+    private void jButton_porovnani_porovnejActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_porovnani_porovnejActionPerformed
+        try {
+            Mat result = new Mat();
+            Mat img_display = new Mat();
+            int match_method = Imgproc.TM_CCORR;
+            if (jRadioButton_porovnani_SQDIFF.isSelected()) {
+                match_method = Imgproc.TM_SQDIFF;
+            } else if (jRadioButton_porovnani_SQDIFFNorm.isSelected()) {
+                match_method = Imgproc.TM_SQDIFF_NORMED;
+            } else if (jRadioButton_porovnani_CCOEFF.isSelected()) {
+                match_method = Imgproc.TM_CCOEFF;
+            } else if (jRadioButton_porovnani_CCOEFFNorm.isSelected()) {
+                match_method = Imgproc.TM_CCOEFF_NORMED;
+            } else if (jRadioButton_porovnani_CCOR.isSelected()) {
+                match_method = Imgproc.TM_CCORR;
+            } else if (jRadioButton_porovnani_CCORNorm.isSelected()) {
+                match_method = Imgproc.TM_CCORR_NORMED;
+            } else {
+                jRadioButton_porovnani_CCOR.setSelected(true);
+            }
+            inputMat.copyTo(img_display);
+            int result_cols = inputMat.cols() - templateMat.cols() + 1;
+            int result_rows = inputMat.rows() - templateMat.rows() + 1;
+            result.create(result_rows, result_cols, CvType.CV_32FC1);
+//        Boolean method_accepts_mask = (Imgproc.TM_SQDIFF == match_method || match_method == Imgproc.TM_CCORR_NORMED);
+//        if (use_mask && method_accepts_mask) {
+//            Imgproc.matchTemplate(inputMat, templateMat, result, match_method, mask);
+//        } else {
+            Imgproc.matchTemplate(inputMat, templateMat, result, match_method);
+//        }
+            Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
+            Point matchLoc;
+            Core.MinMaxLocResult mmr = Core.minMaxLoc(result);
+            if (match_method == Imgproc.TM_SQDIFF || match_method == Imgproc.TM_SQDIFF_NORMED) {
+                matchLoc = mmr.minLoc;
+            } else {
+                matchLoc = mmr.maxLoc;
+            }
+            Imgproc.rectangle(img_display, matchLoc, new Point(matchLoc.x + templateMat.cols(), matchLoc.y + templateMat.rows()),
+                    new Scalar(255, 0, 0), 2, 8, 0);
+////        Imgproc.rectangle(result, matchLoc, new Point(matchLoc.x + templateMat.cols(), matchLoc.y + templateMat.rows()),
+////                new Scalar(0, 0, 0), 2, 8, 0);
+//        Image tmpImg = HighGui.toBufferedImage(img_display);
+//        ImageIcon icon = new ImageIcon(tmpImg);
+//        imgDisplay.setIcon(icon);
+//        result.convertTo(result, CvType.CV_8UC1, 255.0);
+//        tmpImg = HighGui.toBufferedImage(result);
+//                HighGui.destroyWindow("vysledek");
+            HighGui.imshow(TEMPLATE_VYSTUP, img_display);
+            HighGui.waitKey(1);
+            System.out.println("MATCHLOC: " + matchLoc.toString());
+            double[] res = result.get((int) matchLoc.y, (int) matchLoc.x);
+            jLabel_info.setText(">" + res[0]);
+            System.out.println("Matice vysledku:\n" + result.dump());
+        } catch (Exception e) {
+            jLabel_info.setText(">" + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_porovnani_porovnejActionPerformed
+
+    private void jButton_toolbar_toColourSchemeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_toColourSchemeActionPerformed
+        try {
+            outputMat = inputMat.clone();
+            Mat newOutputMat = new Mat(outputMat.width(), outputMat.height(), CvType.CV_8U);
+            Imgproc.cvtColor(outputMat, newOutputMat, Imgproc.COLOR_GRAY2RGB);
+            outputMat = newOutputMat;
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText(">" + e.getLocalizedMessage());
+        }
+        pack();
+    }//GEN-LAST:event_jButton_toolbar_toColourSchemeActionPerformed
+
+    private void jButton_porovnani_porovnejHistogramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_porovnani_porovnejHistogramActionPerformed
+        try {
+            List<Mat> list = new ArrayList<>();
+            list.add(inputMat);
+            List<Mat> list2 = new ArrayList<>();
+            list2.add(templateMat);
+            int histSize = 256;
+            float[] range = {0, 256};
+            MatOfFloat histRange = new MatOfFloat(range);
+            Mat calcHist = new Mat();
+            Mat calc2Hist = new Mat();
+            Imgproc.calcHist(list, new MatOfInt(0), new Mat(), calcHist, new MatOfInt(histSize), histRange, false);
+            Imgproc.calcHist(list2, new MatOfInt(0), new Mat(), calc2Hist, new MatOfInt(histSize), histRange, false);
+
+            double result = Imgproc.compareHist(calcHist, calc2Hist, Imgproc.CV_COMP_CORREL);
+            jLabel_info.setText("> Výsledek porovnání histogramù: " + result);
+        } catch (Exception e) {
+            jLabel_info.setText(">Chyba porovnání histogramù: " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_porovnani_porovnejHistogramActionPerformed
+
+    private void jButton_porovnani_ukazRozdilyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_porovnani_ukazRozdilyActionPerformed
+        Mat sub = new Mat();
+        try {
+            Core.subtract(inputMat, templateMat, sub);
+            HighGui.imshow("Výsledek porovnání", sub);
+            HighGui.waitKey(1);
+            jLabel_info.setText(">");
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_porovnani_ukazRozdilyActionPerformed
 
     private void transformuj(Mat transformation, boolean isAffine) {
         try {
@@ -1196,6 +1436,7 @@ public class ViewTester extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup_porovnani;
     private javax.swing.ButtonGroup buttonGroup_prahovani;
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
@@ -1203,12 +1444,17 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_morfologie_vsechny;
     private javax.swing.JButton jButton_morfologie_zavreni;
     private javax.swing.JButton jButton_morfologie_zuzeni;
+    private javax.swing.JButton jButton_porovnani_porovnej;
+    private javax.swing.JButton jButton_porovnani_porovnejHistogram;
+    private javax.swing.JButton jButton_porovnani_ukazRozdily;
+    private javax.swing.JButton jButton_porovnani_vyberVzor;
     private javax.swing.JButton jButton_toolBar_outputAsInput;
     private javax.swing.JButton jButton_toolBar_prahovani_prahovat;
     private javax.swing.JButton jButton_toolBar_toGrayScalled;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JButton jButton_toolbar_invertColors;
+    private javax.swing.JButton jButton_toolbar_toColourScheme;
     private javax.swing.JButton jButton_transformace_meritko;
     private javax.swing.JButton jButton_transformace_orizni;
     private javax.swing.JButton jButton_transformace_otoceni;
@@ -1225,6 +1471,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelToolBarBasic;
     private javax.swing.JPanel jPanel_Morfologie;
     private javax.swing.JPanel jPanel_morfologie_element;
+    private javax.swing.JPanel jPanel_porovnani;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
     private javax.swing.JPanel jPanel_transformace;
     private javax.swing.JPanel jPanel_transformace_meritko;
@@ -1232,6 +1479,12 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_transformace_preddef;
     private javax.swing.JPanel jPanel_transformace_translace;
     private javax.swing.JPanel jPanel_transformace_zkosit;
+    private javax.swing.JRadioButton jRadioButton_porovnani_CCOEFF;
+    private javax.swing.JRadioButton jRadioButton_porovnani_CCOEFFNorm;
+    private javax.swing.JRadioButton jRadioButton_porovnani_CCOR;
+    private javax.swing.JRadioButton jRadioButton_porovnani_CCORNorm;
+    private javax.swing.JRadioButton jRadioButton_porovnani_SQDIFF;
+    private javax.swing.JRadioButton jRadioButton_porovnani_SQDIFFNorm;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptiveMeanC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_adaptivniGaussianC;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_band;
