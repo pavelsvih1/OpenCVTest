@@ -130,8 +130,12 @@ public class ViewTester extends javax.swing.JFrame {
         jSlider_toolBar_prahovani_mez = new javax.swing.JSlider();
         jTextField_toolBar_prahovani_maxVal = new javax.swing.JTextField();
         jRadioButton_toolBar_prahovani_binary = new javax.swing.JRadioButton();
+        jRadioButton_toolbar_prahovani_binaryInv = new javax.swing.JRadioButton();
         jRadioButton_toolBar_prahovani_tozero = new javax.swing.JRadioButton();
+        jRadioButton_toolbar_prahovani_tozeroInv = new javax.swing.JRadioButton();
         jRadioButton_toolBar_prahovani_otsu = new javax.swing.JRadioButton();
+        jRadioButton_toolbar_prahovani_truncate = new javax.swing.JRadioButton();
+        jRadioButton_toolbar_prahovani_triangle = new javax.swing.JRadioButton();
         jRadioButton_toolBar_prahovani_adaptiveMeanC = new javax.swing.JRadioButton();
         jRadioButton_toolBar_prahovani_adaptivniGaussianC = new javax.swing.JRadioButton();
         jButton_toolBar_prahovani_prahovat = new javax.swing.JButton();
@@ -302,6 +306,15 @@ public class ViewTester extends javax.swing.JFrame {
         });
         jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_binary);
 
+        buttonGroup_prahovani.add(jRadioButton_toolbar_prahovani_binaryInv);
+        jRadioButton_toolbar_prahovani_binaryInv.setText("BINARY_INV");
+        jRadioButton_toolbar_prahovani_binaryInv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolbar_prahovani_binaryInvActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolbar_prahovani_binaryInv);
+
         buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_tozero);
         jRadioButton_toolBar_prahovani_tozero.setText("TOZERO");
         jRadioButton_toolBar_prahovani_tozero.addActionListener(new java.awt.event.ActionListener() {
@@ -311,6 +324,15 @@ public class ViewTester extends javax.swing.JFrame {
         });
         jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_tozero);
 
+        buttonGroup_prahovani.add(jRadioButton_toolbar_prahovani_tozeroInv);
+        jRadioButton_toolbar_prahovani_tozeroInv.setText("TOZERO_INV");
+        jRadioButton_toolbar_prahovani_tozeroInv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolbar_prahovani_tozeroInvActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolbar_prahovani_tozeroInv);
+
         buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_otsu);
         jRadioButton_toolBar_prahovani_otsu.setText("OTSU");
         jRadioButton_toolBar_prahovani_otsu.addActionListener(new java.awt.event.ActionListener() {
@@ -319,6 +341,24 @@ public class ViewTester extends javax.swing.JFrame {
             }
         });
         jPanel_toolBar_prahovani.add(jRadioButton_toolBar_prahovani_otsu);
+
+        buttonGroup_prahovani.add(jRadioButton_toolbar_prahovani_truncate);
+        jRadioButton_toolbar_prahovani_truncate.setText("TRUNC");
+        jRadioButton_toolbar_prahovani_truncate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolbar_prahovani_truncateActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolbar_prahovani_truncate);
+
+        buttonGroup_prahovani.add(jRadioButton_toolbar_prahovani_triangle);
+        jRadioButton_toolbar_prahovani_triangle.setText("Triangle");
+        jRadioButton_toolbar_prahovani_triangle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton_toolbar_prahovani_triangleActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jRadioButton_toolbar_prahovani_triangle);
 
         buttonGroup_prahovani.add(jRadioButton_toolBar_prahovani_adaptiveMeanC);
         jRadioButton_toolBar_prahovani_adaptiveMeanC.setText("Adaptivní MeanC");
@@ -1273,6 +1313,22 @@ public class ViewTester extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_porovnani_ukazRozdilyActionPerformed
 
+    private void jRadioButton_toolbar_prahovani_binaryInvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolbar_prahovani_binaryInvActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolbar_prahovani_binaryInvActionPerformed
+
+    private void jRadioButton_toolbar_prahovani_tozeroInvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolbar_prahovani_tozeroInvActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolbar_prahovani_tozeroInvActionPerformed
+
+    private void jRadioButton_toolbar_prahovani_truncateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolbar_prahovani_truncateActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolbar_prahovani_truncateActionPerformed
+
+    private void jRadioButton_toolbar_prahovani_triangleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_toolbar_prahovani_triangleActionPerformed
+        prahujAction();
+    }//GEN-LAST:event_jRadioButton_toolbar_prahovani_triangleActionPerformed
+
     private void transformuj(Mat transformation, boolean isAffine) {
         try {
 //            System.out.println("Matice transformace>\n" + transformation.dump());
@@ -1369,6 +1425,14 @@ public class ViewTester extends javax.swing.JFrame {
                 Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
             } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
                 Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
+            } else if (jRadioButton_toolbar_prahovani_binaryInv.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
+            } else if (jRadioButton_toolbar_prahovani_tozeroInv.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO_INV);
+            } else if (jRadioButton_toolbar_prahovani_truncate.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TRUNC);
+            } else if (jRadioButton_toolbar_prahovani_triangle.isSelected()) {
+                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TRIANGLE);
             } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
                 Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
             } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
@@ -1491,6 +1555,10 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_binary;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_otsu;
     private javax.swing.JRadioButton jRadioButton_toolBar_prahovani_tozero;
+    private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_binaryInv;
+    private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_tozeroInv;
+    private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_triangle;
+    private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_truncate;
     private javax.swing.JSlider jSlider_morfologie_findThreshold;
     private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
     private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
