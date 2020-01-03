@@ -28,6 +28,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -189,6 +190,27 @@ public class ViewTester extends javax.swing.JFrame {
         jRadioButton_porovnani_CCOEFFNorm = new javax.swing.JRadioButton();
         jButton_porovnani_porovnejHistogram = new javax.swing.JButton();
         jButton_porovnani_ukazRozdily = new javax.swing.JButton();
+        jPanel_hrany = new javax.swing.JPanel();
+        jPanel_hrany_sobel = new javax.swing.JPanel();
+        jButton_hrany_Sobel = new javax.swing.JButton();
+        jCheckBox_hrany_sobel_horizontalne = new javax.swing.JCheckBox();
+        jCheckBox_hrany_sobel_vertikalne = new javax.swing.JCheckBox();
+        jPanel_hrany_laplacianGaussian = new javax.swing.JPanel();
+        jButton_hrany_laplacianGaussian = new javax.swing.JButton();
+        jCheckBox_hrany_laplacianGaussian_Gaussian = new javax.swing.JCheckBox();
+        jCheckBox_hrany_laplacianGaussian_laplacian = new javax.swing.JCheckBox();
+        jSpinner_hrany_laplacianGaussian_gaussX = new javax.swing.JSpinner();
+        jLabel_hrany_laplacianGaussian_x = new javax.swing.JLabel();
+        jSpinner_hrany_laplacianGaussian_gaussY = new javax.swing.JSpinner();
+        jLabel_hrany_laplacianGaussian_sigma = new javax.swing.JLabel();
+        jTextField_hrany_laplacianGaussian_sigma = new javax.swing.JTextField();
+        jSpinner_hrany_laplacianGaussian_laplacianHloubka = new javax.swing.JSpinner();
+        jLabel_hrany_laplacianGaussian_laplacianHloubka = new javax.swing.JLabel();
+        jButton_hrany_laplacianGaussian_zostreni = new javax.swing.JButton();
+        jPanel_hrany_canny = new javax.swing.JPanel();
+        jButton_hrany_canny = new javax.swing.JButton();
+        jSlider_hrany_canny_dolniMez = new javax.swing.JSlider();
+        jSlider_hrany_canny_horniMez = new javax.swing.JSlider();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
@@ -770,6 +792,175 @@ public class ViewTester extends javax.swing.JFrame {
 
         jTabbedPane_nastroje.addTab("Porovnání", jPanel_porovnani);
 
+        jPanel_hrany_sobel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_hrany_sobel.setLayout(new java.awt.GridBagLayout());
+
+        jButton_hrany_Sobel.setText("Sobel");
+        jButton_hrany_Sobel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_SobelActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        jPanel_hrany_sobel.add(jButton_hrany_Sobel, gridBagConstraints);
+
+        jCheckBox_hrany_sobel_horizontalne.setSelected(true);
+        jCheckBox_hrany_sobel_horizontalne.setText("Horizontálnì");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        jPanel_hrany_sobel.add(jCheckBox_hrany_sobel_horizontalne, gridBagConstraints);
+
+        jCheckBox_hrany_sobel_vertikalne.setText("Vertikálnì");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        jPanel_hrany_sobel.add(jCheckBox_hrany_sobel_vertikalne, gridBagConstraints);
+
+        jPanel_hrany.add(jPanel_hrany_sobel);
+
+        jPanel_hrany_laplacianGaussian.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_hrany_laplacianGaussian.setLayout(new java.awt.GridBagLayout());
+
+        jButton_hrany_laplacianGaussian.setText("Laplacián Gaussiánu");
+        jButton_hrany_laplacianGaussian.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_laplacianGaussianActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 2;
+        jPanel_hrany_laplacianGaussian.add(jButton_hrany_laplacianGaussian, gridBagConstraints);
+
+        jCheckBox_hrany_laplacianGaussian_Gaussian.setSelected(true);
+        jCheckBox_hrany_laplacianGaussian_Gaussian.setText("Gaussián");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        jPanel_hrany_laplacianGaussian.add(jCheckBox_hrany_laplacianGaussian_Gaussian, gridBagConstraints);
+
+        jCheckBox_hrany_laplacianGaussian_laplacian.setSelected(true);
+        jCheckBox_hrany_laplacianGaussian_laplacian.setText("Laplacián");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        jPanel_hrany_laplacianGaussian.add(jCheckBox_hrany_laplacianGaussian_laplacian, gridBagConstraints);
+
+        jSpinner_hrany_laplacianGaussian_gaussX.setModel(new javax.swing.SpinnerNumberModel(5, 1, null, 2));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_laplacianGaussian.add(jSpinner_hrany_laplacianGaussian_gaussX, gridBagConstraints);
+
+        jLabel_hrany_laplacianGaussian_x.setText("x");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_laplacianGaussian.add(jLabel_hrany_laplacianGaussian_x, gridBagConstraints);
+
+        jSpinner_hrany_laplacianGaussian_gaussY.setModel(new javax.swing.SpinnerNumberModel(5, 1, null, 2));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_laplacianGaussian.add(jSpinner_hrany_laplacianGaussian_gaussY, gridBagConstraints);
+
+        jLabel_hrany_laplacianGaussian_sigma.setText("sigma");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_laplacianGaussian.add(jLabel_hrany_laplacianGaussian_sigma, gridBagConstraints);
+
+        jTextField_hrany_laplacianGaussian_sigma.setText("1.5");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_laplacianGaussian.add(jTextField_hrany_laplacianGaussian_sigma, gridBagConstraints);
+
+        jSpinner_hrany_laplacianGaussian_laplacianHloubka.setModel(new javax.swing.SpinnerNumberModel(3, 1, null, 2));
+        jSpinner_hrany_laplacianGaussian_laplacianHloubka.setToolTipText("Velikost pro filtr druhe derivace");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        jPanel_hrany_laplacianGaussian.add(jSpinner_hrany_laplacianGaussian_laplacianHloubka, gridBagConstraints);
+
+        jLabel_hrany_laplacianGaussian_laplacianHloubka.setText("velikost");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 1;
+        jPanel_hrany_laplacianGaussian.add(jLabel_hrany_laplacianGaussian_laplacianHloubka, gridBagConstraints);
+
+        jButton_hrany_laplacianGaussian_zostreni.setText("Zostøení");
+        jButton_hrany_laplacianGaussian_zostreni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_laplacianGaussian_zostreniActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_laplacianGaussian.add(jButton_hrany_laplacianGaussian_zostreni, gridBagConstraints);
+
+        jPanel_hrany.add(jPanel_hrany_laplacianGaussian);
+
+        jPanel_hrany_canny.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_hrany_canny.setLayout(new java.awt.GridBagLayout());
+
+        jButton_hrany_canny.setText("Canny");
+        jButton_hrany_canny.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_cannyActionPerformed(evt);
+            }
+        });
+        jPanel_hrany_canny.add(jButton_hrany_canny, new java.awt.GridBagConstraints());
+
+        jSlider_hrany_canny_dolniMez.setMajorTickSpacing(32);
+        jSlider_hrany_canny_dolniMez.setMaximum(255);
+        jSlider_hrany_canny_dolniMez.setMinorTickSpacing(16);
+        jSlider_hrany_canny_dolniMez.setPaintLabels(true);
+        jSlider_hrany_canny_dolniMez.setPaintTicks(true);
+        jSlider_hrany_canny_dolniMez.setToolTipText("dolni prah");
+        jSlider_hrany_canny_dolniMez.setValue(100);
+        jSlider_hrany_canny_dolniMez.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_hrany_canny_dolniMezStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_hrany_canny.add(jSlider_hrany_canny_dolniMez, gridBagConstraints);
+
+        jSlider_hrany_canny_horniMez.setMajorTickSpacing(32);
+        jSlider_hrany_canny_horniMez.setMaximum(255);
+        jSlider_hrany_canny_horniMez.setMinorTickSpacing(16);
+        jSlider_hrany_canny_horniMez.setPaintLabels(true);
+        jSlider_hrany_canny_horniMez.setPaintTicks(true);
+        jSlider_hrany_canny_horniMez.setToolTipText("horni prah");
+        jSlider_hrany_canny_horniMez.setValue(200);
+        jSlider_hrany_canny_horniMez.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_hrany_canny_horniMezStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_hrany_canny.add(jSlider_hrany_canny_horniMez, gridBagConstraints);
+
+        jPanel_hrany.add(jPanel_hrany_canny);
+
+        jTabbedPane_nastroje.addTab("Hrany", jPanel_hrany);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -1329,6 +1520,93 @@ public class ViewTester extends javax.swing.JFrame {
         prahujAction();
     }//GEN-LAST:event_jRadioButton_toolbar_prahovani_triangleActionPerformed
 
+    private void jButton_hrany_SobelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_SobelActionPerformed
+        try {
+            int dx = jCheckBox_hrany_sobel_horizontalne.isSelected()?1:0;
+            int dy = jCheckBox_hrany_sobel_vertikalne.isSelected()?1:0;
+            Imgproc.Sobel(inputMat, outputMat, CvType.CV_8U, dx, dy);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_hrany_SobelActionPerformed
+
+    private void jButton_hrany_laplacianGaussianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_laplacianGaussianActionPerformed
+        try {
+            Mat vstup = inputMat.clone();
+            if(jCheckBox_hrany_laplacianGaussian_Gaussian.isSelected()) {
+                int gx = (int) jSpinner_hrany_laplacianGaussian_gaussX.getValue();
+                int gy = (int) jSpinner_hrany_laplacianGaussian_gaussY.getValue();
+                double sigma = Double.parseDouble(jTextField_hrany_laplacianGaussian_sigma.getText());
+                Imgproc.GaussianBlur(inputMat, outputMat, new Size(gx,gy), sigma);
+                vstup = outputMat.clone();
+            }
+            if(jCheckBox_hrany_laplacianGaussian_laplacian.isSelected()) {
+                int hl = (int) jSpinner_hrany_laplacianGaussian_laplacianHloubka.getValue();
+                Imgproc.Laplacian(vstup, outputMat, CvType.CV_8U, hl);
+            }
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+                
+    }//GEN-LAST:event_jButton_hrany_laplacianGaussianActionPerformed
+
+    private void jButton_hrany_cannyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_cannyActionPerformed
+        cannyEdgeFilter();
+    }//GEN-LAST:event_jButton_hrany_cannyActionPerformed
+
+    private void jSlider_hrany_canny_dolniMezStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_hrany_canny_dolniMezStateChanged
+        cannyEdgeFilter();
+    }//GEN-LAST:event_jSlider_hrany_canny_dolniMezStateChanged
+
+    private void jSlider_hrany_canny_horniMezStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_hrany_canny_horniMezStateChanged
+        cannyEdgeFilter();
+    }//GEN-LAST:event_jSlider_hrany_canny_horniMezStateChanged
+
+    private void jButton_hrany_laplacianGaussian_zostreniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_laplacianGaussian_zostreniActionPerformed
+        try {
+            int hl = (int) jSpinner_hrany_laplacianGaussian_laplacianHloubka.getValue();
+            Mat convMat = new Mat();
+            Mat laplacMat = new Mat();
+            inputMat.convertTo(convMat, CvType.CV_32F);
+            Imgproc.Laplacian(convMat, laplacMat, CvType.CV_32F, hl);
+            Mat sharpIm = new Mat(convMat.rows(),convMat.cols(),convMat.type());
+            Core.addWeighted(convMat, 1, laplacMat, -0.3, 0, sharpIm);
+            sharpIm.convertTo(outputMat, CvType.CV_8U);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_hrany_laplacianGaussian_zostreniActionPerformed
+
+    private void cannyEdgeFilter() {
+        try {
+            double treshLo = jSlider_hrany_canny_dolniMez.getValue();
+            double treshHi = jSlider_hrany_canny_horniMez.getValue();
+            Imgproc.Canny(inputMat, outputMat, treshLo, treshHi);
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }
+
     private void transformuj(Mat transformation, boolean isAffine) {
         try {
 //            System.out.println("Matice transformace>\n" + transformation.dump());
@@ -1502,6 +1780,10 @@ public class ViewTester extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_porovnani;
     private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_hrany_Sobel;
+    private javax.swing.JButton jButton_hrany_canny;
+    private javax.swing.JButton jButton_hrany_laplacianGaussian;
+    private javax.swing.JButton jButton_hrany_laplacianGaussian_zostreni;
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
@@ -1525,6 +1807,13 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_transformace_translace;
     private javax.swing.JButton jButton_transformace_vyrovnej;
     private javax.swing.JButton jButton_transformace_zkosit;
+    private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_Gaussian;
+    private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_laplacian;
+    private javax.swing.JCheckBox jCheckBox_hrany_sobel_horizontalne;
+    private javax.swing.JCheckBox jCheckBox_hrany_sobel_vertikalne;
+    private javax.swing.JLabel jLabel_hrany_laplacianGaussian_laplacianHloubka;
+    private javax.swing.JLabel jLabel_hrany_laplacianGaussian_sigma;
+    private javax.swing.JLabel jLabel_hrany_laplacianGaussian_x;
     private javax.swing.JLabel jLabel_info;
     private javax.swing.JLabel jLabel_meritkoX;
     private javax.swing.JLabel jLabel_meritkoY;
@@ -1534,6 +1823,10 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelObrazky;
     private javax.swing.JPanel jPanelToolBarBasic;
     private javax.swing.JPanel jPanel_Morfologie;
+    private javax.swing.JPanel jPanel_hrany;
+    private javax.swing.JPanel jPanel_hrany_canny;
+    private javax.swing.JPanel jPanel_hrany_laplacianGaussian;
+    private javax.swing.JPanel jPanel_hrany_sobel;
     private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_porovnani;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
@@ -1559,12 +1852,17 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_tozeroInv;
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_triangle;
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_truncate;
+    private javax.swing.JSlider jSlider_hrany_canny_dolniMez;
+    private javax.swing.JSlider jSlider_hrany_canny_horniMez;
     private javax.swing.JSlider jSlider_morfologie_findThreshold;
     private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
     private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
     private javax.swing.JSlider jSlider_transformace_otoceni;
     private javax.swing.JSlider jSlider_transformace_zkosit;
+    private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_gaussX;
+    private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_gaussY;
+    private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_laplacianHloubka;
     private javax.swing.JSpinner jSpinner_morfologie_elementX;
     private javax.swing.JSpinner jSpinner_morfologie_elementY;
     private javax.swing.JSpinner jSpinner_transformace_meritkoX;
@@ -1572,6 +1870,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner_transformace_translateX;
     private javax.swing.JSpinner jSpinner_transformace_translateY;
     private javax.swing.JTabbedPane jTabbedPane_nastroje;
+    private javax.swing.JTextField jTextField_hrany_laplacianGaussian_sigma;
     private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
     private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
     private javax.swing.JToggleButton jToggleButton_morfologie_objektPodMysi;
