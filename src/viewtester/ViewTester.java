@@ -211,6 +211,8 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_hrany_canny = new javax.swing.JButton();
         jSlider_hrany_canny_dolniMez = new javax.swing.JSlider();
         jSlider_hrany_canny_horniMez = new javax.swing.JSlider();
+        jPanel_hrany_hough = new javax.swing.JPanel();
+        jButton_hrany_hough_houghLinesP = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
@@ -959,6 +961,18 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_hrany.add(jPanel_hrany_canny);
 
+        jPanel_hrany_hough.setBorder(javax.swing.BorderFactory.createTitledBorder("Hough"));
+
+        jButton_hrany_hough_houghLinesP.setText("Najdi èáry");
+        jButton_hrany_hough_houghLinesP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_hough_houghLinesPActionPerformed(evt);
+            }
+        });
+        jPanel_hrany_hough.add(jButton_hrany_hough_houghLinesP);
+
+        jPanel_hrany.add(jPanel_hrany_hough);
+
         jTabbedPane_nastroje.addTab("Hrany", jPanel_hrany);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1117,13 +1131,17 @@ public class ViewTester extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void jButton_toolBar_toGrayScalledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolBar_toGrayScalledActionPerformed
-        outputMat = inputMat.clone();
-        outToGrayScale();
-        outputImage = MatToBufferedImage(outputMat);
-        ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
-        repaint();
-        jLabel_info.setText(">");
-        pack();
+        try {
+            outputMat = inputMat.clone();
+            outToGrayScale();
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText(">");
+            pack();
+        } catch (Exception e) {
+            jLabel_info.setText("> CHYBA: "+e.getLocalizedMessage());
+        }
     }//GEN-LAST:event_jButton_toolBar_toGrayScalledActionPerformed
 
     private void jButton_morfologie_rozsireniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_rozsireniActionPerformed
@@ -1592,6 +1610,26 @@ public class ViewTester extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_hrany_laplacianGaussian_zostreniActionPerformed
 
+    private void jButton_hrany_hough_houghLinesPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_hough_houghLinesPActionPerformed
+        try {
+            Mat lines = new Mat();
+            Imgproc.HoughLinesP(inputMat, lines, 1, Math.PI/200, 40, 90, 3);
+            outputMat = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8U);
+            Imgproc.cvtColor(inputMat, outputMat, Imgproc.COLOR_GRAY2RGB);
+            for (int x = 0; x < lines.rows(); x++) {
+                double[] l = lines.get(x, 0);
+                Imgproc.line(outputMat, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar((x%2)*255, ((x%3)*128), ((x+1)%2)*255), 3, Imgproc.LINE_AA, 0);
+            }
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            jLabel_info.setText("> Poèet èar: "+lines.rows());
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_hrany_hough_houghLinesPActionPerformed
+
     private void cannyEdgeFilter() {
         try {
             double treshLo = jSlider_hrany_canny_dolniMez.getValue();
@@ -1782,6 +1820,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup_prahovani;
     private javax.swing.JButton jButton_hrany_Sobel;
     private javax.swing.JButton jButton_hrany_canny;
+    private javax.swing.JButton jButton_hrany_hough_houghLinesP;
     private javax.swing.JButton jButton_hrany_laplacianGaussian;
     private javax.swing.JButton jButton_hrany_laplacianGaussian_zostreni;
     private javax.swing.JButton jButton_morfologie_findContours;
@@ -1825,6 +1864,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_Morfologie;
     private javax.swing.JPanel jPanel_hrany;
     private javax.swing.JPanel jPanel_hrany_canny;
+    private javax.swing.JPanel jPanel_hrany_hough;
     private javax.swing.JPanel jPanel_hrany_laplacianGaussian;
     private javax.swing.JPanel jPanel_hrany_sobel;
     private javax.swing.JPanel jPanel_morfologie_element;
