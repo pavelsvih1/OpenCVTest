@@ -144,6 +144,7 @@ public class ViewTester extends javax.swing.JFrame {
         jTextField_toolBar_prahovani_offset = new javax.swing.JTextField();
         jRadioButton_toolBar_prahovani_band = new javax.swing.JRadioButton();
         jSlider_toolBar_prahovani_bandPrah2 = new javax.swing.JSlider();
+        jButton_toolbar_prahovani_ekvalizeHist = new javax.swing.JButton();
         jPanel_Morfologie = new javax.swing.JPanel();
         jButton_morfologie_rozsireni = new javax.swing.JButton();
         jButton_morfologie_zuzeni = new javax.swing.JButton();
@@ -213,8 +214,19 @@ public class ViewTester extends javax.swing.JFrame {
         jSlider_hrany_canny_horniMez = new javax.swing.JSlider();
         jPanel_hrany_hough = new javax.swing.JPanel();
         jButton_hrany_hough_houghLinesP = new javax.swing.JButton();
+        jPanel_rohy = new javax.swing.JPanel();
+        jPanel_rohy_harris = new javax.swing.JPanel();
+        jButton_rohy_harris_cornerHarris = new javax.swing.JButton();
+        jSlider_rohy_harris_threshold = new javax.swing.JSlider();
+        jSpinner_rohy_harris_blockSize = new javax.swing.JSpinner();
+        jSpinner_rohy_harris_vyrez = new javax.swing.JSpinner();
+        jPanel_rohy_shiTomasi = new javax.swing.JPanel();
+        jButton_rohy_shiTomasi = new javax.swing.JButton();
+        jSlider_rohy_shiTomasi_maxCorner = new javax.swing.JSlider();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
+        jButton_toolbar_zoomPlus = new javax.swing.JButton();
+        jButton_toolbar_zoomMinus = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -244,6 +256,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_vyfotit, gridBagConstraints);
@@ -260,6 +273,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_zeSouboru, gridBagConstraints);
@@ -276,6 +290,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_outputAsInput, gridBagConstraints);
@@ -289,6 +304,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
@@ -458,6 +474,14 @@ public class ViewTester extends javax.swing.JFrame {
             }
         });
         jPanel_toolBar_prahovani.add(jSlider_toolBar_prahovani_bandPrah2);
+
+        jButton_toolbar_prahovani_ekvalizeHist.setText("Vyrovnat histogram");
+        jButton_toolbar_prahovani_ekvalizeHist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolbar_prahovani_ekvalizeHistActionPerformed(evt);
+            }
+        });
+        jPanel_toolBar_prahovani.add(jButton_toolbar_prahovani_ekvalizeHist);
 
         jTabbedPane_nastroje.addTab("Prahování", jPanel_toolBar_prahovani);
 
@@ -975,10 +999,70 @@ public class ViewTester extends javax.swing.JFrame {
 
         jTabbedPane_nastroje.addTab("Hrany", jPanel_hrany);
 
+        jPanel_rohy_harris.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jButton_rohy_harris_cornerHarris.setText("Harris");
+        jButton_rohy_harris_cornerHarris.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_rohy_harris_cornerHarrisActionPerformed(evt);
+            }
+        });
+        jPanel_rohy_harris.add(jButton_rohy_harris_cornerHarris);
+
+        jSlider_rohy_harris_threshold.setMajorTickSpacing(32);
+        jSlider_rohy_harris_threshold.setMaximum(255);
+        jSlider_rohy_harris_threshold.setMinorTickSpacing(16);
+        jSlider_rohy_harris_threshold.setPaintLabels(true);
+        jSlider_rohy_harris_threshold.setPaintTicks(true);
+        jSlider_rohy_harris_threshold.setValue(200);
+        jSlider_rohy_harris_threshold.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_rohy_harris_thresholdStateChanged(evt);
+            }
+        });
+        jPanel_rohy_harris.add(jSlider_rohy_harris_threshold);
+
+        jSpinner_rohy_harris_blockSize.setModel(new javax.swing.SpinnerNumberModel(2, 1, null, 1));
+        jSpinner_rohy_harris_blockSize.setToolTipText("Velikost bloku");
+        jPanel_rohy_harris.add(jSpinner_rohy_harris_blockSize);
+
+        jSpinner_rohy_harris_vyrez.setModel(new javax.swing.SpinnerNumberModel(3, 1, null, 2));
+        jSpinner_rohy_harris_vyrez.setToolTipText("Pruzor");
+        jPanel_rohy_harris.add(jSpinner_rohy_harris_vyrez);
+
+        jPanel_rohy.add(jPanel_rohy_harris);
+
+        jPanel_rohy_shiTomasi.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jButton_rohy_shiTomasi.setText("Shi-Tomasi");
+        jButton_rohy_shiTomasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_rohy_shiTomasiActionPerformed(evt);
+            }
+        });
+        jPanel_rohy_shiTomasi.add(jButton_rohy_shiTomasi);
+
+        jSlider_rohy_shiTomasi_maxCorner.setMajorTickSpacing(100);
+        jSlider_rohy_shiTomasi_maxCorner.setMaximum(1000);
+        jSlider_rohy_shiTomasi_maxCorner.setMinimum(1);
+        jSlider_rohy_shiTomasi_maxCorner.setMinorTickSpacing(25);
+        jSlider_rohy_shiTomasi_maxCorner.setPaintLabels(true);
+        jSlider_rohy_shiTomasi_maxCorner.setPaintTicks(true);
+        jSlider_rohy_shiTomasi_maxCorner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_rohy_shiTomasi_maxCornerStateChanged(evt);
+            }
+        });
+        jPanel_rohy_shiTomasi.add(jSlider_rohy_shiTomasi_maxCorner);
+
+        jPanel_rohy.add(jPanel_rohy_shiTomasi);
+
+        jTabbedPane_nastroje.addTab("Rohy", jPanel_rohy);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 6;
+        gridBagConstraints.gridheight = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.weighty = 0.1;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
@@ -992,6 +1076,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_invertColors, gridBagConstraints);
@@ -1005,9 +1090,32 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_toColourScheme, gridBagConstraints);
+
+        jButton_toolbar_zoomPlus.setText("+");
+        jButton_toolbar_zoomPlus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolbar_zoomPlusActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        jPanelToolBarBasic.add(jButton_toolbar_zoomPlus, gridBagConstraints);
+
+        jButton_toolbar_zoomMinus.setText("-");
+        jButton_toolbar_zoomMinus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_toolbar_zoomMinusActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        jPanelToolBarBasic.add(jButton_toolbar_zoomMinus, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
 
@@ -1542,10 +1650,23 @@ public class ViewTester extends javax.swing.JFrame {
         try {
             int dx = jCheckBox_hrany_sobel_horizontalne.isSelected()?1:0;
             int dy = jCheckBox_hrany_sobel_vertikalne.isSelected()?1:0;
-            Imgproc.Sobel(inputMat, outputMat, CvType.CV_8U, dx, dy);
-            outputImage = MatToBufferedImage(outputMat);
-            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
-            repaint();
+            if(jCheckBox_hrany_sobel_horizontalne.isSelected() || jCheckBox_hrany_sobel_vertikalne.isSelected()) {
+                if(jCheckBox_hrany_sobel_horizontalne.isSelected() && jCheckBox_hrany_sobel_vertikalne.isSelected()) {
+                    Mat sobelX = new Mat();
+                    Mat sobelY = new Mat();
+                    Imgproc.Sobel(inputMat, sobelX, CvType.CV_8U, 1, 0);
+                    Imgproc.Sobel(inputMat, sobelY, CvType.CV_8U, 0, 1);
+                    Core.addWeighted(sobelX, 1, sobelY, 1, 0, outputMat);
+                } else if(jCheckBox_hrany_sobel_horizontalne.isSelected()) {
+                    Imgproc.Sobel(inputMat, outputMat, CvType.CV_8U, 1, 0);
+                } else {
+                    Imgproc.Sobel(inputMat, outputMat, CvType.CV_8U, 0, 1);
+                }
+
+                outputImage = MatToBufferedImage(outputMat);
+                ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+                repaint();
+            }
             jLabel_info.setText(">");
         } catch (Exception exception) {
             System.err.println("CHYBA: " + exception.getMessage());
@@ -1618,7 +1739,7 @@ public class ViewTester extends javax.swing.JFrame {
             Imgproc.cvtColor(inputMat, outputMat, Imgproc.COLOR_GRAY2RGB);
             for (int x = 0; x < lines.rows(); x++) {
                 double[] l = lines.get(x, 0);
-                Imgproc.line(outputMat, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar((x%2)*255, ((x%3)*128), ((x+1)%2)*255), 3, Imgproc.LINE_AA, 0);
+                Imgproc.line(outputMat, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar((x%2)*255, ((x%3)*127), ((x+1)%2)*255), 3, Imgproc.LINE_AA, 0);
             }
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
@@ -1629,6 +1750,109 @@ public class ViewTester extends javax.swing.JFrame {
             jLabel_info.setText("> " + exception.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_hrany_hough_houghLinesPActionPerformed
+
+    private void jButton_toolbar_zoomMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_zoomMinusActionPerformed
+        try {
+            Imgproc.pyrDown( inputMat, inputMat, new Size( ((double)inputMat.cols())/2, ((double)inputMat.rows())/2 ) );
+            Imgproc.pyrDown( outputMat, outputMat, new Size(((double)outputMat.cols())/2, ((double)outputMat.rows())/2 ) );
+
+            outputImage = MatToBufferedImage(outputMat);
+            inputImage = MatToBufferedImage(inputMat);
+            
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
+            repaint();
+            pack();
+            jLabel_info.setText("> ");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_toolbar_zoomMinusActionPerformed
+
+    private void jButton_toolbar_zoomPlusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_zoomPlusActionPerformed
+        try {
+            Imgproc.pyrUp(inputMat, inputMat, new Size( ((double)inputMat.cols())*2, ((double)inputMat.rows())*2 ) );
+            Imgproc.pyrUp( outputMat, outputMat, new Size(((double)outputMat.cols())*2, ((double)outputMat.rows())*2 ) );
+
+            outputImage = MatToBufferedImage(outputMat);
+            inputImage = MatToBufferedImage(inputMat);
+            
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
+            repaint();
+            pack();
+            jLabel_info.setText("> ");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_toolbar_zoomPlusActionPerformed
+
+    private void jButton_toolbar_prahovani_ekvalizeHistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_prahovani_ekvalizeHistActionPerformed
+        try {
+            Imgproc.equalizeHist(inputMat, outputMat);
+            outputImage = MatToBufferedImage(outputMat);
+            
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            pack();
+            jLabel_info.setText("> ");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_toolbar_prahovani_ekvalizeHistActionPerformed
+
+    private void jButton_rohy_harris_cornerHarrisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_rohy_harris_cornerHarrisActionPerformed
+        try {
+            int blockSize = (int) jSpinner_rohy_harris_blockSize.getValue();
+            int apertureSizeSobel = (int) jSpinner_rohy_harris_vyrez.getValue();
+            double k = 0.04;
+            int threshold = jSlider_rohy_harris_threshold.getValue();
+            Mat corn = Mat.zeros(inputMat.size(), CvType.CV_32FC1);
+            Mat preMat = new Mat();
+            Mat prevM = new Mat();
+            
+            Imgproc.cornerHarris(inputMat, corn, blockSize, apertureSizeSobel, k);
+            
+           Core.normalize(corn, preMat, 0, 255, Core.NORM_MINMAX);
+        Core.convertScaleAbs(preMat, outputMat);
+        inputMat.convertTo(prevM, CvType.CV_8UC3);
+        Imgproc.cvtColor(prevM, outputMat, Imgproc.COLOR_GRAY2RGB);
+        float[] dstNormData = new float[(int) (preMat.total() * preMat.channels())];
+        preMat.get(0, 0, dstNormData);
+        for (int i = 0; i < preMat.rows(); i++) {
+            for (int j = 0; j < preMat.cols(); j++) {
+                if ((int) dstNormData[i * preMat.cols() + j] > threshold) {
+                    Imgproc.circle(outputMat, new Point(j, i), 5, new Scalar(0, 0, 255), 2, 8, 0);
+                }
+            }
+        }
+            //corn.convertTo(outputMat, CvType.CV_8U);
+            
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            pack();
+            jLabel_info.setText("> ");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_rohy_harris_cornerHarrisActionPerformed
+
+    private void jSlider_rohy_harris_thresholdStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_rohy_harris_thresholdStateChanged
+        jButton_rohy_harris_cornerHarrisActionPerformed(null);
+    }//GEN-LAST:event_jSlider_rohy_harris_thresholdStateChanged
+
+    private void jButton_rohy_shiTomasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_rohy_shiTomasiActionPerformed
+        makeShiTomasi();
+    }//GEN-LAST:event_jButton_rohy_shiTomasiActionPerformed
+
+    private void jSlider_rohy_shiTomasi_maxCornerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_rohy_shiTomasi_maxCornerStateChanged
+        makeShiTomasi();
+    }//GEN-LAST:event_jSlider_rohy_shiTomasi_maxCornerStateChanged
 
     private void cannyEdgeFilter() {
         try {
@@ -1833,13 +2057,18 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_porovnani_porovnejHistogram;
     private javax.swing.JButton jButton_porovnani_ukazRozdily;
     private javax.swing.JButton jButton_porovnani_vyberVzor;
+    private javax.swing.JButton jButton_rohy_harris_cornerHarris;
+    private javax.swing.JButton jButton_rohy_shiTomasi;
     private javax.swing.JButton jButton_toolBar_outputAsInput;
     private javax.swing.JButton jButton_toolBar_prahovani_prahovat;
     private javax.swing.JButton jButton_toolBar_toGrayScalled;
     private javax.swing.JButton jButton_toolBar_vyfotit;
     private javax.swing.JButton jButton_toolBar_zeSouboru;
     private javax.swing.JButton jButton_toolbar_invertColors;
+    private javax.swing.JButton jButton_toolbar_prahovani_ekvalizeHist;
     private javax.swing.JButton jButton_toolbar_toColourScheme;
+    private javax.swing.JButton jButton_toolbar_zoomMinus;
+    private javax.swing.JButton jButton_toolbar_zoomPlus;
     private javax.swing.JButton jButton_transformace_meritko;
     private javax.swing.JButton jButton_transformace_orizni;
     private javax.swing.JButton jButton_transformace_otoceni;
@@ -1869,6 +2098,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_hrany_sobel;
     private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_porovnani;
+    private javax.swing.JPanel jPanel_rohy;
+    private javax.swing.JPanel jPanel_rohy_harris;
+    private javax.swing.JPanel jPanel_rohy_shiTomasi;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
     private javax.swing.JPanel jPanel_transformace;
     private javax.swing.JPanel jPanel_transformace_meritko;
@@ -1895,6 +2127,8 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_hrany_canny_dolniMez;
     private javax.swing.JSlider jSlider_hrany_canny_horniMez;
     private javax.swing.JSlider jSlider_morfologie_findThreshold;
+    private javax.swing.JSlider jSlider_rohy_harris_threshold;
+    private javax.swing.JSlider jSlider_rohy_shiTomasi_maxCorner;
     private javax.swing.JSlider jSlider_toolBar_prahovani_bandPrah2;
     private javax.swing.JSlider jSlider_toolBar_prahovani_blockSize;
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
@@ -1905,6 +2139,8 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_laplacianHloubka;
     private javax.swing.JSpinner jSpinner_morfologie_elementX;
     private javax.swing.JSpinner jSpinner_morfologie_elementY;
+    private javax.swing.JSpinner jSpinner_rohy_harris_blockSize;
+    private javax.swing.JSpinner jSpinner_rohy_harris_vyrez;
     private javax.swing.JSpinner jSpinner_transformace_meritkoX;
     private javax.swing.JSpinner jSpinner_transformace_meritkoY;
     private javax.swing.JSpinner jSpinner_transformace_translateX;
@@ -1916,4 +2152,60 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton_morfologie_objektPodMysi;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
+
+    private void makeShiTomasi() {
+        try {
+//            int blockSize = (int) jSpinner_rohy_harris_blockSize.getValue();
+            int apertureSizeSobel = (int) jSpinner_rohy_harris_vyrez.getValue();
+            double k = 0.04;
+            int threshold = jSlider_rohy_harris_threshold.getValue();
+            Mat corn = Mat.zeros(inputMat.size(), CvType.CV_32FC1);
+            Mat preMat = new Mat();
+            Mat prevM = new Mat();
+            
+//            Imgproc.cornerHarris(inputMat, corn, blockSize, apertureSizeSobel, k);
+//            
+//           Core.normalize(corn, preMat, 0, 255, Core.NORM_MINMAX);
+//        Core.convertScaleAbs(preMat, outputMat);
+//        inputMat.convertTo(prevM, CvType.CV_8UC3);
+//        Imgproc.cvtColor(prevM, outputMat, Imgproc.COLOR_GRAY2RGB);
+//        float[] dstNormData = new float[(int) (preMat.total() * preMat.channels())];
+//        preMat.get(0, 0, dstNormData);
+//        for (int i = 0; i < preMat.rows(); i++) {
+//            for (int j = 0; j < preMat.cols(); j++) {
+//                if ((int) dstNormData[i * preMat.cols() + j] > threshold) {
+//                    Imgproc.circle(outputMat, new Point(j, i), 5, new Scalar(0, 0, 255), 2, 8, 0);
+//                }
+//            }
+//        }
+            //corn.convertTo(outputMat, CvType.CV_8U);
+        int maxCorners = Math.max(jSlider_rohy_shiTomasi_maxCorner.getValue(), 1);
+        MatOfPoint corners = new MatOfPoint();
+        double qualityLevel = 0.01;
+        double minDistance = 10;
+        int blockSize = 3, gradientSize = 3;
+        boolean useHarrisDetector = false;
+        Mat copy = inputMat.clone();
+        Imgproc.cvtColor(inputMat, copy, Imgproc.COLOR_GRAY2RGB);
+        Imgproc.goodFeaturesToTrack(inputMat, corners, maxCorners, qualityLevel, minDistance, new Mat(),
+                blockSize, gradientSize, useHarrisDetector, k);
+        System.out.println("** Number of corners detected: " + corners.rows());
+        int[] cornersData = new int[(int) (corners.total() * corners.channels())];
+        corners.get(0, 0, cornersData);
+        int radius = 5;
+        for (int i = 0; i < corners.rows(); i++) {
+            Imgproc.circle(copy, new Point(cornersData[i * 2], cornersData[i * 2 + 1]), radius,
+                    new Scalar(0, 0, 255), 2,8,0);
+        }
+            outputMat = copy;
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+            pack();
+            jLabel_info.setText("> Number of corners detected: " + corners.rows());
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }
 }

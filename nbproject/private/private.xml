@@ -6,6 +6,8 @@
             <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/CalcHistDemo.java</file>
             <file>file:/C:/programovani/java/OpenCVTest/src/viewtester/JPanel_DoubleImage.java</file>
             <file>file:/C:/programovani/java/OpenCVTest/src/viewtester/ViewTester.java</file>
+            <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/ThresholdingAndProjectHist.java</file>
+            <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/HoughLines.java</file>
         </group>
     </open-files>
 </project-private>
