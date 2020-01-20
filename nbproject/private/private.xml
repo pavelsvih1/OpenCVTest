@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/CalcHistDemo.java</file>
-            <file>file:/C:/programovani/java/OpenCVTest/src/viewtester/JPanel_DoubleImage.java</file>
-            <file>file:/C:/programovani/java/OpenCVTest/src/viewtester/ViewTester.java</file>
-            <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/ThresholdingAndProjectHist.java</file>
-            <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/HoughLines.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

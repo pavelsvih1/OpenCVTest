@@ -47,12 +47,13 @@ public class ViewTester extends javax.swing.JFrame {
     Mat inputMat;
     Mat outputMat;
     Mat templateMat;
+    Mat maskFile = null;
     private static final String TEMPLATE_WIN_NAME = new String("Vzor k porovnani");
     private static final String TEMPLATE_VYSTUP = new String("Vysledek");
     private final int CAMERAWIDTH = 640;
     private final int CAMERAHEIGHT = 480;
     VideoCapture grabber;
-
+// pomìr displeje: 3,1165
     /**
      * Creates new form ViewTester
      */
@@ -145,6 +146,10 @@ public class ViewTester extends javax.swing.JFrame {
         jRadioButton_toolBar_prahovani_band = new javax.swing.JRadioButton();
         jSlider_toolBar_prahovani_bandPrah2 = new javax.swing.JSlider();
         jButton_toolbar_prahovani_ekvalizeHist = new javax.swing.JButton();
+        jPanel_toolbar_prahovani_rozdeleni = new javax.swing.JPanel();
+        jSpinner_toolbar_prahovani_rozdeleniX = new javax.swing.JSpinner();
+        jLabel_rozdeleni_x = new javax.swing.JLabel();
+        jSpinner_toolbar_prahovani_rozdeleniY = new javax.swing.JSpinner();
         jPanel_Morfologie = new javax.swing.JPanel();
         jButton_morfologie_rozsireni = new javax.swing.JButton();
         jButton_morfologie_zuzeni = new javax.swing.JButton();
@@ -223,6 +228,25 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_rohy_shiTomasi = new javax.swing.JPanel();
         jButton_rohy_shiTomasi = new javax.swing.JButton();
         jSlider_rohy_shiTomasi_maxCorner = new javax.swing.JSlider();
+        jPanel_kontrolaSegmentu = new javax.swing.JPanel();
+        jPanel_kontrolaSegmentu_orezAVyrovnej = new javax.swing.JPanel();
+        jLabel_kontrolaSegmentu_orez_roh1 = new javax.swing.JLabel();
+        jLabel_kontrolaSegmentu_orez_roh2 = new javax.swing.JLabel();
+        jLabel_kontrolaSegmentu_orez_roh3 = new javax.swing.JLabel();
+        jLabel_kontrolaSegmentu_orez_roh4 = new javax.swing.JLabel();
+        jButton_kontrolaSegmentu_orez_proved = new javax.swing.JButton();
+        jSpinner_kontrolaSegmentu_orez_roh1x = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh1y = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh2x = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh2y = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh3x = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh3y = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh4x = new javax.swing.JSpinner();
+        jSpinner_kontrolaSegmentu_orez_roh4y = new javax.swing.JSpinner();
+        jComboBox_kontrolaSegmentu_orez_rozliseni = new javax.swing.JComboBox<>();
+        jButton_kontrolaSegmentu_maskuj = new javax.swing.JButton();
+        jButton_kontrolaSegmentu_souborMasky = new javax.swing.JButton();
+        jCheckBox_kontrolaSegmentu_invertujMasku = new javax.swing.JCheckBox();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jButton_toolbar_zoomPlus = new javax.swing.JButton();
@@ -482,6 +506,20 @@ public class ViewTester extends javax.swing.JFrame {
             }
         });
         jPanel_toolBar_prahovani.add(jButton_toolbar_prahovani_ekvalizeHist);
+
+        jPanel_toolbar_prahovani_rozdeleni.setBorder(javax.swing.BorderFactory.createTitledBorder("Rozdìlit na"));
+        jPanel_toolbar_prahovani_rozdeleni.setToolTipText("Pro prahování rozdìlí obraz na AxB èástí");
+
+        jSpinner_toolbar_prahovani_rozdeleniX.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        jPanel_toolbar_prahovani_rozdeleni.add(jSpinner_toolbar_prahovani_rozdeleniX);
+
+        jLabel_rozdeleni_x.setText(" x ");
+        jPanel_toolbar_prahovani_rozdeleni.add(jLabel_rozdeleni_x);
+
+        jSpinner_toolbar_prahovani_rozdeleniY.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        jPanel_toolbar_prahovani_rozdeleni.add(jSpinner_toolbar_prahovani_rozdeleniY);
+
+        jPanel_toolBar_prahovani.add(jPanel_toolbar_prahovani_rozdeleni);
 
         jTabbedPane_nastroje.addTab("Prahování", jPanel_toolBar_prahovani);
 
@@ -1058,6 +1096,137 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_rohy.add(jPanel_rohy_shiTomasi);
 
         jTabbedPane_nastroje.addTab("Rohy", jPanel_rohy);
+
+        jPanel_kontrolaSegmentu_orezAVyrovnej.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_kontrolaSegmentu_orezAVyrovnej.setLayout(new java.awt.GridBagLayout());
+
+        jLabel_kontrolaSegmentu_orez_roh1.setText("1. roh");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jLabel_kontrolaSegmentu_orez_roh1, gridBagConstraints);
+
+        jLabel_kontrolaSegmentu_orez_roh2.setText("2. roh");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jLabel_kontrolaSegmentu_orez_roh2, gridBagConstraints);
+
+        jLabel_kontrolaSegmentu_orez_roh3.setText("3. roh");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jLabel_kontrolaSegmentu_orez_roh3, gridBagConstraints);
+
+        jLabel_kontrolaSegmentu_orez_roh4.setText("4. roh");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jLabel_kontrolaSegmentu_orez_roh4, gridBagConstraints);
+
+        jButton_kontrolaSegmentu_orez_proved.setText("Vyrovnej a oøež");
+        jButton_kontrolaSegmentu_orez_proved.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_orez_provedActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jButton_kontrolaSegmentu_orez_proved, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh1x.setModel(new javax.swing.SpinnerNumberModel(471, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh1x, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh1y.setModel(new javax.swing.SpinnerNumberModel(611, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh1y, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh2x.setModel(new javax.swing.SpinnerNumberModel(1354, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh2x, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh2y.setModel(new javax.swing.SpinnerNumberModel(614, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh2y, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh3x.setModel(new javax.swing.SpinnerNumberModel(470, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh3x, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh3y.setModel(new javax.swing.SpinnerNumberModel(880, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh3y, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh4x.setModel(new javax.swing.SpinnerNumberModel(1351, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh4x, gridBagConstraints);
+
+        jSpinner_kontrolaSegmentu_orez_roh4y.setModel(new javax.swing.SpinnerNumberModel(882, null, null, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jSpinner_kontrolaSegmentu_orez_roh4y, gridBagConstraints);
+
+        jComboBox_kontrolaSegmentu_orez_rozliseni.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "413 x 126", "827 x 252" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_kontrolaSegmentu_orezAVyrovnej.add(jComboBox_kontrolaSegmentu_orez_rozliseni, gridBagConstraints);
+
+        jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_orezAVyrovnej);
+
+        jButton_kontrolaSegmentu_maskuj.setText("Vymaskuj segmenty");
+        jButton_kontrolaSegmentu_maskuj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_maskujActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_maskuj);
+
+        jButton_kontrolaSegmentu_souborMasky.setText("Maskovaci soubor");
+        jButton_kontrolaSegmentu_souborMasky.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_souborMaskyActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_souborMasky);
+
+        jCheckBox_kontrolaSegmentu_invertujMasku.setText("Invertuj masku");
+        jPanel_kontrolaSegmentu.add(jCheckBox_kontrolaSegmentu_invertujMasku);
+
+        jTabbedPane_nastroje.addTab("kontrola segmentù", jPanel_kontrolaSegmentu);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -1854,6 +2023,83 @@ public class ViewTester extends javax.swing.JFrame {
         makeShiTomasi();
     }//GEN-LAST:event_jSlider_rohy_shiTomasi_maxCornerStateChanged
 
+    private void jButton_kontrolaSegmentu_orez_provedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_orez_provedActionPerformed
+        try {
+            double rozliseniX = 413;
+            double rozliseniY = 126;
+            if(jComboBox_kontrolaSegmentu_orez_rozliseni.getSelectedIndex() == 1) {
+                rozliseniX = 827;
+                rozliseniY = 252;
+            }
+            Point[] skutecna = new Point[4];
+            Point[] cilova = new Point[4];
+            skutecna[0] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh1x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh1y.getValue());
+            skutecna[1] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh2x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh2y.getValue());
+            skutecna[2] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh3x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh3y.getValue());
+            skutecna[3] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh4x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh4y.getValue());
+            cilova[0] = skutecna[0];
+            cilova[1] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y);
+            cilova[2] = new Point(skutecna[0].x, skutecna[0].y + rozliseniY);
+            cilova[3] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y + rozliseniY);
+            
+            outputMat = SegmentsControl.perspectiveMatAndCut(inputMat, skutecna, cilova);
+
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_orez_provedActionPerformed
+
+    private void jButton_kontrolaSegmentu_maskujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_maskujActionPerformed
+        try {
+            Mat maskMat = SegmentsControl.changeMatSize(maskFile, inputMat);
+            if(jCheckBox_kontrolaSegmentu_invertujMasku.isSelected()) {
+                // invertujeme masku
+                Core.bitwise_not(maskMat, maskMat);
+            }
+            outputMat = SegmentsControl.pictureMask(inputMat, maskMat);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_maskujActionPerformed
+
+    private void jButton_kontrolaSegmentu_souborMaskyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_souborMaskyActionPerformed
+        JFileChooser fc = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "tif", "tiff", "png");
+        fc.addChoosableFileFilter(filter);
+        fc.setFileFilter(filter);
+        fc.setDialogTitle("Vyberte soubor s obrazkem vzoru maskovani");
+        try {
+            if (currentDir == null) {
+                currentDir = new File((new File(".").getCanonicalPath()));
+                System.out.println("Adresar " + currentDir.getAbsolutePath());
+            }
+            fc.setCurrentDirectory(currentDir);
+        } catch (IOException iOException) {
+        }
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            outputMat = Imgcodecs.imread(file.getPath());
+            maskFile = outputMat;
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_souborMaskyActionPerformed
+
+    private void repaintOutputMat() {
+            outputImage = MatToBufferedImage(outputMat);
+            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+            repaint();
+    }
+    
     private void cannyEdgeFilter() {
         try {
             double treshLo = jSlider_hrany_canny_dolniMez.getValue();
@@ -1961,31 +2207,56 @@ public class ViewTester extends javax.swing.JFrame {
     private void prahujAction() throws NumberFormatException {
 //        System.out.println("Slider = "+jSlider_toolBar_prahovani_mez.getValue()+ " Prahovani = "+Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()));
         try {
-            if (jRadioButton_toolBar_prahovani_binary.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
-            } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
-            } else if (jRadioButton_toolbar_prahovani_binaryInv.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
-            } else if (jRadioButton_toolbar_prahovani_tozeroInv.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO_INV);
-            } else if (jRadioButton_toolbar_prahovani_truncate.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TRUNC);
-            } else if (jRadioButton_toolbar_prahovani_triangle.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TRIANGLE);
-            } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
-                Imgproc.threshold(inputMat, outputMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
-            } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
-                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue() / 2 * 2 + 1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
-            } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
-                Imgproc.adaptiveThreshold(inputMat, outputMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue() / 2 * 2 + 1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
-            } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
-                Mat preObraz = outputMat.clone();
-                Mat preObraz2 = outputMat.clone();
-                Imgproc.threshold(inputMat, preObraz2, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
-                Imgproc.threshold(inputMat, preObraz, jSlider_toolBar_prahovani_bandPrah2.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
-                Core.bitwise_and(preObraz, preObraz2, outputMat);
-            }
+            int rozdeleniX = (int) jSpinner_toolbar_prahovani_rozdeleniX.getValue();
+            int rozdeleniY = (int) jSpinner_toolbar_prahovani_rozdeleniY.getValue();
+            int xStart, xEnd, yStart, yEnd;
+            int krokX = inputMat.width()/rozdeleniX + ((inputMat.width()%rozdeleniX)==0?0:1);
+            int krokY = inputMat.height()/rozdeleniY + ((inputMat.height()%rozdeleniY)==0?0:1);
+            Mat inMat, outMat, inXMat, outXMat;
+            outputMat = inputMat.clone();
+            outMat = new Mat();
+            
+            for(int x = 0; x < rozdeleniX; x++) {
+                xStart = x*krokX;
+                xEnd = (x+1)*krokX;
+                if(xEnd > inputMat.width()) {
+                    xEnd = inputMat.width();
+                }
+                for(int y = 0; y < rozdeleniY; y++) {
+                    yStart = y*krokY;
+                    yEnd = (y+1)*krokY;
+                    if(yEnd > inputMat.height()) {
+                        yEnd = inputMat.height();
+                    }
+                    inMat = inputMat.submat(yStart, yEnd, xStart, xEnd);
+                    outMat = outputMat.submat(yStart, yEnd, xStart, xEnd);
+                    if (jRadioButton_toolBar_prahovani_binary.isSelected()) {
+                                Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+                    } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
+                    } else if (jRadioButton_toolbar_prahovani_binaryInv.isSelected()) {
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
+                    } else if (jRadioButton_toolbar_prahovani_tozeroInv.isSelected()) {
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO_INV);
+                    } else if (jRadioButton_toolbar_prahovani_truncate.isSelected()) {
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TRUNC);
+                    } else if (jRadioButton_toolbar_prahovani_triangle.isSelected()) {
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TRIANGLE);
+                    } else if (jRadioButton_toolBar_prahovani_otsu.isSelected()) {
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_OTSU);
+                    } else if (jRadioButton_toolBar_prahovani_adaptiveMeanC.isSelected()) {
+                        Imgproc.adaptiveThreshold(inMat, outMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue() / 2 * 2 + 1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+                    } else if (jRadioButton_toolBar_prahovani_adaptivniGaussianC.isSelected()) {
+                        Imgproc.adaptiveThreshold(inMat, outMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, jSlider_toolBar_prahovani_blockSize.getValue() / 2 * 2 + 1, Integer.parseInt(jTextField_toolBar_prahovani_offset.getText()));
+                    } else if (jRadioButton_toolBar_prahovani_band.isSelected()) {
+                        Mat preObraz = outMat.clone();
+                        Mat preObraz2 = outMat.clone();
+                        Imgproc.threshold(inMat, preObraz2, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+                        Imgproc.threshold(inMat, preObraz, jSlider_toolBar_prahovani_bandPrah2.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY_INV);
+                        Core.bitwise_and(preObraz, preObraz2, outMat);
+                    }
+                }
+            }   
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
@@ -2047,6 +2318,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_hrany_hough_houghLinesP;
     private javax.swing.JButton jButton_hrany_laplacianGaussian;
     private javax.swing.JButton jButton_hrany_laplacianGaussian_zostreni;
+    private javax.swing.JButton jButton_kontrolaSegmentu_maskuj;
+    private javax.swing.JButton jButton_kontrolaSegmentu_orez_proved;
+    private javax.swing.JButton jButton_kontrolaSegmentu_souborMasky;
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
@@ -2079,13 +2353,20 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_laplacian;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_horizontalne;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_vertikalne;
+    private javax.swing.JCheckBox jCheckBox_kontrolaSegmentu_invertujMasku;
+    private javax.swing.JComboBox<String> jComboBox_kontrolaSegmentu_orez_rozliseni;
     private javax.swing.JLabel jLabel_hrany_laplacianGaussian_laplacianHloubka;
     private javax.swing.JLabel jLabel_hrany_laplacianGaussian_sigma;
     private javax.swing.JLabel jLabel_hrany_laplacianGaussian_x;
     private javax.swing.JLabel jLabel_info;
+    private javax.swing.JLabel jLabel_kontrolaSegmentu_orez_roh1;
+    private javax.swing.JLabel jLabel_kontrolaSegmentu_orez_roh2;
+    private javax.swing.JLabel jLabel_kontrolaSegmentu_orez_roh3;
+    private javax.swing.JLabel jLabel_kontrolaSegmentu_orez_roh4;
     private javax.swing.JLabel jLabel_meritkoX;
     private javax.swing.JLabel jLabel_meritkoY;
     private javax.swing.JLabel jLabel_morfologie_element_krat;
+    private javax.swing.JLabel jLabel_rozdeleni_x;
     private javax.swing.JLabel jLabel_translaceX;
     private javax.swing.JLabel jLabel_translaceY;
     private javax.swing.JPanel jPanelObrazky;
@@ -2096,12 +2377,15 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_hrany_hough;
     private javax.swing.JPanel jPanel_hrany_laplacianGaussian;
     private javax.swing.JPanel jPanel_hrany_sobel;
+    private javax.swing.JPanel jPanel_kontrolaSegmentu;
+    private javax.swing.JPanel jPanel_kontrolaSegmentu_orezAVyrovnej;
     private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_porovnani;
     private javax.swing.JPanel jPanel_rohy;
     private javax.swing.JPanel jPanel_rohy_harris;
     private javax.swing.JPanel jPanel_rohy_shiTomasi;
     private javax.swing.JPanel jPanel_toolBar_prahovani;
+    private javax.swing.JPanel jPanel_toolbar_prahovani_rozdeleni;
     private javax.swing.JPanel jPanel_transformace;
     private javax.swing.JPanel jPanel_transformace_meritko;
     private javax.swing.JPanel jPanel_transformace_otoceni;
@@ -2137,10 +2421,20 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_gaussX;
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_gaussY;
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_laplacianHloubka;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh1x;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh1y;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh2x;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh2y;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh3x;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh3y;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh4x;
+    private javax.swing.JSpinner jSpinner_kontrolaSegmentu_orez_roh4y;
     private javax.swing.JSpinner jSpinner_morfologie_elementX;
     private javax.swing.JSpinner jSpinner_morfologie_elementY;
     private javax.swing.JSpinner jSpinner_rohy_harris_blockSize;
     private javax.swing.JSpinner jSpinner_rohy_harris_vyrez;
+    private javax.swing.JSpinner jSpinner_toolbar_prahovani_rozdeleniX;
+    private javax.swing.JSpinner jSpinner_toolbar_prahovani_rozdeleniY;
     private javax.swing.JSpinner jSpinner_transformace_meritkoX;
     private javax.swing.JSpinner jSpinner_transformace_meritkoY;
     private javax.swing.JSpinner jSpinner_transformace_translateX;

@@ -339,6 +339,39 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_toolbar_prahovani_ekvalizeHistActionPerformed"/>
                       </Events>
                     </Component>
+                    <Container class="javax.swing.JPanel" name="jPanel_toolbar_prahovani_rozdeleni">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Rozd&#x11b;lit na"/>
+                          </Border>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Pro prahov&#xe1;n&#xed; rozd&#x11b;l&#xed; obraz na AxB &#x10d;&#xe1;st&#xed;"/>
+                      </Properties>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_toolbar_prahovani_rozdeleniX">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel_rozdeleni_x">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value=" x "/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_toolbar_prahovani_rozdeleniY">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="1" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel_Morfologie">
@@ -1219,6 +1252,220 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanel_kontrolaSegmentu">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                      <JTabbedPaneConstraints tabName="kontrola segment&#x16f;">
+                        <Property name="tabTitle" type="java.lang.String" value="kontrola segment&#x16f;"/>
+                      </JTabbedPaneConstraints>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                  <SubComponents>
+                    <Container class="javax.swing.JPanel" name="jPanel_kontrolaSegmentu_orezAVyrovnej">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder/>
+                          </Border>
+                        </Property>
+                      </Properties>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jLabel_kontrolaSegmentu_orez_roh1">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="1. roh"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="22" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel_kontrolaSegmentu_orez_roh2">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="2. roh"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="22" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel_kontrolaSegmentu_orez_roh3">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="3. roh"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="22" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel_kontrolaSegmentu_orez_roh4">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="4. roh"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="3" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="22" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="jButton_kontrolaSegmentu_orez_proved">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Vyrovnej a o&#x159;e&#x17e;"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_kontrolaSegmentu_orez_provedActionPerformed"/>
+                          </Events>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="4" gridWidth="3" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh1x">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="471" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="1" gridY="0" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh1y">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="611" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="2" gridY="0" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh2x">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="1354" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh2y">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="614" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="2" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh3x">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="470" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="1" gridY="2" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh3y">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="880" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="2" gridY="2" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh4x">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="1351" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="1" gridY="3" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JSpinner" name="jSpinner_kontrolaSegmentu_orez_roh4y">
+                          <Properties>
+                            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                              <SpinnerModel initial="882" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                            </Property>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="2" gridY="3" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                        <Component class="javax.swing.JComboBox" name="jComboBox_kontrolaSegmentu_orez_rozliseni">
+                          <Properties>
+                            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                              <StringArray count="2">
+                                <StringItem index="0" value="413 x 126"/>
+                                <StringItem index="1" value="827 x 252"/>
+                              </StringArray>
+                            </Property>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                          </AuxValues>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                              <GridBagConstraints gridX="0" gridY="5" gridWidth="3" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                            </Constraint>
+                          </Constraints>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Component class="javax.swing.JButton" name="jButton_kontrolaSegmentu_maskuj">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Vymaskuj segmenty"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_kontrolaSegmentu_maskujActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jButton_kontrolaSegmentu_souborMasky">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Maskovaci soubor"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_kontrolaSegmentu_souborMaskyActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="jCheckBox_kontrolaSegmentu_invertujMasku">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Invertuj masku"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
