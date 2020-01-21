@@ -47,6 +47,7 @@ public class ViewTester extends javax.swing.JFrame {
     Mat inputMat;
     Mat outputMat;
     Mat templateMat;
+    Mat segmentMaskMat;
     Mat maskFile = null;
     private static final String TEMPLATE_WIN_NAME = new String("Vzor k porovnani");
     private static final String TEMPLATE_VYSTUP = new String("Vysledek");
@@ -244,9 +245,14 @@ public class ViewTester extends javax.swing.JFrame {
         jSpinner_kontrolaSegmentu_orez_roh4x = new javax.swing.JSpinner();
         jSpinner_kontrolaSegmentu_orez_roh4y = new javax.swing.JSpinner();
         jComboBox_kontrolaSegmentu_orez_rozliseni = new javax.swing.JComboBox<>();
+        jPanel_kontrolaSegmentu_maskovani = new javax.swing.JPanel();
         jButton_kontrolaSegmentu_maskuj = new javax.swing.JButton();
         jButton_kontrolaSegmentu_souborMasky = new javax.swing.JButton();
         jCheckBox_kontrolaSegmentu_invertujMasku = new javax.swing.JCheckBox();
+        jButton_kontrolaSegmentu_toBinary = new javax.swing.JButton();
+        jPanel_kontrolaSegmentu_vyhodnoceni = new javax.swing.JPanel();
+        jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor = new javax.swing.JButton();
+        jButton_kontrolaSegmentu_vyhodnoceni_vycisli = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jButton_toolbar_zoomPlus = new javax.swing.JButton();
@@ -1207,13 +1213,20 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_orezAVyrovnej);
 
+        jPanel_kontrolaSegmentu_maskovani.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_kontrolaSegmentu_maskovani.setLayout(new java.awt.GridBagLayout());
+
         jButton_kontrolaSegmentu_maskuj.setText("Vymaskuj segmenty");
         jButton_kontrolaSegmentu_maskuj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_kontrolaSegmentu_maskujActionPerformed(evt);
             }
         });
-        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_maskuj);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        jPanel_kontrolaSegmentu_maskovani.add(jButton_kontrolaSegmentu_maskuj, gridBagConstraints);
 
         jButton_kontrolaSegmentu_souborMasky.setText("Maskovaci soubor");
         jButton_kontrolaSegmentu_souborMasky.addActionListener(new java.awt.event.ActionListener() {
@@ -1221,10 +1234,51 @@ public class ViewTester extends javax.swing.JFrame {
                 jButton_kontrolaSegmentu_souborMaskyActionPerformed(evt);
             }
         });
-        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_souborMasky);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_kontrolaSegmentu_maskovani.add(jButton_kontrolaSegmentu_souborMasky, gridBagConstraints);
 
+        jCheckBox_kontrolaSegmentu_invertujMasku.setSelected(true);
         jCheckBox_kontrolaSegmentu_invertujMasku.setText("Invertuj masku");
-        jPanel_kontrolaSegmentu.add(jCheckBox_kontrolaSegmentu_invertujMasku);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_kontrolaSegmentu_maskovani.add(jCheckBox_kontrolaSegmentu_invertujMasku, gridBagConstraints);
+
+        jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_maskovani);
+
+        jButton_kontrolaSegmentu_toBinary.setText("Zpracuj do ÈB");
+        jButton_kontrolaSegmentu_toBinary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_toBinaryActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_toBinary);
+
+        jPanel_kontrolaSegmentu_vyhodnoceni.setBorder(javax.swing.BorderFactory.createTitledBorder("Vyhodnocení"));
+        jPanel_kontrolaSegmentu_vyhodnoceni.setLayout(new java.awt.GridBagLayout());
+
+        jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor.setText("Segmentová maska");
+        jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu_vyhodnoceni.add(jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor, new java.awt.GridBagConstraints());
+
+        jButton_kontrolaSegmentu_vyhodnoceni_vycisli.setText("Vyhodno");
+        jButton_kontrolaSegmentu_vyhodnoceni_vycisli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_kontrolaSegmentu_vyhodnoceni.add(jButton_kontrolaSegmentu_vyhodnoceni_vycisli, gridBagConstraints);
+
+        jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_vyhodnoceni);
 
         jTabbedPane_nastroje.addTab("kontrola segmentù", jPanel_kontrolaSegmentu);
 
@@ -1232,8 +1286,6 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.weighty = 0.1;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
 
         jButton_toolbar_invertColors.setText("Invertuj barvy");
@@ -2094,6 +2146,69 @@ public class ViewTester extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_kontrolaSegmentu_souborMaskyActionPerformed
 
+    private void jButton_kontrolaSegmentu_toBinaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_toBinaryActionPerformed
+        try {
+            Mat maskMat = SegmentsControl.changeMatSize(maskFile, inputMat);
+            if(jCheckBox_kontrolaSegmentu_invertujMasku.isSelected()) {
+                // invertujeme masku
+                Core.bitwise_not(maskMat, maskMat);
+            }
+            outputMat = SegmentsControl.displayToBinaryView(inputMat, maskMat);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_toBinaryActionPerformed
+
+    private void jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed
+        JFileChooser fc = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "tif", "tiff", "png");
+        fc.addChoosableFileFilter(filter);
+        fc.setFileFilter(filter);
+        fc.setDialogTitle("Vyberte soubor s prislusnym segmentem");
+        try {
+            File dir = new File("segments");
+            //    currentDir = new File((new File(".").getCanonicalPath()));
+                System.out.println("Adresar " + dir.getAbsolutePath());
+            
+            fc.setCurrentDirectory(dir);
+        } catch (Exception xception) {
+            System.err.println("Err: +"+xception.getLocalizedMessage());
+        }
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            outputMat = SegmentsControl.changeMatSize(Imgcodecs.imread(file.getPath()),inputMat);
+            Core.bitwise_not(outputMat, outputMat);
+            segmentMaskMat = outputMat;
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed
+
+    private void jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed
+        try {
+            outputMat = SegmentsControl.pictureMask(inputMat, segmentMaskMat);
+            repaintOutputMat();
+            Mat testMatOut = new Mat(outputMat.width(), outputMat.height(), CvType.CV_8UC1);
+            Imgproc.cvtColor(outputMat, testMatOut, Imgproc.COLOR_RGB2GRAY);
+            Mat testMatSegment = new Mat(segmentMaskMat.width(), segmentMaskMat.height(), CvType.CV_8UC1);
+            Imgproc.cvtColor(segmentMaskMat, testMatSegment, Imgproc.COLOR_RGB2GRAY);
+
+            double sumViewed = Core.countNonZero(testMatOut);
+            double sumSegmentMask = Core.countNonZero(testMatSegment);
+            double inPer = sumViewed*100/sumSegmentMask;
+            jLabel_info.setText("> Vyhodnoceno "+sumViewed+"/"+sumSegmentMask+" tj. "+String.format("%1.2f", inPer));
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed
+
     private void repaintOutputMat() {
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
@@ -2321,6 +2436,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_kontrolaSegmentu_maskuj;
     private javax.swing.JButton jButton_kontrolaSegmentu_orez_proved;
     private javax.swing.JButton jButton_kontrolaSegmentu_souborMasky;
+    private javax.swing.JButton jButton_kontrolaSegmentu_toBinary;
+    private javax.swing.JButton jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor;
+    private javax.swing.JButton jButton_kontrolaSegmentu_vyhodnoceni_vycisli;
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
@@ -2378,7 +2496,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_hrany_laplacianGaussian;
     private javax.swing.JPanel jPanel_hrany_sobel;
     private javax.swing.JPanel jPanel_kontrolaSegmentu;
+    private javax.swing.JPanel jPanel_kontrolaSegmentu_maskovani;
     private javax.swing.JPanel jPanel_kontrolaSegmentu_orezAVyrovnej;
+    private javax.swing.JPanel jPanel_kontrolaSegmentu_vyhodnoceni;
     private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_porovnani;
     private javax.swing.JPanel jPanel_rohy;

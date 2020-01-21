@@ -68,7 +68,7 @@ public class SegmentsControl {
      */
     public static Mat changeMatSize(Mat inputMat, Mat templateMat) {
         Mat resultMat = new Mat();
-        Mat transformaceMat = new Mat();
+        Mat transformaceMat;
             Point[] skutecna = new Point[3];
             Point[] cilova = new Point[3];
             skutecna[0] = new Point(0,0);
@@ -87,4 +87,32 @@ public class SegmentsControl {
         return(resultMat.submat(new Rect(cilova[0], cilova[2])));
     }
     
+    public static Mat displayToBinaryView(Mat inputMat, Mat maskMat) {
+        Mat resultMat1 = new Mat();
+        Mat resultMat2 = new Mat();
+        
+        Core.bitwise_not(inputMat, resultMat1);
+        
+        Mat matElement = new Mat(3, 3, CvType.CV_8U, Scalar.all(1));
+        Imgproc.dilate(resultMat1, resultMat2, matElement);
+        
+        Imgproc.erode(resultMat2, resultMat1, matElement);
+        
+        resultMat2 = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8UC1);
+        Imgproc.cvtColor(resultMat1, resultMat2, Imgproc.COLOR_RGB2GRAY);
+
+        Imgproc.adaptiveThreshold(resultMat2, resultMat1, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 0);
+
+        resultMat2 = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8U);
+        Imgproc.cvtColor(resultMat1, resultMat2, Imgproc.COLOR_GRAY2RGB);
+
+        resultMat1 = pictureMask(resultMat2, maskMat);
+        
+        matElement = new Mat(2, 2, CvType.CV_8U, Scalar.all(1));
+        Imgproc.morphologyEx(resultMat1, resultMat2, Imgproc.MORPH_OPEN, matElement);
+
+        resultMat1 = pictureMask(resultMat2, maskMat);
+
+        return resultMat1;
+    }
 }
