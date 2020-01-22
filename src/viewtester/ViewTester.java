@@ -253,6 +253,16 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_kontrolaSegmentu_vyhodnoceni = new javax.swing.JPanel();
         jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor = new javax.swing.JButton();
         jButton_kontrolaSegmentu_vyhodnoceni_vycisli = new javax.swing.JButton();
+        jPanel_analyzaBarev = new javax.swing.JPanel();
+        jToggleButton_analyzaBarev_viewColor = new javax.swing.JToggleButton();
+        jPanel_analyzaBarev_prevzorkuj = new javax.swing.JPanel();
+        jButton_analyzaBarev_prevzorkujBarvy = new javax.swing.JButton();
+        jSlider_analyzaBarev_prevzorkuj = new javax.swing.JSlider();
+        jButton_analyzaBarev_nejBarva = new javax.swing.JButton();
+        jButton_analyzabarev_nej2 = new javax.swing.JButton();
+        jButton_analyzaBarev_viewR = new javax.swing.JButton();
+        jButton_analyzaBarev_viewG = new javax.swing.JButton();
+        jButton_analyzaBarev_viewB = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jButton_toolbar_zoomPlus = new javax.swing.JButton();
@@ -267,6 +277,7 @@ public class ViewTester extends javax.swing.JFrame {
             }
         });
 
+        jLabel_info.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel_info.setText(">");
         getContentPane().add(jLabel_info, java.awt.BorderLayout.PAGE_END);
 
@@ -1280,7 +1291,77 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_vyhodnoceni);
 
-        jTabbedPane_nastroje.addTab("kontrola segmentù", jPanel_kontrolaSegmentu);
+        jTabbedPane_nastroje.addTab("Kontrola segmentù", jPanel_kontrolaSegmentu);
+
+        jToggleButton_analyzaBarev_viewColor.setText("Ukázat barvu");
+        jPanel_analyzaBarev.add(jToggleButton_analyzaBarev_viewColor);
+
+        jPanel_analyzaBarev_prevzorkuj.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jButton_analyzaBarev_prevzorkujBarvy.setText("Uprav barvy");
+        jButton_analyzaBarev_prevzorkujBarvy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_prevzorkujBarvyActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev_prevzorkuj.add(jButton_analyzaBarev_prevzorkujBarvy);
+
+        jSlider_analyzaBarev_prevzorkuj.setMajorTickSpacing(50);
+        jSlider_analyzaBarev_prevzorkuj.setMaximum(250);
+        jSlider_analyzaBarev_prevzorkuj.setMinorTickSpacing(25);
+        jSlider_analyzaBarev_prevzorkuj.setPaintLabels(true);
+        jSlider_analyzaBarev_prevzorkuj.setPaintTicks(true);
+        jSlider_analyzaBarev_prevzorkuj.setValue(100);
+        jSlider_analyzaBarev_prevzorkuj.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_analyzaBarev_prevzorkujStateChanged(evt);
+            }
+        });
+        jPanel_analyzaBarev_prevzorkuj.add(jSlider_analyzaBarev_prevzorkuj);
+
+        jPanel_analyzaBarev.add(jPanel_analyzaBarev_prevzorkuj);
+
+        jButton_analyzaBarev_nejBarva.setText("Nejvýznamnìjší barva");
+        jButton_analyzaBarev_nejBarva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_nejBarvaActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_nejBarva);
+
+        jButton_analyzabarev_nej2.setText("Nejvýznamnìjší 2");
+        jButton_analyzabarev_nej2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzabarev_nej2ActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzabarev_nej2);
+
+        jButton_analyzaBarev_viewR.setText("R");
+        jButton_analyzaBarev_viewR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_viewRActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_viewR);
+
+        jButton_analyzaBarev_viewG.setText("G");
+        jButton_analyzaBarev_viewG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_viewGActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_viewG);
+
+        jButton_analyzaBarev_viewB.setText("B");
+        jButton_analyzaBarev_viewB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_viewBActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_viewB);
+
+        jTabbedPane_nastroje.addTab("Analýza barev", jPanel_analyzaBarev);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -1549,9 +1630,47 @@ public class ViewTester extends javax.swing.JFrame {
         if (jToggleButton_morfologie_objektPodMysi.isSelected()) {
             viewObjects(evt);
         }
-
+        if(jToggleButton_analyzaBarev_viewColor.isSelected()) {
+            viewColor(evt);
+        }
     }//GEN-LAST:event_jPanelObrazkyMouseClicked
 
+    private void viewColor(MouseEvent evt) {
+        int x;
+        int y;
+        int h;
+        boolean prvni = true;
+        double[] color;
+        try {
+            java.awt.Point p = evt.getPoint();
+            x = p.x;
+            y = p.y;
+            // kontrola souradnic obrazku - prevedeme na vstupni obr. nebo konec
+            if (x >= inputMat.width()) {
+                x -= inputMat.width();
+                prvni = false;
+                if (x >= outputMat.width()) {
+                    return;
+                }
+            }
+            h = prvni?inputMat.height():outputMat.height();
+            if (y >= h) {
+                return;
+            }
+            Mat mat = prvni?inputMat:outputMat;
+            color = mat.get(y, x);
+            if(color.length == 1) {
+                jLabel_info.setText("> ÈB : " + color[0]);
+            } else if(color.length == 3) {
+                jLabel_info.setText("> R : " + color[2] +" G : " + color[1]+" B : " + color[0]);
+            } else {
+                jLabel_info.setText("> "+color);
+            }
+            
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }
     /**
      * zobrazeni objektu na souradnici mysi nebo vsech
      *
@@ -2202,13 +2321,201 @@ public class ViewTester extends javax.swing.JFrame {
             double sumViewed = Core.countNonZero(testMatOut);
             double sumSegmentMask = Core.countNonZero(testMatSegment);
             double inPer = sumViewed*100/sumSegmentMask;
-            jLabel_info.setText("> Vyhodnoceno "+sumViewed+"/"+sumSegmentMask+" tj. "+String.format("%1.2f", inPer));
+            jLabel_info.setText("> Vyhodnoceno "+sumViewed+"/"+sumSegmentMask+" tj. "+String.format("%1.2f", inPer)+"%");
         } catch (Exception exception) {
             System.err.println("CHYBA: " + exception.getMessage());
             jLabel_info.setText("> " + exception.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed
 
+    private void jButton_analyzaBarev_prevzorkujBarvyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_prevzorkujBarvyActionPerformed
+        try {
+            int vyska = inputMat.height();
+            int sirka = inputMat.width();
+            double[] color;
+            int bi;
+            int modulo = jSlider_analyzaBarev_prevzorkuj.getValue();
+            int pul = modulo/2;
+            color = inputMat.get(0, 0);
+            outputMat = inputMat.clone();
+            
+            int pocetBarev = color.length;
+            for(int y = 0; y < vyska; y++) {
+                for(int x = 0; x < sirka; x++) {
+                    
+                    color = inputMat.get(y, x);
+                    for(bi = 0; bi < pocetBarev; bi++) {
+                        
+                        color[bi] = color[bi]+pul-color[bi]%modulo;
+                    }
+                    outputMat.put(y, x, color);
+                }
+            }
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+            
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_prevzorkujBarvyActionPerformed
+
+    private void jSlider_analyzaBarev_prevzorkujStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_analyzaBarev_prevzorkujStateChanged
+        jButton_analyzaBarev_prevzorkujBarvyActionPerformed(null);
+    }//GEN-LAST:event_jSlider_analyzaBarev_prevzorkujStateChanged
+
+    private void jButton_analyzaBarev_nejBarvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_nejBarvaActionPerformed
+        try {
+            int vyska = inputMat.height();
+            int sirka = inputMat.width();
+            double[] color;
+            int bi;
+            int modulo = jSlider_analyzaBarev_prevzorkuj.getValue();
+            int pul = modulo/2;
+            color = inputMat.get(0, 0);
+            outputMat = inputMat.clone();
+            int pocetBarev = color.length;
+            if(pocetBarev == 3) {
+                for(int y = 0; y < vyska; y++) {
+                    for(int x = 0; x < sirka; x++) {
+
+                        color = inputMat.get(y, x);
+                        if(color[0]>color[1]) {
+                            color[1]=0;
+                            if(color[2]>color[0]) {
+                                color[0] = 0;
+                                color[2] = 255;
+                            } else {
+                                color[2] = 0;
+                                color[0] = 255;
+                            }
+                        } else {
+                            color[0]=0;
+                            if(color[2]>color[1]) {
+                                color[1] = 0;
+                                color[2] = 255;
+                            } else {
+                                color[2] = 0;
+                                color[1] = 255;
+                            }
+                        }
+                        outputMat.put(y, x, color);
+                    }
+                }
+                repaintOutputMat();
+                jLabel_info.setText(">");
+                pack();
+            } else {
+                jLabel_info.setText("> Pouze pro tøíbarevný vstupní obraz!");
+            }
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_nejBarvaActionPerformed
+
+    private void jButton_analyzaBarev_viewRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_viewRActionPerformed
+        try {
+            view1Canal(2);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_viewRActionPerformed
+
+    private void jButton_analyzaBarev_viewGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_viewGActionPerformed
+        try {
+            view1Canal(1);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_viewGActionPerformed
+
+    private void jButton_analyzaBarev_viewBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_viewBActionPerformed
+        try {
+            view1Canal(0);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_viewBActionPerformed
+
+    private void jButton_analyzabarev_nej2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzabarev_nej2ActionPerformed
+                try {
+            int vyska = inputMat.height();
+            int sirka = inputMat.width();
+            double[] color;
+            int []poradi = new int[3];
+            color = inputMat.get(0, 0);
+            outputMat = inputMat.clone();
+            int pocetBarev = color.length;
+            if(pocetBarev == 3) {
+                for(int y = 0; y < vyska; y++) {
+                    for(int x = 0; x < sirka; x++) {
+                        
+                        color = inputMat.get(y, x);
+                        if(color[0]>color[1]) {
+                            poradi[0] = 1;
+                            poradi[1] = 0;
+                        } else {
+                            poradi[0] = 0;
+                            poradi[1] = 1;
+                        }
+                        if(color[2]>color[poradi[1]]) {
+                            poradi[2] = 2;
+                        } else {
+                            poradi[2] = poradi[1];
+                            poradi[1] = 2;
+                        }
+                        color[poradi[0]] = 0;
+                        if(color[poradi[1]] > 100) {
+                            color[poradi[1]] = 128;
+                        } else {
+                            color[poradi[1]] = 0;
+                        }
+                        color[poradi[2]] = 255;
+                        outputMat.put(y, x, color);
+                    }
+                }
+                repaintOutputMat();
+                jLabel_info.setText(">");
+                pack();
+            } else {
+                jLabel_info.setText("> Pouze pro tøíbarevný vstupní obraz!");
+            }
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzabarev_nej2ActionPerformed
+
+    private void view1Canal(int canalNum) {
+        int vyska = inputMat.height();
+        int sirka = inputMat.width();
+        double[] color;
+        int bi;
+        color = inputMat.get(0, 0);
+        outputMat = inputMat.clone();
+
+        int pocetBarev = color.length;
+        for(int y = 0; y < vyska; y++) {
+            for(int x = 0; x < sirka; x++) {
+
+                color = inputMat.get(y, x);
+                for(bi = 0; bi < pocetBarev; bi++) {
+                    if(bi != canalNum) {
+                        color[bi] = 0;
+                    }
+                }
+                outputMat.put(y, x, color);
+            }
+        }
+    }
     private void repaintOutputMat() {
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
@@ -2428,6 +2735,12 @@ public class ViewTester extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_porovnani;
     private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_analyzaBarev_nejBarva;
+    private javax.swing.JButton jButton_analyzaBarev_prevzorkujBarvy;
+    private javax.swing.JButton jButton_analyzaBarev_viewB;
+    private javax.swing.JButton jButton_analyzaBarev_viewG;
+    private javax.swing.JButton jButton_analyzaBarev_viewR;
+    private javax.swing.JButton jButton_analyzabarev_nej2;
     private javax.swing.JButton jButton_hrany_Sobel;
     private javax.swing.JButton jButton_hrany_canny;
     private javax.swing.JButton jButton_hrany_hough_houghLinesP;
@@ -2490,6 +2803,8 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelObrazky;
     private javax.swing.JPanel jPanelToolBarBasic;
     private javax.swing.JPanel jPanel_Morfologie;
+    private javax.swing.JPanel jPanel_analyzaBarev;
+    private javax.swing.JPanel jPanel_analyzaBarev_prevzorkuj;
     private javax.swing.JPanel jPanel_hrany;
     private javax.swing.JPanel jPanel_hrany_canny;
     private javax.swing.JPanel jPanel_hrany_hough;
@@ -2528,6 +2843,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_tozeroInv;
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_triangle;
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_truncate;
+    private javax.swing.JSlider jSlider_analyzaBarev_prevzorkuj;
     private javax.swing.JSlider jSlider_hrany_canny_dolniMez;
     private javax.swing.JSlider jSlider_hrany_canny_horniMez;
     private javax.swing.JSlider jSlider_morfologie_findThreshold;
@@ -2563,6 +2879,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_hrany_laplacianGaussian_sigma;
     private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
     private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
+    private javax.swing.JToggleButton jToggleButton_analyzaBarev_viewColor;
     private javax.swing.JToggleButton jToggleButton_morfologie_objektPodMysi;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
