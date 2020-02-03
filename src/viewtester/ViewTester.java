@@ -27,6 +27,7 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.highgui.HighGui;
@@ -228,6 +229,9 @@ public class ViewTester extends javax.swing.JFrame {
         jSpinner_hrany_hough_minLen = new javax.swing.JSpinner();
         jSpinner_hrany_hough_maxGap = new javax.swing.JSpinner();
         jLabel_hough_maxGap = new javax.swing.JLabel();
+        jPanel_hrany_obrysy = new javax.swing.JPanel();
+        jButton_hrany_extractContours = new javax.swing.JButton();
+        jCheckBox_hrany_obrysy_pravouhle = new javax.swing.JCheckBox();
         jPanel_rohy = new javax.swing.JPanel();
         jPanel_rohy_harris = new javax.swing.JPanel();
         jButton_rohy_harris_cornerHarris = new javax.swing.JButton();
@@ -1126,6 +1130,27 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_hrany_hough.add(jLabel_hough_maxGap, gridBagConstraints);
 
         jPanel_hrany.add(jPanel_hrany_hough);
+
+        jPanel_hrany_obrysy.setLayout(new java.awt.GridBagLayout());
+
+        jButton_hrany_extractContours.setText("Extrahuj obrysy");
+        jButton_hrany_extractContours.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_extractContoursActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_hrany_obrysy.add(jButton_hrany_extractContours, gridBagConstraints);
+
+        jCheckBox_hrany_obrysy_pravouhle.setText("Pravoúhle");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_obrysy.add(jCheckBox_hrany_obrysy_pravouhle, gridBagConstraints);
+
+        jPanel_hrany.add(jPanel_hrany_obrysy);
 
         jTabbedPane_nastroje.addTab("Hrany", jPanel_hrany);
 
@@ -2585,6 +2610,97 @@ public class ViewTester extends javax.swing.JFrame {
         jButton_hrany_hough_houghLinesPActionPerformed(null);
     }//GEN-LAST:event_jSpinner_hrany_hough_maxGapStateChanged
 
+    private void jButton_hrany_extractContoursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_extractContoursActionPerformed
+        try {
+            Mat hierarchy = new Mat();
+            Mat maska;
+            List<MatOfPoint> contours = new ArrayList<>();
+            Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+            outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+//            for (int i = 0; i < contours.size(); i++) {
+//                Scalar color = new Scalar(50, 0, 255);
+//                Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
+//            }
+            
+            maska = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+
+//            Imgproc.drawContours(maska, contours,-1, new Scalar(255), Imgproc.FILLED);
+
+//            // vypln vseho spojeneho
+//            for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
+//                Imgproc.drawContours(maska, contours, contourIdx, new Scalar(0, 0, 255), Imgproc.FILLED);
+//            }
+            
+            double maxArea = 0;
+            int iMaxContour = 0;
+            for (int ci=0; ci<contours.size(); ci++) {
+                MatOfPoint contour = contours.get(ci);
+                double contourArea = Imgproc.contourArea(contour);
+//                Rect boundingBox = Imgproc.boundingRect(contour);
+//                double aspectRatio = (double) boundingBox.width / boundingBox.height;
+//                double extent = contourArea / (boundingBox.width * boundingBox.height);
+//                if (contourArea > maxArea && contourArea > 200 && aspectRatio > this.aspectMin && aspectRatio < this.aspectMax && extent > this.extentMin && extent < this.extentMax) {
+                if (contourArea > maxArea) {
+                    maxArea = contourArea;
+                    iMaxContour = ci;
+                }
+            }
+            Imgproc.drawContours(maska, contours, iMaxContour, new Scalar(0, 0, 255), Imgproc.FILLED);
+//            System.out.println("nalezeno>\n"+contours.get(iMaxContour).dump());
+
+            MatOfPoint contour = null;
+            Scalar color = null;
+                Random rnd = new Random();
+                color = new Scalar(255, 255, 0);
+                contour = contours.get(iMaxContour);
+            if (!jCheckBox_hrany_obrysy_pravouhle.isSelected()) {
+                List<MatOfPoint> hullList = new ArrayList<>();
+//        for (MatOfPoint contour : contours) {
+                MatOfInt hull = new MatOfInt();
+                Imgproc.convexHull(contour, hull);
+                Point[] contourArray = contour.toArray();
+                Point[] hullPoints = new Point[hull.rows()];
+                List<Integer> hullContourIdxList = hull.toList();
+                double dx, dy;
+                for (int i = 0; i < hullContourIdxList.size(); i++) {
+                    hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+                    System.out.print("Bod "+i+" : "+hullPoints[i].toString());
+                    if(i>0) {
+                        dx = hullPoints[i].x-hullPoints[i-1].x;
+                        dy = hullPoints[i].y-hullPoints[i-1].y;
+                        System.out.print("  Rozdil: "+dx+","+dy);
+                    }
+                    System.out.println();
+                }
+                hullList.add(new MatOfPoint(hullPoints));
+                hullList.add(new MatOfPoint(SegmentsControl.quadrilateralHull(hullPoints, 5)));
+//                System.out.println(hullList.get(0).dump());
+                color = new Scalar(255, 0, 0);
+                //Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
+                Imgproc.drawContours(maska, hullList, 0, color);
+             
+                Imgproc.drawContours(maska, hullList, 1, new Scalar(0, 255,  0));
+//                System.out.println(hullList.get(1).dump());
+            } else {
+            Point[] rectPoints = new Point[4];
+            RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+            minRect.points(rectPoints);
+            for (int j = 0; j < 4; j++) {
+                Imgproc.line(maska, rectPoints[j], rectPoints[(j+1) % 4], color);
+            }
+
+            }
+
+            outputMat = maska;
+            
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_hrany_extractContoursActionPerformed
+
     private void view1Canal(int canalNum) {
         int vyska = inputMat.height();
         int sirka = inputMat.width();
@@ -2835,6 +2951,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_analyzabarev_nej2;
     private javax.swing.JButton jButton_hrany_Sobel;
     private javax.swing.JButton jButton_hrany_canny;
+    private javax.swing.JButton jButton_hrany_extractContours;
     private javax.swing.JButton jButton_hrany_hough_houghLinesP;
     private javax.swing.JButton jButton_hrany_laplacianGaussian;
     private javax.swing.JButton jButton_hrany_laplacianGaussian_zostreni;
@@ -2874,6 +2991,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_transformace_zkosit;
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_Gaussian;
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_laplacian;
+    private javax.swing.JCheckBox jCheckBox_hrany_obrysy_pravouhle;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_horizontalne;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_vertikalne;
     private javax.swing.JCheckBox jCheckBox_kontrolaSegmentu_invertujMasku;
@@ -2905,6 +3023,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_hrany_canny;
     private javax.swing.JPanel jPanel_hrany_hough;
     private javax.swing.JPanel jPanel_hrany_laplacianGaussian;
+    private javax.swing.JPanel jPanel_hrany_obrysy;
     private javax.swing.JPanel jPanel_hrany_sobel;
     private javax.swing.JPanel jPanel_kontrolaSegmentu;
     private javax.swing.JPanel jPanel_kontrolaSegmentu_maskovani;
