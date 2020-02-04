@@ -313,6 +313,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_vyfotit, gridBagConstraints);
 
@@ -330,6 +331,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_zeSouboru, gridBagConstraints);
 
@@ -347,6 +349,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_outputAsInput, gridBagConstraints);
 
@@ -361,6 +364,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
 
@@ -1467,6 +1471,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
 
         jButton_toolbar_invertColors.setText("Invertuj barvy");
@@ -1480,6 +1485,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_invertColors, gridBagConstraints);
 
@@ -1494,6 +1500,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_toColourScheme, gridBagConstraints);
 
@@ -1506,6 +1513,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanelToolBarBasic.add(jButton_toolbar_zoomPlus, gridBagConstraints);
 
         jButton_toolbar_zoomMinus.setText("-");
@@ -1517,6 +1525,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanelToolBarBasic.add(jButton_toolbar_zoomMinus, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
@@ -2673,7 +2682,9 @@ public class ViewTester extends javax.swing.JFrame {
                     System.out.println();
                 }
                 hullList.add(new MatOfPoint(hullPoints));
-                hullList.add(new MatOfPoint(SegmentsControl.quadrilateralHull(hullPoints, 5)));
+                Point[] quatrop = SegmentsControl.quadrilateralHull(hullPoints, 5);
+                hullList.add(new MatOfPoint(quatrop));
+                quatrop = SegmentsControl.sortPoints(quatrop);
 //                System.out.println(hullList.get(0).dump());
                 color = new Scalar(255, 0, 0);
                 //Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
@@ -2681,6 +2692,15 @@ public class ViewTester extends javax.swing.JFrame {
              
                 Imgproc.drawContours(maska, hullList, 1, new Scalar(0, 255,  0));
 //                System.out.println(hullList.get(1).dump());
+                jSpinner_kontrolaSegmentu_orez_roh1x.setValue((int)quatrop[0].x);
+                jSpinner_kontrolaSegmentu_orez_roh1y.setValue((int)quatrop[0].y);
+                jSpinner_kontrolaSegmentu_orez_roh2x.setValue((int)quatrop[1].x);
+                jSpinner_kontrolaSegmentu_orez_roh2y.setValue((int)quatrop[1].y);
+                jSpinner_kontrolaSegmentu_orez_roh3x.setValue((int)quatrop[2].x);
+                jSpinner_kontrolaSegmentu_orez_roh3y.setValue((int)quatrop[2].y);
+                jSpinner_kontrolaSegmentu_orez_roh4x.setValue((int)quatrop[3].x);
+                jSpinner_kontrolaSegmentu_orez_roh4y.setValue((int)quatrop[3].y);
+
             } else {
             Point[] rectPoints = new Point[4];
             RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));

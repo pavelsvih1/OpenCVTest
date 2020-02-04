@@ -236,26 +236,99 @@ public class SegmentsControl {
      * @return 
      */
     private static Point getCrossPoint(Point pa, Point pb, Point pc, Point pd) {
-        double bax, bay, bal;
-        double dcx, dcy, dck;
-        double sx, sy;
+        double bax, bay, bal = 0;
+        double dcx, dcy, dck = 0;
+        double sx, sy = 0;
+        boolean mameY = false;
+        boolean nemameK = false;
+        boolean nemameL = false;
         
         bax = pb.x - pa.x;
         bay = pb.y - pa.y;  // osetrit na nulu!
         
-        bal = (-1) * bax / bay;
+        if(bay == 0) {
+            // rovnice primky je tedy Y=pa.y
+            sy = pa.y;
+            mameY = true;
+            nemameL = true;
+        } else {
+            bal = (-1) * bax / bay;
+        }
         
         dcx = pd.x - pc.x;
         dcy = pd.y - pc.y;
         
-        dck = (-1) * dcx / dcy;
+        if(dcy == 0) {
+            sy = pd.y;
+            mameY = true;
+            nemameK = true;
+        } else {
+            dck = (-1) * dcx / dcy; //!
+        }
         
-        sy = pa.x + pa.y * bal - pc.x - pc.y * dck;
-        sx = bal - dck;
-        sy = sy / sx;   // souradnice Y
-        sx = (pc.x + pc.y * dck) - dck * sy;
+        if(!mameY) {
+            sy = pa.x + pa.y * bal - pc.x - pc.y * dck;
+            sx = bal - dck;     // nesmi byt 0
+            sy = sy / sx;   // souradnice Y
+        }
+        
+        if(!nemameK) {
+            sx = (pc.x + pc.y * dck) - dck * sy;
+        } else if(!nemameL) {
+            sx = (pa.x + pa.y * bal) - bal * sy;
+        } else {
+            // rovnobezky
+            return(null);
+        }
+        // nakonec jeste zaokrouhlime na cela cisla
+        sx = Math.round(sx);
+        sy = Math.round(sy);
         
         return(new Point(sx, sy));
+    }
+
+    /**
+     * Srovna rohy pro poradi vhodne k orezani
+     * @param qpoints
+     * @return 
+     */
+    public static Point[] sortPoints(Point[] qpoints) {
+        int prvni = 0;
+        int i, testovanyL, testovanyH, hodnotaL, hodnotaH;
+        if(qpoints.length != 4) {
+            return(null);
+        }
+        Point [] retPoints = new Point[4];
+        
+        //nejprve si nalezneme nejvyssi vrchol
+        for(i = 0; i < 4; i++) {
+            if(qpoints[i].y < qpoints[prvni].y) {
+                prvni = i;
+            }
+        }
+        
+        //podle vetsi delky sousednich bodu se rozhodneme, kde je zacatek
+        testovanyL = prvni - 1;
+        if(testovanyL < 0) {
+            testovanyL = 3;
+        }
+        testovanyH = prvni + 1;
+        if(testovanyH > 3) {
+            testovanyH = 0;
+        }
+        hodnotaH = (int) (qpoints[testovanyH].x - qpoints[prvni].x);
+        hodnotaL = (int) (qpoints[prvni].x - qpoints[testovanyL].x);
+        if(hodnotaL > hodnotaH) {
+            prvni = testovanyL; // zamenime pocatek
+        }
+        
+        //a vlastni srovnani
+        retPoints[0] = qpoints[prvni];
+        retPoints[1] = qpoints[(prvni+1)%4];
+        retPoints[2] = qpoints[(prvni+3)%4];
+        retPoints[3] = qpoints[(prvni+2)%4];
+        
+        return(retPoints);
     }
     
     /**
