@@ -33,6 +33,7 @@ import org.opencv.core.Size;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
@@ -265,6 +266,7 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_kontrolaSegmentu_vyhodnoceni = new javax.swing.JPanel();
         jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor = new javax.swing.JButton();
         jButton_kontrolaSegmentu_vyhodnoceni_vycisli = new javax.swing.JButton();
+        jButton_kontrolaSegmentu_dejDisplej = new javax.swing.JButton();
         jPanel_analyzaBarev = new javax.swing.JPanel();
         jToggleButton_analyzaBarev_viewColor = new javax.swing.JToggleButton();
         jPanel_analyzaBarev_prevzorkuj = new javax.swing.JPanel();
@@ -1395,6 +1397,14 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_vyhodnoceni);
 
+        jButton_kontrolaSegmentu_dejDisplej.setText("Extrahuj displej");
+        jButton_kontrolaSegmentu_dejDisplej.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_dejDisplejActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_dejDisplej);
+
         jTabbedPane_nastroje.addTab("Kontrola segmentù", jPanel_kontrolaSegmentu);
 
         jToggleButton_analyzaBarev_viewColor.setText("Ukázat barvu");
@@ -2321,13 +2331,25 @@ public class ViewTester extends javax.swing.JFrame {
             skutecna[1] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh2x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh2y.getValue());
             skutecna[2] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh3x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh3y.getValue());
             skutecna[3] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh4x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh4y.getValue());
-            cilova[0] = skutecna[0];
-            cilova[1] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y);
-            cilova[2] = new Point(skutecna[0].x, skutecna[0].y + rozliseniY);
-            cilova[3] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y + rozliseniY);
+//            cilova[0] = skutecna[0];
+//            cilova[1] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y);
+//            cilova[2] = new Point(skutecna[0].x, skutecna[0].y + rozliseniY);
+//            cilova[3] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y + rozliseniY);
+            cilova[0] = new Point(0, 0);
+            cilova[1] = new Point(rozliseniX, 0);
+            cilova[2] = new Point(0, rozliseniY);
+            cilova[3] = new Point(rozliseniX, rozliseniY);
 
-            outputMat = SegmentsControl.perspectiveMatAndCut(inputMat, skutecna, cilova);
-
+            Mat perspectiveMat = SegmentsControl.perspectiveMatAndCut(inputMat, outputMat, skutecna, cilova);
+            System.out.println("Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
+            System.out.println("Inversni Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
+            System.out.println("Druha inversni Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
             repaintOutputMat();
             jLabel_info.setText(">");
         } catch (Exception exception) {
@@ -2721,6 +2743,67 @@ public class ViewTester extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_hrany_extractContoursActionPerformed
 
+    private void jButton_kontrolaSegmentu_dejDisplejActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_dejDisplejActionPerformed
+        try {
+            Point[] corners;
+            Mat preMat = new Mat();
+            Mat displejOrez1Mat = new Mat();
+            double rozliseniX = 827;
+            double rozliseniY = 252;
+            
+            
+            // ziskani kontur
+            Imgproc.Canny(inputMat, preMat, 100, 200);
+            
+            // ziskani displeje - prvni faze
+            corners = SegmentsControl.getQuatroHullPoints(preMat, false);
+
+            // vyriznuti displeje - faze 1
+            Point[] cilova = new Point[4];
+            cilova[0] = new Point(0, 0);
+            cilova[1] = new Point(rozliseniX, 0);
+            cilova[2] = new Point(0, rozliseniY);
+            cilova[3] = new Point(rozliseniX, rozliseniY);
+
+            Mat perspectiveMat = SegmentsControl.perspectiveMatAndCut(inputMat, displejOrez1Mat, corners, cilova);
+            System.out.println("Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
+            System.out.println("Inversni Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+
+            // ziskani zpetne perspektivni matice
+            perspectiveMat = Imgproc.getPerspectiveTransform(new MatOfPoint2f(cilova), new MatOfPoint2f(corners));
+            System.out.println("Zpetna persp. matice:");
+            System.out.println(perspectiveMat.dump());
+
+            // ziskani displeje - faze 2
+            corners = SegmentsControl.findDisplayCorners(displejOrez1Mat);
+            // prozeneme rohy inversni matici at mame body v puvodnim obrazku
+            Mat backMat = new MatOfPoint2f(corners);
+            MatOfPoint2f pMat = new MatOfPoint2f();
+//            perspectiveMat = Mat.ones(3, 3, perspectiveMat.type());
+//            Imgproc.warpPerspective(backMat, test, perspectiveMat, backMat.size(),Imgproc.WARP_INVERSE_MAP);
+            Core.perspectiveTransform(backMat, pMat, perspectiveMat);
+            System.out.println("Matice bodu:\n"+pMat.dump()+"\nPuvodni body:\n"+backMat.dump()+"\nTransformacni matice:\n"+perspectiveMat.dump());
+            corners = pMat.toArray();
+            // a ted rohy transformujeme do roviny a orizneme
+            SegmentsControl.perspectiveMatAndCut(inputMat, outputMat, corners, cilova);
+            
+            //(outputMat.submat(new Rect(outputPoints[0], outputPoints[3]))).assignTo(resultOutputMat);
+             
+            
+            
+//            outputMat = displejOrez1Mat;
+            
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_dejDisplejActionPerformed
+
     private void view1Canal(int canalNum) {
         int vyska = inputMat.height();
         int sirka = inputMat.width();
@@ -2975,6 +3058,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_hrany_hough_houghLinesP;
     private javax.swing.JButton jButton_hrany_laplacianGaussian;
     private javax.swing.JButton jButton_hrany_laplacianGaussian_zostreni;
+    private javax.swing.JButton jButton_kontrolaSegmentu_dejDisplej;
     private javax.swing.JButton jButton_kontrolaSegmentu_maskuj;
     private javax.swing.JButton jButton_kontrolaSegmentu_orez_proved;
     private javax.swing.JButton jButton_kontrolaSegmentu_souborMasky;

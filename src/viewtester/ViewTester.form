@@ -1677,6 +1677,14 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="javax.swing.JButton" name="jButton_kontrolaSegmentu_dejDisplej">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Extrahuj displej"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_kontrolaSegmentu_dejDisplejActionPerformed"/>
+                      </Events>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel_analyzaBarev">

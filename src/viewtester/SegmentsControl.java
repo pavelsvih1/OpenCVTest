@@ -8,13 +8,16 @@ package viewtester;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
@@ -43,15 +46,15 @@ public class SegmentsControl {
      * Vypocita perspektivni matici dle vstupnich bodu a vystupnich bodu a
      * orizne matici podle vystupnich bodu
      *
-     * @param inputMat
+     * @param inputMat vstupni obraz
+     * @param resultOutputMat vystupni matice - vysledek
      * @param inputPoints
      * @param outputPoints
-     * @return
+     * @return transformacni matice perspektivy
      */
-    public static Mat perspectiveMatAndCut(Mat inputMat, Point[] inputPoints, Point[] outputPoints) {
-        Mat transformace = new Mat();
+    public static Mat perspectiveMatAndCut(Mat inputMat, Mat resultOutputMat, Point[] inputPoints, Point[] outputPoints) {
+        Mat transformace;
         Mat outputMat = new Mat();
-        Mat resultMat = new Mat();
 
         // nejprve si spocitame transformacni matici z vypozorovanych hodnot
         MatOfPoint2f orig = new MatOfPoint2f(inputPoints);
@@ -59,8 +62,120 @@ public class SegmentsControl {
         transformace = Imgproc.getPerspectiveTransform(orig, new MatOfPoint2f(outputPoints));
         System.out.println("Transformace>\n" + transformace.dump());
         Imgproc.warpPerspective(inputMat, outputMat, transformace, inputMat.size());
-        resultMat = outputMat.submat(new Rect(outputPoints[0], outputPoints[3]));
-        return (resultMat);
+        (outputMat.submat(new Rect(outputPoints[0], outputPoints[3]))).assignTo(resultOutputMat);
+        return (transformace);
+    }
+
+    /**
+     * Najde oreze displej o stinovy ramecek.
+     * @param inputMat obrazek displeje orezany a pravouhly - prvni orez 
+     * @return 4 rohy displeje ve vstupnim obraze
+     */
+    public static Point[] findDisplayCorners(Mat inputMat) {
+        Mat resultMat = new Mat();
+        Point [] quatrop;
+        
+        // --> CB
+        Mat preMat = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8UC1);
+        Imgproc.cvtColor(inputMat, preMat, Imgproc.COLOR_RGB2GRAY);
+
+        // --> Invertovat barvy
+        Core.bitwise_not(preMat, resultMat);
+
+        // --> Prahovat - adaptivni MeanC/11
+        Imgproc.adaptiveThreshold(resultMat, preMat, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 11, 0);
+
+        // --> Invertovat barvy
+        Core.bitwise_not(preMat, resultMat);
+        
+        // --> Otevrit 5x5
+        Mat matElement = new Mat(5, 5, CvType.CV_8U, Scalar.all(1));
+        Imgproc.morphologyEx(resultMat, preMat, Imgproc.MORPH_OPEN, matElement);
+
+        // --> Zavrit 
+        Imgproc.morphologyEx(preMat, resultMat, Imgproc.MORPH_CLOSE, matElement);
+
+        // --> Extrahuj obdelnikove obrysy
+        quatrop = getQuatroHullPoints(resultMat, true);
+
+        return quatrop;
+    }
+
+    /**
+     * Vrati obrysy nejvetsiho prvku v obrazku dane 4-mi body
+     * @param inputMat
+     * @param orthogonal zda maji byt obrysy pravouhle 
+     * @return 
+     */
+    public static Point[] getQuatroHullPoints(Mat inputMat, boolean orthogonal) {
+        Mat hierarchy = new Mat();
+        Point[] quatrop;
+//            Mat maska;
+        List<MatOfPoint> contours = new ArrayList<>();
+        Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+//            outputMat = Mat.zeros(preMat.size(), CvType.CV_8UC3);
+//            for (int i = 0; i < contours.size(); i++) {
+//                Scalar color = new Scalar(50, 0, 255);
+//                Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
+//            }
+
+//            maska = Mat.zeros(preMat.size(), CvType.CV_8UC3);
+//            Imgproc.drawContours(maska, contours,-1, new Scalar(255), Imgproc.FILLED);
+//            // vypln vseho spojeneho
+//            for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
+//                Imgproc.drawContours(maska, contours, contourIdx, new Scalar(0, 0, 255), Imgproc.FILLED);
+//            }
+        double maxArea = 0;
+        int iMaxContour = 0;
+        // nalezneme nejvetsi obklicenou plochu
+        for (int ci = 0; ci < contours.size(); ci++) {
+            MatOfPoint contour = contours.get(ci);
+            double contourArea = Imgproc.contourArea(contour);
+//                Rect boundingBox = Imgproc.boundingRect(contour);
+//                double aspectRatio = (double) boundingBox.width / boundingBox.height;
+//                double extent = contourArea / (boundingBox.width * boundingBox.height);
+//                if (contourArea > maxArea && contourArea > 200 && aspectRatio > this.aspectMin && aspectRatio < this.aspectMax && extent > this.extentMin && extent < this.extentMax) {
+            if (contourArea > maxArea) {
+                maxArea = contourArea;
+                iMaxContour = ci;
+            }
+        }
+//            Imgproc.drawContours(maska, contours, iMaxContour, new Scalar(0, 0, 255), Imgproc.FILLED);
+//            System.out.println("nalezeno>\n"+contours.get(iMaxContour).dump());
+
+        MatOfPoint contour = contours.get(iMaxContour);
+        if (!orthogonal) {
+            List<MatOfPoint> hullList = new ArrayList<>();
+            MatOfInt hull = new MatOfInt();
+            Imgproc.convexHull(contour, hull);
+            Point[] contourArray = contour.toArray();
+            Point[] hullPoints = new Point[hull.rows()];
+            List<Integer> hullContourIdxList = hull.toList();
+            double dx, dy;
+            for (int i = 0; i < hullContourIdxList.size(); i++) {
+                hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+                System.out.print("Bod " + i + " : " + hullPoints[i].toString());
+                if (i > 0) {
+                    dx = hullPoints[i].x - hullPoints[i - 1].x;
+                    dy = hullPoints[i].y - hullPoints[i - 1].y;
+                    System.out.print("  Rozdil: " + dx + "," + dy);
+                }
+                System.out.println();
+            }
+            hullList.add(new MatOfPoint(hullPoints));
+            quatrop = quadrilateralHull(hullPoints, 5);
+            hullList.add(new MatOfPoint(quatrop));
+            quatrop = sortPoints(quatrop);
+        } else {
+            quatrop = new Point[4];
+            RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+            minRect.points(quatrop);
+//            for (int j = 0; j < 4; j++) {
+//                Imgproc.line(inputMat, rectPoints[j], rectPoints[(j + 1) % 4], new Scalar(255, 0, 0));
+//            }
+            quatrop = sortPoints(quatrop);
+        }
+        return (quatrop);
     }
 
     /**
@@ -120,6 +235,15 @@ public class SegmentsControl {
         return resultMat1;
     }
 
+    /**
+     * Vrati obrys dany 4-mi rohovymi body. Primarne urceno k odstraneni napr.
+     * zaoblenych rohu
+     *
+     * @param hullPoints obrys, zadany minimalne 8-mi body (4 usecky)
+     * @param minLen nejmensi delka dvou usecek na sebe navazujicich tvorenych
+     * tremi body urcena k jejich spojeni
+     * @return
+     */
     public static Point[] quadrilateralHull(Point[] hullPoints, int minLen) {
 
         if (hullPoints.length <= 8) {
@@ -167,8 +291,8 @@ public class SegmentsControl {
 
         // ted ponechame jen 4 nejvetsi dvojice bodu - 2 v X, 2 v Y
         pointList = retPointList;
-        int[] nej = {0,1,2,3};    // 0-nejX, 1-2.nejX, 2-nejY, 3-2.nejY ; zacit musim s ruznymi hodnotami
-                                
+        int[] nej = {0, 1, 2, 3};    // 0-nejX, 1-2.nejX, 2-nejY, 3-2.nejY ; zacit musim s ruznymi hodnotami
+
         computedList = computeDeltaPoints(pointList);   // prepocitame
         printListPoints(computedList, pointList);
         // vybereme dvojice
@@ -214,13 +338,13 @@ public class SegmentsControl {
         // jeste debug vystup
         computedList = computeDeltaPoints(retPointList);   // prepocitame
         printListPoints(computedList, retPointList);
-        
+
         pointList = new ArrayList<>();
         pointList.add(getCrossPoint(retPointList.get(0), retPointList.get(1), retPointList.get(3), retPointList.get(2)));
         pointList.add(getCrossPoint(retPointList.get(2), retPointList.get(3), retPointList.get(5), retPointList.get(4)));
         pointList.add(getCrossPoint(retPointList.get(4), retPointList.get(5), retPointList.get(7), retPointList.get(6)));
         pointList.add(getCrossPoint(retPointList.get(6), retPointList.get(7), retPointList.get(1), retPointList.get(0)));
- 
+
         // jeste debug vystup
         computedList = computeDeltaPoints(pointList);   // prepocitame
         printListPoints(computedList, pointList);
@@ -229,11 +353,12 @@ public class SegmentsControl {
 
     /**
      * Vrati prusecik primek danych body AB a CD
+     *
      * @param pa
      * @param pb
      * @param pc
      * @param pd
-     * @return 
+     * @return
      */
     private static Point getCrossPoint(Point pa, Point pb, Point pc, Point pd) {
         double bax, bay, bal = 0;
@@ -242,11 +367,11 @@ public class SegmentsControl {
         boolean mameY = false;
         boolean nemameK = false;
         boolean nemameL = false;
-        
+
         bax = pb.x - pa.x;
         bay = pb.y - pa.y;  // osetrit na nulu!
-        
-        if(bay == 0) {
+
+        if (bay == 0) {
             // rovnice primky je tedy Y=pa.y
             sy = pa.y;
             mameY = true;
@@ -254,83 +379,84 @@ public class SegmentsControl {
         } else {
             bal = (-1) * bax / bay;
         }
-        
+
         dcx = pd.x - pc.x;
         dcy = pd.y - pc.y;
-        
-        if(dcy == 0) {
+
+        if (dcy == 0) {
             sy = pd.y;
             mameY = true;
             nemameK = true;
         } else {
             dck = (-1) * dcx / dcy; //!
         }
-        
-        if(!mameY) {
+
+        if (!mameY) {
             sy = pa.x + pa.y * bal - pc.x - pc.y * dck;
             sx = bal - dck;     // nesmi byt 0
             sy = sy / sx;   // souradnice Y
         }
-        
-        if(!nemameK) {
+
+        if (!nemameK) {
             sx = (pc.x + pc.y * dck) - dck * sy;
-        } else if(!nemameL) {
+        } else if (!nemameL) {
             sx = (pa.x + pa.y * bal) - bal * sy;
         } else {
             // rovnobezky
-            return(null);
+            return (null);
         }
         // nakonec jeste zaokrouhlime na cela cisla
         sx = Math.round(sx);
         sy = Math.round(sy);
-        
-        return(new Point(sx, sy));
+
+        return (new Point(sx, sy));
     }
 
     /**
      * Srovna rohy pro poradi vhodne k orezani
+     *
      * @param qpoints
-     * @return 
+     * @return
      */
     public static Point[] sortPoints(Point[] qpoints) {
         int prvni = 0;
         int i, testovanyL, testovanyH, hodnotaL, hodnotaH;
-        if(qpoints.length != 4) {
-            return(null);
+        if (qpoints.length != 4) {
+            return (null);
         }
-        Point [] retPoints = new Point[4];
-        
+        Point[] retPoints = new Point[4];
+
         //nejprve si nalezneme nejvyssi vrchol
-        for(i = 0; i < 4; i++) {
-            if(qpoints[i].y < qpoints[prvni].y) {
+        for (i = 0; i < 4; i++) {
+            if (qpoints[i].y < qpoints[prvni].y) {
                 prvni = i;
             }
         }
-        
+
         //podle vetsi delky sousednich bodu se rozhodneme, kde je zacatek
         testovanyL = prvni - 1;
-        if(testovanyL < 0) {
+        if (testovanyL < 0) {
             testovanyL = 3;
         }
         testovanyH = prvni + 1;
-        if(testovanyH > 3) {
+        if (testovanyH > 3) {
             testovanyH = 0;
         }
         hodnotaH = (int) (qpoints[testovanyH].x - qpoints[prvni].x);
         hodnotaL = (int) (qpoints[prvni].x - qpoints[testovanyL].x);
-        if(hodnotaL > hodnotaH) {
+        if (hodnotaL > hodnotaH) {
             prvni = testovanyL; // zamenime pocatek
         }
-        
+
         //a vlastni srovnani
         retPoints[0] = qpoints[prvni];
-        retPoints[1] = qpoints[(prvni+1)%4];
-        retPoints[2] = qpoints[(prvni+3)%4];
-        retPoints[3] = qpoints[(prvni+2)%4];
-        
-        return(retPoints);
+        retPoints[1] = qpoints[(prvni + 1) % 4];
+        retPoints[2] = qpoints[(prvni + 3) % 4];
+        retPoints[3] = qpoints[(prvni + 2) % 4];
+
+        return (retPoints);
     }
-    
+
     /**
      * Vytiskne debugovaci vystup listu
      *
