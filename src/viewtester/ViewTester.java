@@ -2772,7 +2772,7 @@ public class ViewTester extends javax.swing.JFrame {
             System.out.println("Inversni Persp. matice:");
             System.out.println(perspectiveMat.dump());
 
-            // ziskani zpetne perspektivni matice
+            // ziskani zpetne perspektivni matice - pro porovnani presnosti
             perspectiveMat = Imgproc.getPerspectiveTransform(new MatOfPoint2f(cilova), new MatOfPoint2f(corners));
             System.out.println("Zpetna persp. matice:");
             System.out.println(perspectiveMat.dump());
