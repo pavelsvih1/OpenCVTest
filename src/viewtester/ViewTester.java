@@ -27,11 +27,13 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Range;
 import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
@@ -47,6 +49,7 @@ public class ViewTester extends javax.swing.JFrame {
     Mat inputMat;
     Mat outputMat;
     Mat templateMat;
+    Mat segmentMaskMat;
     Mat maskFile = null;
     private static final String TEMPLATE_WIN_NAME = new String("Vzor k porovnani");
     private static final String TEMPLATE_VYSTUP = new String("Vysledek");
@@ -54,6 +57,7 @@ public class ViewTester extends javax.swing.JFrame {
     private final int CAMERAHEIGHT = 480;
     VideoCapture grabber;
 // pomìr displeje: 3,1165
+
     /**
      * Creates new form ViewTester
      */
@@ -120,6 +124,7 @@ public class ViewTester extends javax.swing.JFrame {
 
         buttonGroup_prahovani = new javax.swing.ButtonGroup();
         buttonGroup_porovnani = new javax.swing.ButtonGroup();
+        jLabel3 = new javax.swing.JLabel();
         jLabel_info = new javax.swing.JLabel();
         jToolBar = new javax.swing.JToolBar();
         jPanelToolBarBasic = new javax.swing.JPanel();
@@ -219,6 +224,15 @@ public class ViewTester extends javax.swing.JFrame {
         jSlider_hrany_canny_horniMez = new javax.swing.JSlider();
         jPanel_hrany_hough = new javax.swing.JPanel();
         jButton_hrany_hough_houghLinesP = new javax.swing.JButton();
+        jLabel_hough_prah = new javax.swing.JLabel();
+        jSpinner_hrany_hough_prah = new javax.swing.JSpinner();
+        jLabel_hough_minDelka = new javax.swing.JLabel();
+        jSpinner_hrany_hough_minLen = new javax.swing.JSpinner();
+        jSpinner_hrany_hough_maxGap = new javax.swing.JSpinner();
+        jLabel_hough_maxGap = new javax.swing.JLabel();
+        jPanel_hrany_obrysy = new javax.swing.JPanel();
+        jButton_hrany_extractContours = new javax.swing.JButton();
+        jCheckBox_hrany_obrysy_pravouhle = new javax.swing.JCheckBox();
         jPanel_rohy = new javax.swing.JPanel();
         jPanel_rohy_harris = new javax.swing.JPanel();
         jButton_rohy_harris_cornerHarris = new javax.swing.JButton();
@@ -244,14 +258,32 @@ public class ViewTester extends javax.swing.JFrame {
         jSpinner_kontrolaSegmentu_orez_roh4x = new javax.swing.JSpinner();
         jSpinner_kontrolaSegmentu_orez_roh4y = new javax.swing.JSpinner();
         jComboBox_kontrolaSegmentu_orez_rozliseni = new javax.swing.JComboBox<>();
+        jPanel_kontrolaSegmentu_maskovani = new javax.swing.JPanel();
         jButton_kontrolaSegmentu_maskuj = new javax.swing.JButton();
         jButton_kontrolaSegmentu_souborMasky = new javax.swing.JButton();
         jCheckBox_kontrolaSegmentu_invertujMasku = new javax.swing.JCheckBox();
+        jButton_kontrolaSegmentu_toBinary = new javax.swing.JButton();
+        jPanel_kontrolaSegmentu_vyhodnoceni = new javax.swing.JPanel();
+        jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor = new javax.swing.JButton();
+        jButton_kontrolaSegmentu_vyhodnoceni_vycisli = new javax.swing.JButton();
+        jButton_kontrolaSegmentu_dejDisplej = new javax.swing.JButton();
+        jPanel_analyzaBarev = new javax.swing.JPanel();
+        jToggleButton_analyzaBarev_viewColor = new javax.swing.JToggleButton();
+        jPanel_analyzaBarev_prevzorkuj = new javax.swing.JPanel();
+        jButton_analyzaBarev_prevzorkujBarvy = new javax.swing.JButton();
+        jSlider_analyzaBarev_prevzorkuj = new javax.swing.JSlider();
+        jButton_analyzaBarev_nejBarva = new javax.swing.JButton();
+        jButton_analyzabarev_nej2 = new javax.swing.JButton();
+        jButton_analyzaBarev_viewR = new javax.swing.JButton();
+        jButton_analyzaBarev_viewG = new javax.swing.JButton();
+        jButton_analyzaBarev_viewB = new javax.swing.JButton();
         jButton_toolbar_invertColors = new javax.swing.JButton();
         jButton_toolbar_toColourScheme = new javax.swing.JButton();
         jButton_toolbar_zoomPlus = new javax.swing.JButton();
         jButton_toolbar_zoomMinus = new javax.swing.JButton();
         jPanelObrazky = new JPanel_DoubleImage(inputImage, outputImage);
+
+        jLabel3.setText("jLabel3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tester funkci OpenCV knihovny");
@@ -261,6 +293,7 @@ public class ViewTester extends javax.swing.JFrame {
             }
         });
 
+        jLabel_info.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel_info.setText(">");
         getContentPane().add(jLabel_info, java.awt.BorderLayout.PAGE_END);
 
@@ -282,6 +315,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_vyfotit, gridBagConstraints);
 
@@ -299,6 +333,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_zeSouboru, gridBagConstraints);
 
@@ -316,6 +351,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_outputAsInput, gridBagConstraints);
 
@@ -330,6 +366,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolBar_toGrayScalled, gridBagConstraints);
 
@@ -1024,6 +1061,7 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_hrany.add(jPanel_hrany_canny);
 
         jPanel_hrany_hough.setBorder(javax.swing.BorderFactory.createTitledBorder("Hough"));
+        jPanel_hrany_hough.setLayout(new java.awt.GridBagLayout());
 
         jButton_hrany_hough_houghLinesP.setText("Najdi èáry");
         jButton_hrany_hough_houghLinesP.addActionListener(new java.awt.event.ActionListener() {
@@ -1031,9 +1069,94 @@ public class ViewTester extends javax.swing.JFrame {
                 jButton_hrany_hough_houghLinesPActionPerformed(evt);
             }
         });
-        jPanel_hrany_hough.add(jButton_hrany_hough_houghLinesP);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        jPanel_hrany_hough.add(jButton_hrany_hough_houghLinesP, gridBagConstraints);
+
+        jLabel_hough_prah.setText("Práh");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_hough.add(jLabel_hough_prah, gridBagConstraints);
+
+        jSpinner_hrany_hough_prah.setModel(new javax.swing.SpinnerNumberModel(20, 1, null, 1));
+        jSpinner_hrany_hough_prah.setMinimumSize(new java.awt.Dimension(50, 20));
+        jSpinner_hrany_hough_prah.setPreferredSize(new java.awt.Dimension(50, 20));
+        jSpinner_hrany_hough_prah.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_hrany_hough_prahStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_hough.add(jSpinner_hrany_hough_prah, gridBagConstraints);
+
+        jLabel_hough_minDelka.setText("Min. délka");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_hrany_hough.add(jLabel_hough_minDelka, gridBagConstraints);
+
+        jSpinner_hrany_hough_minLen.setModel(new javax.swing.SpinnerNumberModel(20, 1, null, 1));
+        jSpinner_hrany_hough_minLen.setMinimumSize(new java.awt.Dimension(50, 20));
+        jSpinner_hrany_hough_minLen.setPreferredSize(new java.awt.Dimension(50, 20));
+        jSpinner_hrany_hough_minLen.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_hrany_hough_minLenStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_hough.add(jSpinner_hrany_hough_minLen, gridBagConstraints);
+
+        jSpinner_hrany_hough_maxGap.setModel(new javax.swing.SpinnerNumberModel(3, 0, null, 1));
+        jSpinner_hrany_hough_maxGap.setMinimumSize(new java.awt.Dimension(50, 20));
+        jSpinner_hrany_hough_maxGap.setPreferredSize(new java.awt.Dimension(50, 20));
+        jSpinner_hrany_hough_maxGap.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner_hrany_hough_maxGapStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_hough.add(jSpinner_hrany_hough_maxGap, gridBagConstraints);
+
+        jLabel_hough_maxGap.setText("Max. mezera");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        jPanel_hrany_hough.add(jLabel_hough_maxGap, gridBagConstraints);
 
         jPanel_hrany.add(jPanel_hrany_hough);
+
+        jPanel_hrany_obrysy.setLayout(new java.awt.GridBagLayout());
+
+        jButton_hrany_extractContours.setText("Extrahuj obrysy");
+        jButton_hrany_extractContours.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_hrany_extractContoursActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_hrany_obrysy.add(jButton_hrany_extractContours, gridBagConstraints);
+
+        jCheckBox_hrany_obrysy_pravouhle.setText("Pravoúhle");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_hrany_obrysy.add(jCheckBox_hrany_obrysy_pravouhle, gridBagConstraints);
+
+        jPanel_hrany.add(jPanel_hrany_obrysy);
 
         jTabbedPane_nastroje.addTab("Hrany", jPanel_hrany);
 
@@ -1207,13 +1330,20 @@ public class ViewTester extends javax.swing.JFrame {
 
         jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_orezAVyrovnej);
 
+        jPanel_kontrolaSegmentu_maskovani.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel_kontrolaSegmentu_maskovani.setLayout(new java.awt.GridBagLayout());
+
         jButton_kontrolaSegmentu_maskuj.setText("Vymaskuj segmenty");
         jButton_kontrolaSegmentu_maskuj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_kontrolaSegmentu_maskujActionPerformed(evt);
             }
         });
-        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_maskuj);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        jPanel_kontrolaSegmentu_maskovani.add(jButton_kontrolaSegmentu_maskuj, gridBagConstraints);
 
         jButton_kontrolaSegmentu_souborMasky.setText("Maskovaci soubor");
         jButton_kontrolaSegmentu_souborMasky.addActionListener(new java.awt.event.ActionListener() {
@@ -1221,19 +1351,137 @@ public class ViewTester extends javax.swing.JFrame {
                 jButton_kontrolaSegmentu_souborMaskyActionPerformed(evt);
             }
         });
-        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_souborMasky);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        jPanel_kontrolaSegmentu_maskovani.add(jButton_kontrolaSegmentu_souborMasky, gridBagConstraints);
 
+        jCheckBox_kontrolaSegmentu_invertujMasku.setSelected(true);
         jCheckBox_kontrolaSegmentu_invertujMasku.setText("Invertuj masku");
-        jPanel_kontrolaSegmentu.add(jCheckBox_kontrolaSegmentu_invertujMasku);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_kontrolaSegmentu_maskovani.add(jCheckBox_kontrolaSegmentu_invertujMasku, gridBagConstraints);
 
-        jTabbedPane_nastroje.addTab("kontrola segmentù", jPanel_kontrolaSegmentu);
+        jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_maskovani);
+
+        jButton_kontrolaSegmentu_toBinary.setText("Zpracuj do ÈB");
+        jButton_kontrolaSegmentu_toBinary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_toBinaryActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_toBinary);
+
+        jPanel_kontrolaSegmentu_vyhodnoceni.setBorder(javax.swing.BorderFactory.createTitledBorder("Vyhodnocení"));
+        jPanel_kontrolaSegmentu_vyhodnoceni.setLayout(new java.awt.GridBagLayout());
+
+        jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor.setText("Segmentová maska");
+        jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu_vyhodnoceni.add(jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor, new java.awt.GridBagConstraints());
+
+        jButton_kontrolaSegmentu_vyhodnoceni_vycisli.setText("Vyhodno");
+        jButton_kontrolaSegmentu_vyhodnoceni_vycisli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel_kontrolaSegmentu_vyhodnoceni.add(jButton_kontrolaSegmentu_vyhodnoceni_vycisli, gridBagConstraints);
+
+        jPanel_kontrolaSegmentu.add(jPanel_kontrolaSegmentu_vyhodnoceni);
+
+        jButton_kontrolaSegmentu_dejDisplej.setText("Extrahuj displej");
+        jButton_kontrolaSegmentu_dejDisplej.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_kontrolaSegmentu_dejDisplejActionPerformed(evt);
+            }
+        });
+        jPanel_kontrolaSegmentu.add(jButton_kontrolaSegmentu_dejDisplej);
+
+        jTabbedPane_nastroje.addTab("Kontrola segmentù", jPanel_kontrolaSegmentu);
+
+        jToggleButton_analyzaBarev_viewColor.setText("Ukázat barvu");
+        jPanel_analyzaBarev.add(jToggleButton_analyzaBarev_viewColor);
+
+        jPanel_analyzaBarev_prevzorkuj.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jButton_analyzaBarev_prevzorkujBarvy.setText("Uprav barvy");
+        jButton_analyzaBarev_prevzorkujBarvy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_prevzorkujBarvyActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev_prevzorkuj.add(jButton_analyzaBarev_prevzorkujBarvy);
+
+        jSlider_analyzaBarev_prevzorkuj.setMajorTickSpacing(50);
+        jSlider_analyzaBarev_prevzorkuj.setMaximum(250);
+        jSlider_analyzaBarev_prevzorkuj.setMinorTickSpacing(25);
+        jSlider_analyzaBarev_prevzorkuj.setPaintLabels(true);
+        jSlider_analyzaBarev_prevzorkuj.setPaintTicks(true);
+        jSlider_analyzaBarev_prevzorkuj.setValue(100);
+        jSlider_analyzaBarev_prevzorkuj.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_analyzaBarev_prevzorkujStateChanged(evt);
+            }
+        });
+        jPanel_analyzaBarev_prevzorkuj.add(jSlider_analyzaBarev_prevzorkuj);
+
+        jPanel_analyzaBarev.add(jPanel_analyzaBarev_prevzorkuj);
+
+        jButton_analyzaBarev_nejBarva.setText("Nejvýznamnìjší barva");
+        jButton_analyzaBarev_nejBarva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_nejBarvaActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_nejBarva);
+
+        jButton_analyzabarev_nej2.setText("Nejvýznamnìjší 2");
+        jButton_analyzabarev_nej2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzabarev_nej2ActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzabarev_nej2);
+
+        jButton_analyzaBarev_viewR.setText("R");
+        jButton_analyzaBarev_viewR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_viewRActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_viewR);
+
+        jButton_analyzaBarev_viewG.setText("G");
+        jButton_analyzaBarev_viewG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_viewGActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_viewG);
+
+        jButton_analyzaBarev_viewB.setText("B");
+        jButton_analyzaBarev_viewB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_analyzaBarev_viewBActionPerformed(evt);
+            }
+        });
+        jPanel_analyzaBarev.add(jButton_analyzaBarev_viewB);
+
+        jTabbedPane_nastroje.addTab("Analýza barev", jPanel_analyzaBarev);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanelToolBarBasic.add(jTabbedPane_nastroje, gridBagConstraints);
 
         jButton_toolbar_invertColors.setText("Invertuj barvy");
@@ -1247,6 +1495,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_invertColors, gridBagConstraints);
 
@@ -1261,6 +1510,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
         jPanelToolBarBasic.add(jButton_toolbar_toColourScheme, gridBagConstraints);
 
@@ -1273,6 +1523,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanelToolBarBasic.add(jButton_toolbar_zoomPlus, gridBagConstraints);
 
         jButton_toolbar_zoomMinus.setText("-");
@@ -1284,6 +1535,7 @@ public class ViewTester extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanelToolBarBasic.add(jButton_toolbar_zoomMinus, gridBagConstraints);
 
         jToolBar.add(jPanelToolBarBasic);
@@ -1417,7 +1669,7 @@ public class ViewTester extends javax.swing.JFrame {
             jLabel_info.setText(">");
             pack();
         } catch (Exception e) {
-            jLabel_info.setText("> CHYBA: "+e.getLocalizedMessage());
+            jLabel_info.setText("> CHYBA: " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_toolBar_toGrayScalledActionPerformed
 
@@ -1497,8 +1749,47 @@ public class ViewTester extends javax.swing.JFrame {
         if (jToggleButton_morfologie_objektPodMysi.isSelected()) {
             viewObjects(evt);
         }
-
+        if (jToggleButton_analyzaBarev_viewColor.isSelected()) {
+            viewColor(evt);
+        }
     }//GEN-LAST:event_jPanelObrazkyMouseClicked
+
+    private void viewColor(MouseEvent evt) {
+        int x;
+        int y;
+        int h;
+        boolean prvni = true;
+        double[] color;
+        try {
+            java.awt.Point p = evt.getPoint();
+            x = p.x;
+            y = p.y;
+            // kontrola souradnic obrazku - prevedeme na vstupni obr. nebo konec
+            if (x >= inputMat.width()) {
+                x -= inputMat.width();
+                prvni = false;
+                if (x >= outputMat.width()) {
+                    return;
+                }
+            }
+            h = prvni ? inputMat.height() : outputMat.height();
+            if (y >= h) {
+                return;
+            }
+            Mat mat = prvni ? inputMat : outputMat;
+            color = mat.get(y, x);
+            if (color.length == 1) {
+                jLabel_info.setText("> ÈB : " + color[0]);
+            } else if (color.length == 3) {
+                jLabel_info.setText("> R : " + color[2] + " G : " + color[1] + " B : " + color[0]);
+            } else {
+                jLabel_info.setText("> " + color);
+            }
+
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }
 
     /**
      * zobrazeni objektu na souradnici mysi nebo vsech
@@ -1817,16 +2108,16 @@ public class ViewTester extends javax.swing.JFrame {
 
     private void jButton_hrany_SobelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_SobelActionPerformed
         try {
-            int dx = jCheckBox_hrany_sobel_horizontalne.isSelected()?1:0;
-            int dy = jCheckBox_hrany_sobel_vertikalne.isSelected()?1:0;
-            if(jCheckBox_hrany_sobel_horizontalne.isSelected() || jCheckBox_hrany_sobel_vertikalne.isSelected()) {
-                if(jCheckBox_hrany_sobel_horizontalne.isSelected() && jCheckBox_hrany_sobel_vertikalne.isSelected()) {
+            int dx = jCheckBox_hrany_sobel_horizontalne.isSelected() ? 1 : 0;
+            int dy = jCheckBox_hrany_sobel_vertikalne.isSelected() ? 1 : 0;
+            if (jCheckBox_hrany_sobel_horizontalne.isSelected() || jCheckBox_hrany_sobel_vertikalne.isSelected()) {
+                if (jCheckBox_hrany_sobel_horizontalne.isSelected() && jCheckBox_hrany_sobel_vertikalne.isSelected()) {
                     Mat sobelX = new Mat();
                     Mat sobelY = new Mat();
                     Imgproc.Sobel(inputMat, sobelX, CvType.CV_8U, 1, 0);
                     Imgproc.Sobel(inputMat, sobelY, CvType.CV_8U, 0, 1);
                     Core.addWeighted(sobelX, 1, sobelY, 1, 0, outputMat);
-                } else if(jCheckBox_hrany_sobel_horizontalne.isSelected()) {
+                } else if (jCheckBox_hrany_sobel_horizontalne.isSelected()) {
                     Imgproc.Sobel(inputMat, outputMat, CvType.CV_8U, 1, 0);
                 } else {
                     Imgproc.Sobel(inputMat, outputMat, CvType.CV_8U, 0, 1);
@@ -1846,14 +2137,14 @@ public class ViewTester extends javax.swing.JFrame {
     private void jButton_hrany_laplacianGaussianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_laplacianGaussianActionPerformed
         try {
             Mat vstup = inputMat.clone();
-            if(jCheckBox_hrany_laplacianGaussian_Gaussian.isSelected()) {
+            if (jCheckBox_hrany_laplacianGaussian_Gaussian.isSelected()) {
                 int gx = (int) jSpinner_hrany_laplacianGaussian_gaussX.getValue();
                 int gy = (int) jSpinner_hrany_laplacianGaussian_gaussY.getValue();
                 double sigma = Double.parseDouble(jTextField_hrany_laplacianGaussian_sigma.getText());
-                Imgproc.GaussianBlur(inputMat, outputMat, new Size(gx,gy), sigma);
+                Imgproc.GaussianBlur(inputMat, outputMat, new Size(gx, gy), sigma);
                 vstup = outputMat.clone();
             }
-            if(jCheckBox_hrany_laplacianGaussian_laplacian.isSelected()) {
+            if (jCheckBox_hrany_laplacianGaussian_laplacian.isSelected()) {
                 int hl = (int) jSpinner_hrany_laplacianGaussian_laplacianHloubka.getValue();
                 Imgproc.Laplacian(vstup, outputMat, CvType.CV_8U, hl);
             }
@@ -1865,7 +2156,7 @@ public class ViewTester extends javax.swing.JFrame {
             System.err.println("CHYBA: " + exception.getMessage());
             jLabel_info.setText("> " + exception.getLocalizedMessage());
         }
-                
+
     }//GEN-LAST:event_jButton_hrany_laplacianGaussianActionPerformed
 
     private void jButton_hrany_cannyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_cannyActionPerformed
@@ -1887,7 +2178,7 @@ public class ViewTester extends javax.swing.JFrame {
             Mat laplacMat = new Mat();
             inputMat.convertTo(convMat, CvType.CV_32F);
             Imgproc.Laplacian(convMat, laplacMat, CvType.CV_32F, hl);
-            Mat sharpIm = new Mat(convMat.rows(),convMat.cols(),convMat.type());
+            Mat sharpIm = new Mat(convMat.rows(), convMat.cols(), convMat.type());
             Core.addWeighted(convMat, 1, laplacMat, -0.3, 0, sharpIm);
             sharpIm.convertTo(outputMat, CvType.CV_8U);
             outputImage = MatToBufferedImage(outputMat);
@@ -1903,17 +2194,20 @@ public class ViewTester extends javax.swing.JFrame {
     private void jButton_hrany_hough_houghLinesPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_hough_houghLinesPActionPerformed
         try {
             Mat lines = new Mat();
-            Imgproc.HoughLinesP(inputMat, lines, 1, Math.PI/200, 40, 90, 3);
+            int maxGap = (int)jSpinner_hrany_hough_maxGap.getValue();
+            int minLen = (int)jSpinner_hrany_hough_minLen.getValue();
+            int threshold = (int)jSpinner_hrany_hough_prah.getValue();
+            Imgproc.HoughLinesP(inputMat, lines, 1, Math.PI / 200, threshold, minLen, maxGap);
             outputMat = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8U);
             Imgproc.cvtColor(inputMat, outputMat, Imgproc.COLOR_GRAY2RGB);
             for (int x = 0; x < lines.rows(); x++) {
                 double[] l = lines.get(x, 0);
-                Imgproc.line(outputMat, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar((x%2)*255, ((x%3)*127), ((x+1)%2)*255), 3, Imgproc.LINE_AA, 0);
+                Imgproc.line(outputMat, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar((x % 2) * 255, ((x % 3) * 127), ((x + 1) % 2) * 255), 3, Imgproc.LINE_AA, 0);
             }
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
-            jLabel_info.setText("> Poèet èar: "+lines.rows());
+            jLabel_info.setText("> Poèet èar: " + lines.rows());
         } catch (Exception exception) {
             System.err.println("CHYBA: " + exception.getMessage());
             jLabel_info.setText("> " + exception.getLocalizedMessage());
@@ -1922,12 +2216,12 @@ public class ViewTester extends javax.swing.JFrame {
 
     private void jButton_toolbar_zoomMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_zoomMinusActionPerformed
         try {
-            Imgproc.pyrDown( inputMat, inputMat, new Size( ((double)inputMat.cols())/2, ((double)inputMat.rows())/2 ) );
-            Imgproc.pyrDown( outputMat, outputMat, new Size(((double)outputMat.cols())/2, ((double)outputMat.rows())/2 ) );
+            Imgproc.pyrDown(inputMat, inputMat, new Size(((double) inputMat.cols()) / 2, ((double) inputMat.rows()) / 2));
+            Imgproc.pyrDown(outputMat, outputMat, new Size(((double) outputMat.cols()) / 2, ((double) outputMat.rows()) / 2));
 
             outputImage = MatToBufferedImage(outputMat);
             inputImage = MatToBufferedImage(inputMat);
-            
+
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
             repaint();
@@ -1941,12 +2235,12 @@ public class ViewTester extends javax.swing.JFrame {
 
     private void jButton_toolbar_zoomPlusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_toolbar_zoomPlusActionPerformed
         try {
-            Imgproc.pyrUp(inputMat, inputMat, new Size( ((double)inputMat.cols())*2, ((double)inputMat.rows())*2 ) );
-            Imgproc.pyrUp( outputMat, outputMat, new Size(((double)outputMat.cols())*2, ((double)outputMat.rows())*2 ) );
+            Imgproc.pyrUp(inputMat, inputMat, new Size(((double) inputMat.cols()) * 2, ((double) inputMat.rows()) * 2));
+            Imgproc.pyrUp(outputMat, outputMat, new Size(((double) outputMat.cols()) * 2, ((double) outputMat.rows()) * 2));
 
             outputImage = MatToBufferedImage(outputMat);
             inputImage = MatToBufferedImage(inputMat);
-            
+
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             ((JPanel_DoubleImage) jPanelObrazky).setImageLeft(inputImage);
             repaint();
@@ -1962,7 +2256,7 @@ public class ViewTester extends javax.swing.JFrame {
         try {
             Imgproc.equalizeHist(inputMat, outputMat);
             outputImage = MatToBufferedImage(outputMat);
-            
+
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
             pack();
@@ -1982,24 +2276,24 @@ public class ViewTester extends javax.swing.JFrame {
             Mat corn = Mat.zeros(inputMat.size(), CvType.CV_32FC1);
             Mat preMat = new Mat();
             Mat prevM = new Mat();
-            
+
             Imgproc.cornerHarris(inputMat, corn, blockSize, apertureSizeSobel, k);
-            
-           Core.normalize(corn, preMat, 0, 255, Core.NORM_MINMAX);
-        Core.convertScaleAbs(preMat, outputMat);
-        inputMat.convertTo(prevM, CvType.CV_8UC3);
-        Imgproc.cvtColor(prevM, outputMat, Imgproc.COLOR_GRAY2RGB);
-        float[] dstNormData = new float[(int) (preMat.total() * preMat.channels())];
-        preMat.get(0, 0, dstNormData);
-        for (int i = 0; i < preMat.rows(); i++) {
-            for (int j = 0; j < preMat.cols(); j++) {
-                if ((int) dstNormData[i * preMat.cols() + j] > threshold) {
-                    Imgproc.circle(outputMat, new Point(j, i), 5, new Scalar(0, 0, 255), 2, 8, 0);
+
+            Core.normalize(corn, preMat, 0, 255, Core.NORM_MINMAX);
+            Core.convertScaleAbs(preMat, outputMat);
+            inputMat.convertTo(prevM, CvType.CV_8UC3);
+            Imgproc.cvtColor(prevM, outputMat, Imgproc.COLOR_GRAY2RGB);
+            float[] dstNormData = new float[(int) (preMat.total() * preMat.channels())];
+            preMat.get(0, 0, dstNormData);
+            for (int i = 0; i < preMat.rows(); i++) {
+                for (int j = 0; j < preMat.cols(); j++) {
+                    if ((int) dstNormData[i * preMat.cols() + j] > threshold) {
+                        Imgproc.circle(outputMat, new Point(j, i), 5, new Scalar(0, 0, 255), 2, 8, 0);
+                    }
                 }
             }
-        }
             //corn.convertTo(outputMat, CvType.CV_8U);
-            
+
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
@@ -2027,7 +2321,7 @@ public class ViewTester extends javax.swing.JFrame {
         try {
             double rozliseniX = 413;
             double rozliseniY = 126;
-            if(jComboBox_kontrolaSegmentu_orez_rozliseni.getSelectedIndex() == 1) {
+            if (jComboBox_kontrolaSegmentu_orez_rozliseni.getSelectedIndex() == 1) {
                 rozliseniX = 827;
                 rozliseniY = 252;
             }
@@ -2037,13 +2331,25 @@ public class ViewTester extends javax.swing.JFrame {
             skutecna[1] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh2x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh2y.getValue());
             skutecna[2] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh3x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh3y.getValue());
             skutecna[3] = new Point((int) jSpinner_kontrolaSegmentu_orez_roh4x.getValue(), (int) jSpinner_kontrolaSegmentu_orez_roh4y.getValue());
-            cilova[0] = skutecna[0];
-            cilova[1] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y);
-            cilova[2] = new Point(skutecna[0].x, skutecna[0].y + rozliseniY);
-            cilova[3] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y + rozliseniY);
-            
-            outputMat = SegmentsControl.perspectiveMatAndCut(inputMat, skutecna, cilova);
+//            cilova[0] = skutecna[0];
+//            cilova[1] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y);
+//            cilova[2] = new Point(skutecna[0].x, skutecna[0].y + rozliseniY);
+//            cilova[3] = new Point(skutecna[0].x + rozliseniX, skutecna[0].y + rozliseniY);
+            cilova[0] = new Point(0, 0);
+            cilova[1] = new Point(rozliseniX, 0);
+            cilova[2] = new Point(0, rozliseniY);
+            cilova[3] = new Point(rozliseniX, rozliseniY);
 
+            Mat perspectiveMat = SegmentsControl.perspectiveMatAndCut(inputMat, outputMat, skutecna, cilova);
+            System.out.println("Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
+            System.out.println("Inversni Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
+            System.out.println("Druha inversni Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
             repaintOutputMat();
             jLabel_info.setText(">");
         } catch (Exception exception) {
@@ -2055,7 +2361,7 @@ public class ViewTester extends javax.swing.JFrame {
     private void jButton_kontrolaSegmentu_maskujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_maskujActionPerformed
         try {
             Mat maskMat = SegmentsControl.changeMatSize(maskFile, inputMat);
-            if(jCheckBox_kontrolaSegmentu_invertujMasku.isSelected()) {
+            if (jCheckBox_kontrolaSegmentu_invertujMasku.isSelected()) {
                 // invertujeme masku
                 Core.bitwise_not(maskMat, maskMat);
             }
@@ -2094,12 +2400,439 @@ public class ViewTester extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_kontrolaSegmentu_souborMaskyActionPerformed
 
-    private void repaintOutputMat() {
-            outputImage = MatToBufferedImage(outputMat);
-            ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
-            repaint();
+    private void jButton_kontrolaSegmentu_toBinaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_toBinaryActionPerformed
+        try {
+            Mat maskMat = SegmentsControl.changeMatSize(maskFile, inputMat);
+            if (jCheckBox_kontrolaSegmentu_invertujMasku.isSelected()) {
+                // invertujeme masku
+                Core.bitwise_not(maskMat, maskMat);
+            }
+            outputMat = SegmentsControl.displayToBinaryView(inputMat, maskMat);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_toBinaryActionPerformed
+
+    private void jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed
+        JFileChooser fc = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter("Obrazky", "jpg", "bmp", "jpeg", "tif", "tiff", "png");
+        fc.addChoosableFileFilter(filter);
+        fc.setFileFilter(filter);
+        fc.setDialogTitle("Vyberte soubor s prislusnym segmentem");
+        try {
+            File dir = new File("segments");
+            //    currentDir = new File((new File(".").getCanonicalPath()));
+            System.out.println("Adresar " + dir.getAbsolutePath());
+
+            fc.setCurrentDirectory(dir);
+        } catch (Exception xception) {
+            System.err.println("Err: +" + xception.getLocalizedMessage());
+        }
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            outputMat = SegmentsControl.changeMatSize(Imgcodecs.imread(file.getPath()), inputMat);
+            Core.bitwise_not(outputMat, outputMat);
+            segmentMaskMat = outputMat;
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_vyhodnoceni_segmentovySouborActionPerformed
+
+    private void jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed
+        try {
+            outputMat = SegmentsControl.pictureMask(inputMat, segmentMaskMat);
+            repaintOutputMat();
+            Mat testMatOut = new Mat(outputMat.width(), outputMat.height(), CvType.CV_8UC1);
+            Imgproc.cvtColor(outputMat, testMatOut, Imgproc.COLOR_RGB2GRAY);
+            Mat testMatSegment = new Mat(segmentMaskMat.width(), segmentMaskMat.height(), CvType.CV_8UC1);
+            Imgproc.cvtColor(segmentMaskMat, testMatSegment, Imgproc.COLOR_RGB2GRAY);
+
+            double sumViewed = Core.countNonZero(testMatOut);
+            double sumSegmentMask = Core.countNonZero(testMatSegment);
+            double inPer = sumViewed * 100 / sumSegmentMask;
+            jLabel_info.setText("> Vyhodnoceno " + sumViewed + "/" + sumSegmentMask + " tj. " + String.format("%1.2f", inPer) + "%");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_vyhodnoceni_vycisliActionPerformed
+
+    private void jButton_analyzaBarev_prevzorkujBarvyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_prevzorkujBarvyActionPerformed
+        try {
+            int vyska = inputMat.height();
+            int sirka = inputMat.width();
+            double[] color;
+            int bi;
+            int modulo = jSlider_analyzaBarev_prevzorkuj.getValue();
+            int pul = modulo / 2;
+            color = inputMat.get(0, 0);
+            outputMat = inputMat.clone();
+
+            int pocetBarev = color.length;
+            for (int y = 0; y < vyska; y++) {
+                for (int x = 0; x < sirka; x++) {
+
+                    color = inputMat.get(y, x);
+                    for (bi = 0; bi < pocetBarev; bi++) {
+
+                        color[bi] = color[bi] + pul - color[bi] % modulo;
+                    }
+                    outputMat.put(y, x, color);
+                }
+            }
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_prevzorkujBarvyActionPerformed
+
+    private void jSlider_analyzaBarev_prevzorkujStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_analyzaBarev_prevzorkujStateChanged
+        jButton_analyzaBarev_prevzorkujBarvyActionPerformed(null);
+    }//GEN-LAST:event_jSlider_analyzaBarev_prevzorkujStateChanged
+
+    private void jButton_analyzaBarev_nejBarvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_nejBarvaActionPerformed
+        try {
+            int vyska = inputMat.height();
+            int sirka = inputMat.width();
+            double[] color;
+            int bi;
+            int modulo = jSlider_analyzaBarev_prevzorkuj.getValue();
+            int pul = modulo / 2;
+            color = inputMat.get(0, 0);
+            outputMat = inputMat.clone();
+            int pocetBarev = color.length;
+            if (pocetBarev == 3) {
+                for (int y = 0; y < vyska; y++) {
+                    for (int x = 0; x < sirka; x++) {
+
+                        color = inputMat.get(y, x);
+                        if (color[0] > color[1]) {
+                            color[1] = 0;
+                            if (color[2] > color[0]) {
+                                color[0] = 0;
+                                color[2] = 255;
+                            } else {
+                                color[2] = 0;
+                                color[0] = 255;
+                            }
+                        } else {
+                            color[0] = 0;
+                            if (color[2] > color[1]) {
+                                color[1] = 0;
+                                color[2] = 255;
+                            } else {
+                                color[2] = 0;
+                                color[1] = 255;
+                            }
+                        }
+                        outputMat.put(y, x, color);
+                    }
+                }
+                repaintOutputMat();
+                jLabel_info.setText(">");
+                pack();
+            } else {
+                jLabel_info.setText("> Pouze pro tøíbarevný vstupní obraz!");
+            }
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_nejBarvaActionPerformed
+
+    private void jButton_analyzaBarev_viewRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_viewRActionPerformed
+        try {
+            view1Canal(2);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_viewRActionPerformed
+
+    private void jButton_analyzaBarev_viewGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_viewGActionPerformed
+        try {
+            view1Canal(1);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_viewGActionPerformed
+
+    private void jButton_analyzaBarev_viewBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzaBarev_viewBActionPerformed
+        try {
+            view1Canal(0);
+            repaintOutputMat();
+            jLabel_info.setText(">");
+        } catch (Exception exception) {
+            System.err.println("CHYBA: " + exception.getMessage());
+            jLabel_info.setText("> " + exception.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzaBarev_viewBActionPerformed
+
+    private void jButton_analyzabarev_nej2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_analyzabarev_nej2ActionPerformed
+        try {
+            int vyska = inputMat.height();
+            int sirka = inputMat.width();
+            double[] color;
+            int[] poradi = new int[3];
+            color = inputMat.get(0, 0);
+            outputMat = inputMat.clone();
+            int pocetBarev = color.length;
+            if (pocetBarev == 3) {
+                for (int y = 0; y < vyska; y++) {
+                    for (int x = 0; x < sirka; x++) {
+
+                        color = inputMat.get(y, x);
+                        if (color[0] > color[1]) {
+                            poradi[0] = 1;
+                            poradi[1] = 0;
+                        } else {
+                            poradi[0] = 0;
+                            poradi[1] = 1;
+                        }
+                        if (color[2] > color[poradi[1]]) {
+                            poradi[2] = 2;
+                        } else {
+                            poradi[2] = poradi[1];
+                            poradi[1] = 2;
+                        }
+                        color[poradi[0]] = 0;
+                        if (color[poradi[1]] > 100) {
+                            color[poradi[1]] = 128;
+                        } else {
+                            color[poradi[1]] = 0;
+                        }
+                        color[poradi[2]] = 255;
+                        outputMat.put(y, x, color);
+                    }
+                }
+                repaintOutputMat();
+                jLabel_info.setText(">");
+                pack();
+            } else {
+                jLabel_info.setText("> Pouze pro tøíbarevný vstupní obraz!");
+            }
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_analyzabarev_nej2ActionPerformed
+
+    private void jSpinner_hrany_hough_prahStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_hrany_hough_prahStateChanged
+        jButton_hrany_hough_houghLinesPActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_hrany_hough_prahStateChanged
+
+    private void jSpinner_hrany_hough_minLenStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_hrany_hough_minLenStateChanged
+        jButton_hrany_hough_houghLinesPActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_hrany_hough_minLenStateChanged
+
+    private void jSpinner_hrany_hough_maxGapStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_hrany_hough_maxGapStateChanged
+        jButton_hrany_hough_houghLinesPActionPerformed(null);
+    }//GEN-LAST:event_jSpinner_hrany_hough_maxGapStateChanged
+
+    private void jButton_hrany_extractContoursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_extractContoursActionPerformed
+        try {
+            Mat hierarchy = new Mat();
+            Mat maska;
+            List<MatOfPoint> contours = new ArrayList<>();
+            Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+            outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+//            for (int i = 0; i < contours.size(); i++) {
+//                Scalar color = new Scalar(50, 0, 255);
+//                Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
+//            }
+            
+            maska = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+
+//            Imgproc.drawContours(maska, contours,-1, new Scalar(255), Imgproc.FILLED);
+
+//            // vypln vseho spojeneho
+//            for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
+//                Imgproc.drawContours(maska, contours, contourIdx, new Scalar(0, 0, 255), Imgproc.FILLED);
+//            }
+            
+            double maxArea = 0;
+            int iMaxContour = 0;
+            for (int ci=0; ci<contours.size(); ci++) {
+                MatOfPoint contour = contours.get(ci);
+                double contourArea = Imgproc.contourArea(contour);
+//                Rect boundingBox = Imgproc.boundingRect(contour);
+//                double aspectRatio = (double) boundingBox.width / boundingBox.height;
+//                double extent = contourArea / (boundingBox.width * boundingBox.height);
+//                if (contourArea > maxArea && contourArea > 200 && aspectRatio > this.aspectMin && aspectRatio < this.aspectMax && extent > this.extentMin && extent < this.extentMax) {
+                if (contourArea > maxArea) {
+                    maxArea = contourArea;
+                    iMaxContour = ci;
+                }
+            }
+            Imgproc.drawContours(maska, contours, iMaxContour, new Scalar(0, 0, 255), Imgproc.FILLED);
+//            System.out.println("nalezeno>\n"+contours.get(iMaxContour).dump());
+
+            MatOfPoint contour = null;
+            Scalar color = null;
+                Random rnd = new Random();
+                color = new Scalar(255, 255, 0);
+                contour = contours.get(iMaxContour);
+            if (!jCheckBox_hrany_obrysy_pravouhle.isSelected()) {
+                List<MatOfPoint> hullList = new ArrayList<>();
+//        for (MatOfPoint contour : contours) {
+                MatOfInt hull = new MatOfInt();
+                Imgproc.convexHull(contour, hull);
+                Point[] contourArray = contour.toArray();
+                Point[] hullPoints = new Point[hull.rows()];
+                List<Integer> hullContourIdxList = hull.toList();
+                double dx, dy;
+                for (int i = 0; i < hullContourIdxList.size(); i++) {
+                    hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+                    System.out.print("Bod "+i+" : "+hullPoints[i].toString());
+                    if(i>0) {
+                        dx = hullPoints[i].x-hullPoints[i-1].x;
+                        dy = hullPoints[i].y-hullPoints[i-1].y;
+                        System.out.print("  Rozdil: "+dx+","+dy);
+                    }
+                    System.out.println();
+                }
+                hullList.add(new MatOfPoint(hullPoints));
+                Point[] quatrop = SegmentsControl.quadrilateralHull(hullPoints, 5);
+                hullList.add(new MatOfPoint(quatrop));
+                quatrop = SegmentsControl.sortPoints(quatrop);
+//                System.out.println(hullList.get(0).dump());
+                color = new Scalar(255, 0, 0);
+                //Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
+                Imgproc.drawContours(maska, hullList, 0, color);
+             
+                Imgproc.drawContours(maska, hullList, 1, new Scalar(0, 255,  0));
+//                System.out.println(hullList.get(1).dump());
+                jSpinner_kontrolaSegmentu_orez_roh1x.setValue((int)quatrop[0].x);
+                jSpinner_kontrolaSegmentu_orez_roh1y.setValue((int)quatrop[0].y);
+                jSpinner_kontrolaSegmentu_orez_roh2x.setValue((int)quatrop[1].x);
+                jSpinner_kontrolaSegmentu_orez_roh2y.setValue((int)quatrop[1].y);
+                jSpinner_kontrolaSegmentu_orez_roh3x.setValue((int)quatrop[2].x);
+                jSpinner_kontrolaSegmentu_orez_roh3y.setValue((int)quatrop[2].y);
+                jSpinner_kontrolaSegmentu_orez_roh4x.setValue((int)quatrop[3].x);
+                jSpinner_kontrolaSegmentu_orez_roh4y.setValue((int)quatrop[3].y);
+
+            } else {
+            Point[] rectPoints = new Point[4];
+            RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+            minRect.points(rectPoints);
+            for (int j = 0; j < 4; j++) {
+                Imgproc.line(maska, rectPoints[j], rectPoints[(j+1) % 4], color);
+            }
+
+            }
+
+            outputMat = maska;
+            
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_hrany_extractContoursActionPerformed
+
+    private void jButton_kontrolaSegmentu_dejDisplejActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_kontrolaSegmentu_dejDisplejActionPerformed
+        try {
+            Point[] corners;
+            Mat preMat = new Mat();
+            Mat displejOrez1Mat = new Mat();
+            double rozliseniX = 827;
+            double rozliseniY = 252;
+            
+            
+            // ziskani kontur
+            Imgproc.Canny(inputMat, preMat, 100, 200);
+            
+            // ziskani displeje - prvni faze
+            corners = SegmentsControl.getQuatroHullPoints(preMat, false);
+
+            // vyriznuti displeje - faze 1
+            Point[] cilova = new Point[4];
+            cilova[0] = new Point(0, 0);
+            cilova[1] = new Point(rozliseniX, 0);
+            cilova[2] = new Point(0, rozliseniY);
+            cilova[3] = new Point(rozliseniX, rozliseniY);
+
+            Mat perspectiveMat = SegmentsControl.perspectiveMatAndCut(inputMat, displejOrez1Mat, corners, cilova);
+            System.out.println("Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+            perspectiveMat = perspectiveMat.inv();
+            System.out.println("Inversni Persp. matice:");
+            System.out.println(perspectiveMat.dump());
+
+            // ziskani zpetne perspektivni matice - pro porovnani presnosti
+            perspectiveMat = Imgproc.getPerspectiveTransform(new MatOfPoint2f(cilova), new MatOfPoint2f(corners));
+            System.out.println("Zpetna persp. matice:");
+            System.out.println(perspectiveMat.dump());
+
+            // ziskani displeje - faze 2
+            corners = SegmentsControl.findDisplayCorners(displejOrez1Mat);
+            // prozeneme rohy inversni matici at mame body v puvodnim obrazku
+            Mat backMat = new MatOfPoint2f(corners);
+            MatOfPoint2f pMat = new MatOfPoint2f();
+//            perspectiveMat = Mat.ones(3, 3, perspectiveMat.type());
+//            Imgproc.warpPerspective(backMat, test, perspectiveMat, backMat.size(),Imgproc.WARP_INVERSE_MAP);
+            Core.perspectiveTransform(backMat, pMat, perspectiveMat);
+            System.out.println("Matice bodu:\n"+pMat.dump()+"\nPuvodni body:\n"+backMat.dump()+"\nTransformacni matice:\n"+perspectiveMat.dump());
+            corners = pMat.toArray();
+            // a ted rohy transformujeme do roviny a orizneme
+            SegmentsControl.perspectiveMatAndCut(inputMat, outputMat, corners, cilova);
+            
+            //(outputMat.submat(new Rect(outputPoints[0], outputPoints[3]))).assignTo(resultOutputMat);
+             
+            
+            
+//            outputMat = displejOrez1Mat;
+            
+            repaintOutputMat();
+            jLabel_info.setText(">");
+            pack();
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_kontrolaSegmentu_dejDisplejActionPerformed
+
+    private void view1Canal(int canalNum) {
+        int vyska = inputMat.height();
+        int sirka = inputMat.width();
+        double[] color;
+        int bi;
+        color = inputMat.get(0, 0);
+        outputMat = inputMat.clone();
+
+        int pocetBarev = color.length;
+        for (int y = 0; y < vyska; y++) {
+            for (int x = 0; x < sirka; x++) {
+
+                color = inputMat.get(y, x);
+                for (bi = 0; bi < pocetBarev; bi++) {
+                    if (bi != canalNum) {
+                        color[bi] = 0;
+                    }
+                }
+                outputMat.put(y, x, color);
+            }
+        }
     }
-    
+
+    private void repaintOutputMat() {
+        outputImage = MatToBufferedImage(outputMat);
+        ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
+        repaint();
+    }
+
     private void cannyEdgeFilter() {
         try {
             double treshLo = jSlider_hrany_canny_dolniMez.getValue();
@@ -2210,28 +2943,28 @@ public class ViewTester extends javax.swing.JFrame {
             int rozdeleniX = (int) jSpinner_toolbar_prahovani_rozdeleniX.getValue();
             int rozdeleniY = (int) jSpinner_toolbar_prahovani_rozdeleniY.getValue();
             int xStart, xEnd, yStart, yEnd;
-            int krokX = inputMat.width()/rozdeleniX + ((inputMat.width()%rozdeleniX)==0?0:1);
-            int krokY = inputMat.height()/rozdeleniY + ((inputMat.height()%rozdeleniY)==0?0:1);
+            int krokX = inputMat.width() / rozdeleniX + ((inputMat.width() % rozdeleniX) == 0 ? 0 : 1);
+            int krokY = inputMat.height() / rozdeleniY + ((inputMat.height() % rozdeleniY) == 0 ? 0 : 1);
             Mat inMat, outMat, inXMat, outXMat;
             outputMat = inputMat.clone();
             outMat = new Mat();
-            
-            for(int x = 0; x < rozdeleniX; x++) {
-                xStart = x*krokX;
-                xEnd = (x+1)*krokX;
-                if(xEnd > inputMat.width()) {
+
+            for (int x = 0; x < rozdeleniX; x++) {
+                xStart = x * krokX;
+                xEnd = (x + 1) * krokX;
+                if (xEnd > inputMat.width()) {
                     xEnd = inputMat.width();
                 }
-                for(int y = 0; y < rozdeleniY; y++) {
-                    yStart = y*krokY;
-                    yEnd = (y+1)*krokY;
-                    if(yEnd > inputMat.height()) {
+                for (int y = 0; y < rozdeleniY; y++) {
+                    yStart = y * krokY;
+                    yEnd = (y + 1) * krokY;
+                    if (yEnd > inputMat.height()) {
                         yEnd = inputMat.height();
                     }
                     inMat = inputMat.submat(yStart, yEnd, xStart, xEnd);
                     outMat = outputMat.submat(yStart, yEnd, xStart, xEnd);
                     if (jRadioButton_toolBar_prahovani_binary.isSelected()) {
-                                Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
+                        Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_BINARY);
                     } else if (jRadioButton_toolBar_prahovani_tozero.isSelected()) {
                         Imgproc.threshold(inMat, outMat, jSlider_toolBar_prahovani_mez.getValue(), Integer.parseInt(jTextField_toolBar_prahovani_maxVal.getText()), Imgproc.THRESH_TOZERO);
                     } else if (jRadioButton_toolbar_prahovani_binaryInv.isSelected()) {
@@ -2256,7 +2989,7 @@ public class ViewTester extends javax.swing.JFrame {
                         Core.bitwise_and(preObraz, preObraz2, outMat);
                     }
                 }
-            }   
+            }
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
             repaint();
@@ -2313,14 +3046,25 @@ public class ViewTester extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_porovnani;
     private javax.swing.ButtonGroup buttonGroup_prahovani;
+    private javax.swing.JButton jButton_analyzaBarev_nejBarva;
+    private javax.swing.JButton jButton_analyzaBarev_prevzorkujBarvy;
+    private javax.swing.JButton jButton_analyzaBarev_viewB;
+    private javax.swing.JButton jButton_analyzaBarev_viewG;
+    private javax.swing.JButton jButton_analyzaBarev_viewR;
+    private javax.swing.JButton jButton_analyzabarev_nej2;
     private javax.swing.JButton jButton_hrany_Sobel;
     private javax.swing.JButton jButton_hrany_canny;
+    private javax.swing.JButton jButton_hrany_extractContours;
     private javax.swing.JButton jButton_hrany_hough_houghLinesP;
     private javax.swing.JButton jButton_hrany_laplacianGaussian;
     private javax.swing.JButton jButton_hrany_laplacianGaussian_zostreni;
+    private javax.swing.JButton jButton_kontrolaSegmentu_dejDisplej;
     private javax.swing.JButton jButton_kontrolaSegmentu_maskuj;
     private javax.swing.JButton jButton_kontrolaSegmentu_orez_proved;
     private javax.swing.JButton jButton_kontrolaSegmentu_souborMasky;
+    private javax.swing.JButton jButton_kontrolaSegmentu_toBinary;
+    private javax.swing.JButton jButton_kontrolaSegmentu_vyhodnoceni_segmentovySoubor;
+    private javax.swing.JButton jButton_kontrolaSegmentu_vyhodnoceni_vycisli;
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
@@ -2351,10 +3095,15 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_transformace_zkosit;
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_Gaussian;
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_laplacian;
+    private javax.swing.JCheckBox jCheckBox_hrany_obrysy_pravouhle;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_horizontalne;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_vertikalne;
     private javax.swing.JCheckBox jCheckBox_kontrolaSegmentu_invertujMasku;
     private javax.swing.JComboBox<String> jComboBox_kontrolaSegmentu_orez_rozliseni;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel_hough_maxGap;
+    private javax.swing.JLabel jLabel_hough_minDelka;
+    private javax.swing.JLabel jLabel_hough_prah;
     private javax.swing.JLabel jLabel_hrany_laplacianGaussian_laplacianHloubka;
     private javax.swing.JLabel jLabel_hrany_laplacianGaussian_sigma;
     private javax.swing.JLabel jLabel_hrany_laplacianGaussian_x;
@@ -2372,13 +3121,18 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelObrazky;
     private javax.swing.JPanel jPanelToolBarBasic;
     private javax.swing.JPanel jPanel_Morfologie;
+    private javax.swing.JPanel jPanel_analyzaBarev;
+    private javax.swing.JPanel jPanel_analyzaBarev_prevzorkuj;
     private javax.swing.JPanel jPanel_hrany;
     private javax.swing.JPanel jPanel_hrany_canny;
     private javax.swing.JPanel jPanel_hrany_hough;
     private javax.swing.JPanel jPanel_hrany_laplacianGaussian;
+    private javax.swing.JPanel jPanel_hrany_obrysy;
     private javax.swing.JPanel jPanel_hrany_sobel;
     private javax.swing.JPanel jPanel_kontrolaSegmentu;
+    private javax.swing.JPanel jPanel_kontrolaSegmentu_maskovani;
     private javax.swing.JPanel jPanel_kontrolaSegmentu_orezAVyrovnej;
+    private javax.swing.JPanel jPanel_kontrolaSegmentu_vyhodnoceni;
     private javax.swing.JPanel jPanel_morfologie_element;
     private javax.swing.JPanel jPanel_porovnani;
     private javax.swing.JPanel jPanel_rohy;
@@ -2408,6 +3162,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_tozeroInv;
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_triangle;
     private javax.swing.JRadioButton jRadioButton_toolbar_prahovani_truncate;
+    private javax.swing.JSlider jSlider_analyzaBarev_prevzorkuj;
     private javax.swing.JSlider jSlider_hrany_canny_dolniMez;
     private javax.swing.JSlider jSlider_hrany_canny_horniMez;
     private javax.swing.JSlider jSlider_morfologie_findThreshold;
@@ -2418,6 +3173,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider_toolBar_prahovani_mez;
     private javax.swing.JSlider jSlider_transformace_otoceni;
     private javax.swing.JSlider jSlider_transformace_zkosit;
+    private javax.swing.JSpinner jSpinner_hrany_hough_maxGap;
+    private javax.swing.JSpinner jSpinner_hrany_hough_minLen;
+    private javax.swing.JSpinner jSpinner_hrany_hough_prah;
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_gaussX;
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_gaussY;
     private javax.swing.JSpinner jSpinner_hrany_laplacianGaussian_laplacianHloubka;
@@ -2443,54 +3201,33 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_hrany_laplacianGaussian_sigma;
     private javax.swing.JTextField jTextField_toolBar_prahovani_maxVal;
     private javax.swing.JTextField jTextField_toolBar_prahovani_offset;
+    private javax.swing.JToggleButton jToggleButton_analyzaBarev_viewColor;
     private javax.swing.JToggleButton jToggleButton_morfologie_objektPodMysi;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
 
     private void makeShiTomasi() {
         try {
-//            int blockSize = (int) jSpinner_rohy_harris_blockSize.getValue();
-            int apertureSizeSobel = (int) jSpinner_rohy_harris_vyrez.getValue();
             double k = 0.04;
-            int threshold = jSlider_rohy_harris_threshold.getValue();
-            Mat corn = Mat.zeros(inputMat.size(), CvType.CV_32FC1);
-            Mat preMat = new Mat();
-            Mat prevM = new Mat();
-            
-//            Imgproc.cornerHarris(inputMat, corn, blockSize, apertureSizeSobel, k);
-//            
-//           Core.normalize(corn, preMat, 0, 255, Core.NORM_MINMAX);
-//        Core.convertScaleAbs(preMat, outputMat);
-//        inputMat.convertTo(prevM, CvType.CV_8UC3);
-//        Imgproc.cvtColor(prevM, outputMat, Imgproc.COLOR_GRAY2RGB);
-//        float[] dstNormData = new float[(int) (preMat.total() * preMat.channels())];
-//        preMat.get(0, 0, dstNormData);
-//        for (int i = 0; i < preMat.rows(); i++) {
-//            for (int j = 0; j < preMat.cols(); j++) {
-//                if ((int) dstNormData[i * preMat.cols() + j] > threshold) {
-//                    Imgproc.circle(outputMat, new Point(j, i), 5, new Scalar(0, 0, 255), 2, 8, 0);
-//                }
-//            }
-//        }
-            //corn.convertTo(outputMat, CvType.CV_8U);
-        int maxCorners = Math.max(jSlider_rohy_shiTomasi_maxCorner.getValue(), 1);
-        MatOfPoint corners = new MatOfPoint();
-        double qualityLevel = 0.01;
-        double minDistance = 10;
-        int blockSize = 3, gradientSize = 3;
-        boolean useHarrisDetector = false;
-        Mat copy = inputMat.clone();
-        Imgproc.cvtColor(inputMat, copy, Imgproc.COLOR_GRAY2RGB);
-        Imgproc.goodFeaturesToTrack(inputMat, corners, maxCorners, qualityLevel, minDistance, new Mat(),
-                blockSize, gradientSize, useHarrisDetector, k);
-        System.out.println("** Number of corners detected: " + corners.rows());
-        int[] cornersData = new int[(int) (corners.total() * corners.channels())];
-        corners.get(0, 0, cornersData);
-        int radius = 5;
-        for (int i = 0; i < corners.rows(); i++) {
-            Imgproc.circle(copy, new Point(cornersData[i * 2], cornersData[i * 2 + 1]), radius,
-                    new Scalar(0, 0, 255), 2,8,0);
-        }
+
+            int maxCorners = Math.max(jSlider_rohy_shiTomasi_maxCorner.getValue(), 1);
+            MatOfPoint corners = new MatOfPoint();
+            double qualityLevel = 0.01;
+            double minDistance = 10;
+            int blockSize = 3, gradientSize = 3;
+            boolean useHarrisDetector = false;
+            Mat copy = inputMat.clone();
+            Imgproc.cvtColor(inputMat, copy, Imgproc.COLOR_GRAY2RGB);
+            Imgproc.goodFeaturesToTrack(inputMat, corners, maxCorners, qualityLevel, minDistance, new Mat(),
+                    blockSize, gradientSize, useHarrisDetector, k);
+            System.out.println("** Number of corners detected: " + corners.rows());
+            int[] cornersData = new int[(int) (corners.total() * corners.channels())];
+            corners.get(0, 0, cornersData);
+            int radius = 5;
+            for (int i = 0; i < corners.rows(); i++) {
+                Imgproc.circle(copy, new Point(cornersData[i * 2], cornersData[i * 2 + 1]), radius,
+                        new Scalar(0, 0, 255), 2, 8, 0);
+            }
             outputMat = copy;
             outputImage = MatToBufferedImage(outputMat);
             ((JPanel_DoubleImage) jPanelObrazky).setImageRight(outputImage);
