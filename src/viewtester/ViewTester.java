@@ -168,6 +168,7 @@ public class ViewTester extends javax.swing.JFrame {
         jSlider_morfologie_findThreshold = new javax.swing.JSlider();
         jToggleButton_morfologie_objektPodMysi = new javax.swing.JToggleButton();
         jButton_morfologie_vsechny = new javax.swing.JButton();
+        jButton_morfologie_uzavreneObjekty = new javax.swing.JButton();
         jPanel_transformace = new javax.swing.JPanel();
         jPanel_transformace_translace = new javax.swing.JPanel();
         jButton_transformace_translace = new javax.swing.JButton();
@@ -233,6 +234,8 @@ public class ViewTester extends javax.swing.JFrame {
         jPanel_hrany_obrysy = new javax.swing.JPanel();
         jButton_hrany_extractContours = new javax.swing.JButton();
         jCheckBox_hrany_obrysy_pravouhle = new javax.swing.JCheckBox();
+        jCheckBox_hrany_obrysy_vsechny = new javax.swing.JCheckBox();
+        jCheckBox_hrany_obrysy_ctyrobal = new javax.swing.JCheckBox();
         jPanel_rohy = new javax.swing.JPanel();
         jPanel_rohy_harris = new javax.swing.JPanel();
         jButton_rohy_harris_cornerHarris = new javax.swing.JButton();
@@ -636,6 +639,14 @@ public class ViewTester extends javax.swing.JFrame {
             }
         });
         jPanel_Morfologie.add(jButton_morfologie_vsechny);
+
+        jButton_morfologie_uzavreneObjekty.setText("Uzavøené objekty");
+        jButton_morfologie_uzavreneObjekty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_morfologie_uzavreneObjektyActionPerformed(evt);
+            }
+        });
+        jPanel_Morfologie.add(jButton_morfologie_uzavreneObjekty);
 
         jTabbedPane_nastroje.addTab("Morfologie", jPanel_Morfologie);
 
@@ -1147,14 +1158,29 @@ public class ViewTester extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
         jPanel_hrany_obrysy.add(jButton_hrany_extractContours, gridBagConstraints);
 
         jCheckBox_hrany_obrysy_pravouhle.setText("Pravoúhle");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel_hrany_obrysy.add(jCheckBox_hrany_obrysy_pravouhle, gridBagConstraints);
+
+        jCheckBox_hrany_obrysy_vsechny.setText("Všechny");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_obrysy.add(jCheckBox_hrany_obrysy_vsechny, gridBagConstraints);
+
+        jCheckBox_hrany_obrysy_ctyrobal.setText("Zobrazit 4-obal");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel_hrany_obrysy.add(jCheckBox_hrany_obrysy_ctyrobal, gridBagConstraints);
 
         jPanel_hrany.add(jPanel_hrany_obrysy);
 
@@ -1828,8 +1854,10 @@ public class ViewTester extends javax.swing.JFrame {
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
             outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+            Random r = new Random();
             Scalar color = new Scalar(0, 0, 256);
             for (int i = 0; i < contours.size(); i++) {
+                color = new Scalar(r.nextInt(256), r.nextInt(256), r.nextInt(256));
                 if (vsechno || isPointInside(contours.get(i), poi, 3)) {
                     Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_4, hierarchy, 0, new Point());
                 }
@@ -2194,9 +2222,9 @@ public class ViewTester extends javax.swing.JFrame {
     private void jButton_hrany_hough_houghLinesPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_hrany_hough_houghLinesPActionPerformed
         try {
             Mat lines = new Mat();
-            int maxGap = (int)jSpinner_hrany_hough_maxGap.getValue();
-            int minLen = (int)jSpinner_hrany_hough_minLen.getValue();
-            int threshold = (int)jSpinner_hrany_hough_prah.getValue();
+            int maxGap = (int) jSpinner_hrany_hough_maxGap.getValue();
+            int minLen = (int) jSpinner_hrany_hough_minLen.getValue();
+            int threshold = (int) jSpinner_hrany_hough_prah.getValue();
             Imgproc.HoughLinesP(inputMat, lines, 1, Math.PI / 200, threshold, minLen, maxGap);
             outputMat = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8U);
             Imgproc.cvtColor(inputMat, outputMat, Imgproc.COLOR_GRAY2RGB);
@@ -2652,25 +2680,26 @@ public class ViewTester extends javax.swing.JFrame {
 //                Scalar color = new Scalar(50, 0, 255);
 //                Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
 //            }
-            
+
             maska = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
 
 //            Imgproc.drawContours(maska, contours,-1, new Scalar(255), Imgproc.FILLED);
-
 //            // vypln vseho spojeneho
 //            for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
 //                Imgproc.drawContours(maska, contours, contourIdx, new Scalar(0, 0, 255), Imgproc.FILLED);
 //            }
-            
             double maxArea = 0;
             int iMaxContour = 0;
-            for (int ci=0; ci<contours.size(); ci++) {
+            for (int ci = 0; ci < contours.size(); ci++) {
                 MatOfPoint contour = contours.get(ci);
                 double contourArea = Imgproc.contourArea(contour);
 //                Rect boundingBox = Imgproc.boundingRect(contour);
 //                double aspectRatio = (double) boundingBox.width / boundingBox.height;
 //                double extent = contourArea / (boundingBox.width * boundingBox.height);
 //                if (contourArea > maxArea && contourArea > 200 && aspectRatio > this.aspectMin && aspectRatio < this.aspectMax && extent > this.extentMin && extent < this.extentMax) {
+                if (jCheckBox_hrany_obrysy_vsechny.isSelected()) {
+                    Imgproc.drawContours(maska, contours, ci, new Scalar(0, 0xa9, 0xf2), Imgproc.FILLED);
+                }
                 if (contourArea > maxArea) {
                     maxArea = contourArea;
                     iMaxContour = ci;
@@ -2679,62 +2708,72 @@ public class ViewTester extends javax.swing.JFrame {
             Imgproc.drawContours(maska, contours, iMaxContour, new Scalar(0, 0, 255), Imgproc.FILLED);
 //            System.out.println("nalezeno>\n"+contours.get(iMaxContour).dump());
 
-            MatOfPoint contour = null;
-            Scalar color = null;
-                Random rnd = new Random();
+                Scalar color = null;
                 color = new Scalar(255, 255, 0);
-                contour = contours.get(iMaxContour);
-            if (!jCheckBox_hrany_obrysy_pravouhle.isSelected()) {
-                List<MatOfPoint> hullList = new ArrayList<>();
+            for (int icntr = (jCheckBox_hrany_obrysy_vsechny.isSelected() ? 0 : iMaxContour); icntr < (jCheckBox_hrany_obrysy_vsechny.isSelected() ? contours.size() : iMaxContour + 1); icntr++) {
+                MatOfPoint contour = null;
+                Random rnd = new Random();
+                contour = contours.get(icntr);
+                if (!jCheckBox_hrany_obrysy_pravouhle.isSelected()) {
+                    List<MatOfPoint> hullList = new ArrayList<>();
 //        for (MatOfPoint contour : contours) {
-                MatOfInt hull = new MatOfInt();
-                Imgproc.convexHull(contour, hull);
-                Point[] contourArray = contour.toArray();
-                Point[] hullPoints = new Point[hull.rows()];
-                List<Integer> hullContourIdxList = hull.toList();
-                double dx, dy;
-                for (int i = 0; i < hullContourIdxList.size(); i++) {
-                    hullPoints[i] = contourArray[hullContourIdxList.get(i)];
-                    System.out.print("Bod "+i+" : "+hullPoints[i].toString());
-                    if(i>0) {
-                        dx = hullPoints[i].x-hullPoints[i-1].x;
-                        dy = hullPoints[i].y-hullPoints[i-1].y;
-                        System.out.print("  Rozdil: "+dx+","+dy);
+                    MatOfInt hull = new MatOfInt();
+                    Imgproc.convexHull(contour, hull);
+                    Point[] contourArray = contour.toArray();
+                    Point[] hullPoints = new Point[hull.rows()];
+                    List<Integer> hullContourIdxList = hull.toList();
+                    double dx, dy;
+                    for (int i = 0; i < hullContourIdxList.size(); i++) {
+                        hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+//                        System.out.print("Bod " + i + " : " + hullPoints[i].toString());
+//                        if (i > 0) {
+//                            dx = hullPoints[i].x - hullPoints[i - 1].x;
+//                            dy = hullPoints[i].y - hullPoints[i - 1].y;
+//                            System.out.print("  Rozdil: " + dx + "," + dy);
+//                        }
+//                        System.out.println();
                     }
-                    System.out.println();
-                }
-                hullList.add(new MatOfPoint(hullPoints));
-                Point[] quatrop = SegmentsControl.quadrilateralHull(hullPoints, 5);
-                hullList.add(new MatOfPoint(quatrop));
-                quatrop = SegmentsControl.sortPoints(quatrop);
+                    hullList.add(new MatOfPoint(hullPoints));
+                        Imgproc.drawContours(maska, hullList, 0, color);
+                    Point[] quatrop = null;
+                    try {
+                        quatrop = SegmentsControl.quadrilateralHull(hullPoints, 5);
+                    } catch (Exception e) {
+                    }
+                    if ((quatrop != null)) {
+                    hullList.add(new MatOfPoint(quatrop));
+                    quatrop = SegmentsControl.sortPoints(quatrop);
 //                System.out.println(hullList.get(0).dump());
-                color = new Scalar(255, 0, 0);
-                //Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
-                Imgproc.drawContours(maska, hullList, 0, color);
-             
-                Imgproc.drawContours(maska, hullList, 1, new Scalar(0, 255,  0));
+                        //Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
+
+                    if ((quatrop == null)) {
+                        continue;
+                    }
+                        if (jCheckBox_hrany_obrysy_ctyrobal.isSelected()) {
+                            Imgproc.drawContours(maska, hullList, 1, new Scalar(0, 255, 0));
+                        }
 //                System.out.println(hullList.get(1).dump());
-                jSpinner_kontrolaSegmentu_orez_roh1x.setValue((int)quatrop[0].x);
-                jSpinner_kontrolaSegmentu_orez_roh1y.setValue((int)quatrop[0].y);
-                jSpinner_kontrolaSegmentu_orez_roh2x.setValue((int)quatrop[1].x);
-                jSpinner_kontrolaSegmentu_orez_roh2y.setValue((int)quatrop[1].y);
-                jSpinner_kontrolaSegmentu_orez_roh3x.setValue((int)quatrop[2].x);
-                jSpinner_kontrolaSegmentu_orez_roh3y.setValue((int)quatrop[2].y);
-                jSpinner_kontrolaSegmentu_orez_roh4x.setValue((int)quatrop[3].x);
-                jSpinner_kontrolaSegmentu_orez_roh4y.setValue((int)quatrop[3].y);
-
-            } else {
-            Point[] rectPoints = new Point[4];
-            RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
-            minRect.points(rectPoints);
-            for (int j = 0; j < 4; j++) {
-                Imgproc.line(maska, rectPoints[j], rectPoints[(j+1) % 4], color);
-            }
-
+                        jSpinner_kontrolaSegmentu_orez_roh1x.setValue((int) quatrop[0].x);
+                        jSpinner_kontrolaSegmentu_orez_roh1y.setValue((int) quatrop[0].y);
+                        jSpinner_kontrolaSegmentu_orez_roh2x.setValue((int) quatrop[1].x);
+                        jSpinner_kontrolaSegmentu_orez_roh2y.setValue((int) quatrop[1].y);
+                        jSpinner_kontrolaSegmentu_orez_roh3x.setValue((int) quatrop[2].x);
+                        jSpinner_kontrolaSegmentu_orez_roh3y.setValue((int) quatrop[2].y);
+                        jSpinner_kontrolaSegmentu_orez_roh4x.setValue((int) quatrop[3].x);
+                        jSpinner_kontrolaSegmentu_orez_roh4y.setValue((int) quatrop[3].y);
+                    }
+                } else {
+                    Point[] rectPoints = new Point[4];
+                    RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+                    minRect.points(rectPoints);
+                    for (int j = 0; j < 4; j++) {
+                        Imgproc.line(maska, rectPoints[j], rectPoints[(j + 1) % 4], color);
+                    }
+                }
             }
 
             outputMat = maska;
-            
+
             repaintOutputMat();
             jLabel_info.setText(">");
             pack();
@@ -2750,11 +2789,10 @@ public class ViewTester extends javax.swing.JFrame {
             Mat displejOrez1Mat = new Mat();
             double rozliseniX = 827;
             double rozliseniY = 252;
-            
-            
+
             // ziskani kontur
             Imgproc.Canny(inputMat, preMat, 100, 200);
-            
+
             // ziskani displeje - prvni faze
             corners = SegmentsControl.getQuatroHullPoints(preMat, false);
 
@@ -2785,17 +2823,13 @@ public class ViewTester extends javax.swing.JFrame {
 //            perspectiveMat = Mat.ones(3, 3, perspectiveMat.type());
 //            Imgproc.warpPerspective(backMat, test, perspectiveMat, backMat.size(),Imgproc.WARP_INVERSE_MAP);
             Core.perspectiveTransform(backMat, pMat, perspectiveMat);
-            System.out.println("Matice bodu:\n"+pMat.dump()+"\nPuvodni body:\n"+backMat.dump()+"\nTransformacni matice:\n"+perspectiveMat.dump());
+            System.out.println("Matice bodu:\n" + pMat.dump() + "\nPuvodni body:\n" + backMat.dump() + "\nTransformacni matice:\n" + perspectiveMat.dump());
             corners = pMat.toArray();
             // a ted rohy transformujeme do roviny a orizneme
             SegmentsControl.perspectiveMatAndCut(inputMat, outputMat, corners, cilova);
-            
+
             //(outputMat.submat(new Rect(outputPoints[0], outputPoints[3]))).assignTo(resultOutputMat);
-             
-            
-            
 //            outputMat = displejOrez1Mat;
-            
             repaintOutputMat();
             jLabel_info.setText(">");
             pack();
@@ -2803,6 +2837,105 @@ public class ViewTester extends javax.swing.JFrame {
             jLabel_info.setText("> " + e.getLocalizedMessage());
         }
     }//GEN-LAST:event_jButton_kontrolaSegmentu_dejDisplejActionPerformed
+
+    private void jButton_morfologie_uzavreneObjektyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_morfologie_uzavreneObjektyActionPerformed
+        try {
+            Mat hierarchy = new Mat();
+            Mat maska;
+            List<MatOfPoint> contours = new ArrayList<>();
+            Imgproc.findContours(inputMat, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_NONE);
+            outputMat = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+//            for (int i = 0; i < contours.size(); i++) {
+//                Scalar color = new Scalar(50, 0, 255);
+//                Imgproc.drawContours(outputMat, contours, i, color, 2, Imgproc.LINE_8, hierarchy, 0, new Point());
+//            }
+
+            maska = Mat.zeros(inputMat.size(), CvType.CV_8UC3);
+
+//            Imgproc.drawContours(maska, contours,-1, new Scalar(255), Imgproc.FILLED);
+            // vypln vseho spojeneho
+            for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
+                Imgproc.drawContours(maska, contours, contourIdx, new Scalar(0, 0, 255), Imgproc.FILLED);
+            }
+
+////            double maxArea = 0;
+////            int iMaxContour = 0;
+////            for (int ci=0; ci<contours.size(); ci++) {
+////                MatOfPoint contour = contours.get(ci);
+////                double contourArea = Imgproc.contourArea(contour);
+//////                Rect boundingBox = Imgproc.boundingRect(contour);
+//////                double aspectRatio = (double) boundingBox.width / boundingBox.height;
+//////                double extent = contourArea / (boundingBox.width * boundingBox.height);
+//////                if (contourArea > maxArea && contourArea > 200 && aspectRatio > this.aspectMin && aspectRatio < this.aspectMax && extent > this.extentMin && extent < this.extentMax) {
+////                if (contourArea > maxArea) {
+////                    maxArea = contourArea;
+////                    iMaxContour = ci;
+////                }
+////            }
+////            Imgproc.drawContours(maska, contours, iMaxContour, new Scalar(0, 0, 255), Imgproc.FILLED);
+//////            System.out.println("nalezeno>\n"+contours.get(iMaxContour).dump());
+////            MatOfPoint contour = null;
+////            Scalar color = null;
+////                Random rnd = new Random();
+////                color = new Scalar(255, 255, 0);
+////                contour = contours.get(iMaxContour);
+////            if (!jCheckBox_hrany_obrysy_pravouhle.isSelected()) {
+////                List<MatOfPoint> hullList = new ArrayList<>();
+//////        for (MatOfPoint contour : contours) {
+////                MatOfInt hull = new MatOfInt();
+////                Imgproc.convexHull(contour, hull);
+////                Point[] contourArray = contour.toArray();
+////                Point[] hullPoints = new Point[hull.rows()];
+////                List<Integer> hullContourIdxList = hull.toList();
+////                double dx, dy;
+////                for (int i = 0; i < hullContourIdxList.size(); i++) {
+////                    hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+////                    System.out.print("Bod "+i+" : "+hullPoints[i].toString());
+////                    if(i>0) {
+////                        dx = hullPoints[i].x-hullPoints[i-1].x;
+////                        dy = hullPoints[i].y-hullPoints[i-1].y;
+////                        System.out.print("  Rozdil: "+dx+","+dy);
+////                    }
+////                    System.out.println();
+////                }
+////                hullList.add(new MatOfPoint(hullPoints));
+////                Point[] quatrop = SegmentsControl.quadrilateralHull(hullPoints, 5);
+////                hullList.add(new MatOfPoint(quatrop));
+////                quatrop = SegmentsControl.sortPoints(quatrop);
+//////                System.out.println(hullList.get(0).dump());
+////                color = new Scalar(255, 0, 0);
+////                //Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
+////                Imgproc.drawContours(maska, hullList, 0, color);
+////             
+////                Imgproc.drawContours(maska, hullList, 1, new Scalar(0, 255,  0));
+//////                System.out.println(hullList.get(1).dump());
+////                jSpinner_kontrolaSegmentu_orez_roh1x.setValue((int)quatrop[0].x);
+////                jSpinner_kontrolaSegmentu_orez_roh1y.setValue((int)quatrop[0].y);
+////                jSpinner_kontrolaSegmentu_orez_roh2x.setValue((int)quatrop[1].x);
+////                jSpinner_kontrolaSegmentu_orez_roh2y.setValue((int)quatrop[1].y);
+////                jSpinner_kontrolaSegmentu_orez_roh3x.setValue((int)quatrop[2].x);
+////                jSpinner_kontrolaSegmentu_orez_roh3y.setValue((int)quatrop[2].y);
+////                jSpinner_kontrolaSegmentu_orez_roh4x.setValue((int)quatrop[3].x);
+////                jSpinner_kontrolaSegmentu_orez_roh4y.setValue((int)quatrop[3].y);
+////
+////            } else {
+////            Point[] rectPoints = new Point[4];
+////            RotatedRect minRect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+////            minRect.points(rectPoints);
+////            for (int j = 0; j < 4; j++) {
+////                Imgproc.line(maska, rectPoints[j], rectPoints[(j+1) % 4], color);
+////            }
+////
+////            }
+            outputMat = maska;
+
+            repaintOutputMat();
+            jLabel_info.setText("> Nalezeno " + contours.size() + " objektù.");
+            pack();
+        } catch (Exception e) {
+            jLabel_info.setText("> " + e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_jButton_morfologie_uzavreneObjektyActionPerformed
 
     private void view1Canal(int canalNum) {
         int vyska = inputMat.height();
@@ -3068,6 +3201,7 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_morfologie_findContours;
     private javax.swing.JButton jButton_morfologie_otevreni;
     private javax.swing.JButton jButton_morfologie_rozsireni;
+    private javax.swing.JButton jButton_morfologie_uzavreneObjekty;
     private javax.swing.JButton jButton_morfologie_vsechny;
     private javax.swing.JButton jButton_morfologie_zavreni;
     private javax.swing.JButton jButton_morfologie_zuzeni;
@@ -3095,7 +3229,9 @@ public class ViewTester extends javax.swing.JFrame {
     private javax.swing.JButton jButton_transformace_zkosit;
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_Gaussian;
     private javax.swing.JCheckBox jCheckBox_hrany_laplacianGaussian_laplacian;
+    private javax.swing.JCheckBox jCheckBox_hrany_obrysy_ctyrobal;
     private javax.swing.JCheckBox jCheckBox_hrany_obrysy_pravouhle;
+    private javax.swing.JCheckBox jCheckBox_hrany_obrysy_vsechny;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_horizontalne;
     private javax.swing.JCheckBox jCheckBox_hrany_sobel_vertikalne;
     private javax.swing.JCheckBox jCheckBox_kontrolaSegmentu_invertujMasku;
