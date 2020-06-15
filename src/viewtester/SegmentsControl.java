@@ -222,8 +222,9 @@ public class SegmentsControl {
 
         Imgproc.adaptiveThreshold(resultMat2, resultMat1, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 0);
 
-        resultMat2 = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8U);
-        Imgproc.cvtColor(resultMat1, resultMat2, Imgproc.COLOR_GRAY2RGB);
+//        resultMat2 = new Mat(inputMat.width(), inputMat.height(), CvType.CV_8U);
+//        Imgproc.cvtColor(resultMat1, resultMat2, Imgproc.COLOR_GRAY2RGB);
+        resultMat2 = resultMat1;
 
         resultMat1 = pictureMask(resultMat2, maskMat);
 

@@ -7,6 +7,7 @@
             <file>jar:file:/C:/programovani/java/OpenCVTest/opencv-412.jar!/org/opencv/imgproc/Imgproc.java</file>
             <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/ForTest.java</file>
             <file>file:/C:/programovani/java/OpenCVTest/src/viewtester/ViewTester.java</file>
+            <file>file:/C:/programovani/java/OpenCVTest/src/viewtester/SegmentsControl.java</file>
             <file>file:/C:/programovani/java/OpenCVTest/src/opencvtest/ThresholdingAndProjectHist.java</file>
         </group>
     </open-files>

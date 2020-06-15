@@ -2435,6 +2435,7 @@ public class ViewTester extends javax.swing.JFrame {
                 // invertujeme masku
                 Core.bitwise_not(maskMat, maskMat);
             }
+            Imgproc.cvtColor(maskMat, maskMat, Imgproc.COLOR_RGB2GRAY);
             outputMat = SegmentsControl.displayToBinaryView(inputMat, maskMat);
             repaintOutputMat();
             jLabel_info.setText(">");
@@ -2789,7 +2790,10 @@ public class ViewTester extends javax.swing.JFrame {
             Mat displejOrez1Mat = new Mat();
             double rozliseniX = 827;
             double rozliseniY = 252;
-
+            if(jComboBox_kontrolaSegmentu_orez_rozliseni.getSelectedIndex() == 0) {
+                rozliseniX = 413;
+                rozliseniY = 126;
+            }
             // ziskani kontur
             Imgproc.Canny(inputMat, preMat, 100, 200);
 
